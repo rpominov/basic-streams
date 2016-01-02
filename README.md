@@ -16,9 +16,16 @@ Also available on npmcdn to play in jsfiddle etc.: https://npmcdn.com/basic-stre
 
 ## Main idea
 
-The main idea is to take the most basic defenition of Stream possible, and build functions to do generic operations with that streams.
+The main idea is to take the most basic definition of Stream possible, and build functions to do generic operations with that streams.
 In basic-streams Stream is just a function that accepts subscriber and must return function to unsubscribe.
-For instance:
+
+Here is how Stream's type signature looks like:
+
+```js
+<T>( sink:( payload:T ) => void ) => () => void
+```
+
+Some example:
 
 ```js
 const myStream = sink => {
