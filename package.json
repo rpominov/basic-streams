@@ -61,5 +61,14 @@
     "tape": "4.4.0",
     "tape-catch": "1.0.4",
     "webpack": "1.12.9"
-  }
+  },
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rpominov/basic-streams.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rpominov/basic-streams/issues"
+  },
+  "homepage": "https://github.com/rpominov/basic-streams#readme"
 }
