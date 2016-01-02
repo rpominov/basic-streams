@@ -9,17 +9,13 @@ type Fn3<A,B,C,D> = ( x:A ) => ( y:B ) => ( z:C ) => D
 type LiftedFn<A,B> = ( x:Stream<A> ) => Stream<B>
 type LiftedFn2<A,B,C> = ( x:Stream<A> ) => ( y:Stream<B> ) => Stream<C>
 type LiftedFn3<A,B,C,D> = ( x:Stream<A> ) => ( y:Stream<B> ) => ( z:Stream<C> ) => Stream<D>
+
+// A helper to utilise Flow's Disjoint Unions
+// http://flowtype.org/blog/2015/07/03/Disjoint-Unions.html
 type Maybe<T> = {type: "just", value: T} | {type: "nothing"}
-
-// NEXT: merge, empty, fromCallback, scan, transduce
-
-
-
 
 
 /* Creates a stream containing given value
- *
- * PROBLEM: it can be confused with Maybe's just, but `of` is a reserved word. `pure` ?
  */
 export function just<A>( x:A ): Stream<A> {
   return sink => {
@@ -54,7 +50,8 @@ export function filter<A>( predicate:Fn<A,boolean> ): LiftedFn<A,A> {
 
 /* Given a function `A => Stream<B>` returns a function
  * that operates on streams `Stream<A> => Stream<B>`.
- * The result function will spawn a `Stream<B>` for each value from `Stream<A>` using the provided function.
+ * The result function will spawn a `Stream<B>`
+ * for each value from `Stream<A>` using the provided function.
  * The final `Stream<B>` will contain values from all spawned streams.
  */
 export function chain<A,B>( fn:Fn<A,Stream<B>> ): LiftedFn<A,B> {
@@ -133,19 +130,13 @@ export function lift2<A,B,C>( fn:Fn2<A,B,C> ): LiftedFn2<A,B,C> {
 }
 
 
-// function compose<A,B,C>( f1:Fn<B,C> ): Fn2<Fn<A,B>,A,C> {
-//   return f2 => x => f1(f2(x))
-// }
-
 /* Lifts a 3 arity curried function `A => B => C => D` to a curried function that operates
  * on streams `Stream<A> => Stream<B> => Stream<C> => Stream<D>`
  */
 export function lift3<A,B,C,D>( fn:Fn3<A,B,C,D> ): LiftedFn3<A,B,C,D> {
   return s1 => s2 => ap(lift2(fn)(s1)(s2))
-
-  // Flow can't typecheck this properly.
-  // More precisely it always thinks it's valid,
-  // even if we change the type declararion above to make it invalid.
-  //
-  // return compose(compose(ap))(lift2(fn))
 }
+
+
+
+// NEXT: merge, empty, fromCallback, scan, transduce
