@@ -3,11 +3,13 @@
   "version": "0.1.0",
   "description": "Experimental very basic reactive streams implementation for JavaScript",
   "main": "dist/index.js",
+  "files": ["dist"],
   "scripts": {
     "coverage": "nyc --require=babel-register tape test/*.js && nyc report --reporter=text-lcov > lcov.info",
     "tapec": "nodemon --watch test --watch src --exec \"tape -r babel-register test/*.js | tap-notify | faucet\"",
     "test": "eslint . && flow check && tape -r babel-register test/*.js | faucet",
-    "build": "webpack"
+    "preversion": "npm run test && webpack",
+    "postversion": "git push && git push origin --tags && npm publish"
   },
   "keywords": [
     "reactive",

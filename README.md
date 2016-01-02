@@ -6,6 +6,14 @@ Experimental very basic reactive streams implementation for JavaScript
 
 It's experimental and in a very early stage of development.
 
+## Installation
+
+```
+npm install basic-streams
+```
+
+Also available on npmcdn to play in jsfiddle etc.: https://npmcdn.com/basic-streams
+
 ## Main idea
 
 Take the most basic defenition of a stream possible, and build functions to do generic operations with taht streams.
