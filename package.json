@@ -1,9 +1,11 @@
 {
   "name": "basic-streams",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Experimental very basic reactive streams implementation for JavaScript",
   "main": "dist/index.js",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "coverage": "nyc --require=babel-register tape test/*.js && nyc report --reporter=text-lcov > lcov.info",
     "tapec": "nodemon --watch test --watch src --exec \"tape -r babel-register test/*.js | tap-notify | faucet\"",
