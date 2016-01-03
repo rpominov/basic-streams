@@ -10,9 +10,27 @@ type LiftedFn<A,B> = ( x:Stream<A> ) => Stream<B>
 type LiftedFn2<A,B,C> = ( x:Stream<A> ) => ( y:Stream<B> ) => Stream<C>
 type LiftedFn3<A,B,C,D> = ( x:Stream<A> ) => ( y:Stream<B> ) => ( z:Stream<C> ) => Stream<D>
 
-// A helper to utilise Flow's Disjoint Unions
+// A helper to utilize Flow's Disjoint Unions
 // http://flowtype.org/blog/2015/07/03/Disjoint-Unions.html
+//
 type Maybe<T> = {type: "just", value: T} | {type: "nothing"}
+
+
+// We're not sure yet if this function should be public
+function fromArray<T>( xs:Array<T> ): Stream<T> {
+  return sink => {
+    xs.forEach(x => {
+      sink(x)
+    })
+    return () => {}
+  }
+}
+
+
+
+/* Represents an empty stream
+ */
+export const empty:Stream<any> = sink => () => {}
 
 
 /* Creates a stream containing given value
@@ -89,7 +107,7 @@ export function chainLatest<A,B>( fn:Fn<A,Stream<B>> ): LiftedFn<A,B> {
 }
 
 
-/* Giver a stream of functions `A => B`, returns a function
+/* Given a stream of functions `A => B`, returns a function
  * that operates on streams `Stream<A> => Stream<B>`.
  * The result stream `Stream<B>` will contain values created by applying
  * the latest function from `Stream<A => B>` to the latest value from `Stream<A>`
@@ -138,5 +156,35 @@ export function lift3<A,B,C,D>( fn:Fn3<A,B,C,D> ): LiftedFn3<A,B,C,D> {
 }
 
 
+/* Merges several streams of same type to a single stream of that type.
+ * The result stream will contain values from all streams
+ *
+ * We should use name "merge" for this, but Flow behaves weirdly with that name https://github.com/facebook/flow/issues/1238
+ */
+export function join<T>( streams:Array<Stream<T>> ): Stream<T> {
+  return chain(x => x)(fromArray(streams))
+}
 
-// NEXT: merge, empty, fromCallback, scan, transduce
+
+/* Given a reducer function `(B, A) => B`, and a seed value of type B,
+ * returns a function that operates on streams `Stream<A> => Stream<B>`.
+ * Will apply reducer to each value in `Stream<A>` and push the result to `Stream<B>`
+ */
+export function scan<A,B>( reducer:( r:B, x:A ) => B, seed:B ): LiftedFn<A,B> {
+  return stream =>
+    sink => {
+      let current = seed
+      sink(current)
+      return stream(x => {
+        current = reducer(current, x)
+        sink(current)
+      })
+    }
+}
+
+
+
+// NEXT:
+//  transduce, combine ([S<a>]->S<[a]>), multicast,
+//  skip, skipWhile, skipUntilEventInAnotherStream,
+//  take, takeWhile, takeUntilEventInAnotherStream,

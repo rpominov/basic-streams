@@ -3,6 +3,7 @@
 import test from 'tape-catch'
 import {stub} from 'sinon'
 import {
+  empty,
   just,
   lift,
   filter,
@@ -11,6 +12,8 @@ import {
   ap,
   lift2,
   lift3,
+  join,
+  scan,
 } from '../src'
 
 
@@ -47,6 +50,9 @@ const namedStreamsPool = () => {
   return {
     add(name) {
       return sink => {
+        if (sinks[name]) {
+          throw new Error('in namedStreamsPool you can\'t have more than one subscriber to a same stream at a same time')
+        }
         sinks[name] = sink
         return () => {  sinks[name] = null  }
       }
@@ -61,7 +67,6 @@ const namedStreamsPool = () => {
     },
   }
 }
-// What if some stream activated twice?!
 
 /* Wraps a group of tests
  */
@@ -75,7 +80,7 @@ const wrap = (prefix, cb) => {
   })
 }
 
-/* Applies given function to give value
+/* Applies given functions to give value
  */
 const pipe = (x, ...fs:Array<(x:any) => any>) => {
   return fs.reduce((r, f) => f(r), x)
@@ -85,6 +90,20 @@ const pipe = (x, ...fs:Array<(x:any) => any>) => {
  */
 const thrush = x => f => f(x)
 
+
+
+
+wrap('empty', test => {
+
+  test('works ...', t => {
+    t.plan(1)
+    const sink = stub()
+    const dispose = empty(sink)
+    dispose()
+    t.deepEqual(sink.args, [])
+  })
+
+})
 
 
 wrap('just', test => {
@@ -345,6 +364,69 @@ wrap('lift3', test => {
     t.deepEqual(disposer1.args, [[]])
     t.deepEqual(disposer2.args, [[]])
     t.deepEqual(disposer3.args, [[]])
+  })
+
+})
+
+
+
+wrap('join', test => {
+
+  test('result stream contains values from sources (using just)', t => {
+    t.plan(1)
+    const result = drainToArray(join([just(1), just(2)]))
+    t.deepEqual(result, [1, 2])
+  })
+
+  test('result stream contains values from sources (using namedStreamsPool)', t => {
+    t.plan(1)
+    const pool = namedStreamsPool()
+    const a = pool.add('a')
+    const b = pool.add('b')
+    const joined = join([a, b])
+    const sink = stub()
+    joined(sink)
+    pool.pushTo('a', 1)
+    pool.pushTo('b', 2)
+    pool.pushTo('a', 3)
+    pool.pushTo('b', 4)
+    t.deepEqual(sink.args, [[1], [2], [3], [4]])
+  })
+
+  test('disposers called properly', t => {
+    t.plan(3)
+    const disposer1 = stub()
+    const disposer2 = stub()
+    const disposer3 = stub()
+    const stream = join([() => disposer1, () => disposer2, () => disposer3])
+    stream(() => {})()
+    t.deepEqual(disposer1.args, [[]])
+    t.deepEqual(disposer2.args, [[]])
+    t.deepEqual(disposer3.args, [[]])
+  })
+
+})
+
+
+
+wrap('scan', test => {
+
+  const lifted = scan((r, x) => r.concat([x]), [])
+
+  test('contains correct values', t => {
+    t.plan(1)
+    const stream = fromArray([1, 2, 3])
+    const result = drainToArray(lifted(stream))
+    t.deepEqual(result, [[], [1], [1,2], [1,2,3]])
+  })
+
+  test('preserves disposer', t => {
+    t.plan(1)
+    const disposer = stub()
+    const stream = () => disposer
+    const stream2 = lifted(stream)
+    stream2(() => {})() // subscribe & immediately unsubscribe
+    t.deepEqual(disposer.args, [[]])
   })
 
 })
