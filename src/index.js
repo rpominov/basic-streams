@@ -30,7 +30,7 @@ function fromArray<T>( xs:Array<T> ): Stream<T> {
 
 /* Represents an empty stream
  */
-export const empty:Stream<any> = sink => () => {}
+export const empty:Stream<any> = () => () => {}
 
 
 /* Creates a stream containing given value

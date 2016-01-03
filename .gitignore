@@ -2,3 +2,4 @@ node_modules
 dist
 lcov.info
 .nyc_output
+npm-debug.log
