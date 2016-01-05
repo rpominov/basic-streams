@@ -499,6 +499,13 @@ wrap('skip', test => {
     t.deepEqual(result, [3, 4])
   })
 
+  test('returns equivalent stream if N=0', t => {
+    t.plan(1)
+    const stream = fromArray([1, 2, 3, 4])
+    const result = drainToArray(skip(0)(stream))
+    t.deepEqual(result, [1, 2, 3, 4])
+  })
+
   test('preserves disposer', t => {
     t.plan(1)
     const disposer = stub()
