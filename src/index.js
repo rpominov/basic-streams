@@ -107,7 +107,7 @@ export function chainLatest<A,B>( fn:Fn<A,Stream<B>> ): LiftedFn<A,B> {
 }
 
 
-/* Given a stream of functions `A => B`, returns a function
+/* Given a stream of functions `Stream<A => B>`, returns a function
  * that operates on streams `Stream<A> => Stream<B>`.
  * The result stream `Stream<B>` will contain values created by applying
  * the latest function from `Stream<A => B>` to the latest value from `Stream<A>`
@@ -183,8 +183,43 @@ export function scan<A,B>( reducer:( r:B, x:A ) => B, seed:B ): LiftedFn<A,B> {
 }
 
 
+/* Given a number N, returns a function that operates on streams `Stream<A> => Stream<A>`.
+ * The result stream will contain only first N items from source stream
+ */
+export function take<A>( n:number ): LiftedFn<A,A> {
+  if (n <= 0) {
+    return () => empty
+  }
+
+  return stream =>
+    sink => {
+      let count = 0
+      let disposer = null
+      const dispose = () => {
+        if (disposer !== null) {
+          disposer()
+          disposer = null
+        }
+      }
+      disposer = stream(x => {
+        count++
+        if (count <= n) {
+          sink(x)
+        }
+        if (count >= n) {
+          dispose()
+        }
+      })
+      if (count >= n) {
+        dispose()
+      }
+      return dispose
+    }
+}
+
+
 
 // NEXT:
 //  transduce, combine ([S<a>]->S<[a]>), multicast,
 //  skip, skipWhile, skipUntilEventInAnotherStream,
-//  take, takeWhile, takeUntilEventInAnotherStream,
+//  takeWhile, takeUntilEventInAnotherStream,

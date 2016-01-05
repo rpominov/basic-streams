@@ -14,6 +14,7 @@ import {
   lift3,
   join,
   scan,
+  take,
 } from '../src'
 
 
@@ -21,15 +22,10 @@ import {
  */
 const fromArray = arr =>
   sink => {
-    let disposed = false
     arr.forEach(x => {
-      if (!disposed) {
-        sink(x)
-      }
+      sink(x)
     })
-    return () => {
-      disposed = true
-    }
+    return () => {}
   }
 
 /* Takes all values pushed synchronously from a stream,
@@ -421,6 +417,64 @@ wrap('scan', test => {
   })
 
   test('preserves disposer', t => {
+    t.plan(1)
+    const disposer = stub()
+    const stream = () => disposer
+    const stream2 = lifted(stream)
+    stream2(() => {})() // subscribe & immediately unsubscribe
+    t.deepEqual(disposer.args, [[]])
+  })
+
+})
+
+
+
+wrap('take', test => {
+
+  const lifted = take(2)
+
+  test('take(0) return empty stream', t => {
+    t.plan(1)
+    const stream = take(0)(just(1))
+    const sink = stub()
+    const dispose = stream(sink)
+    dispose()
+    t.deepEqual(sink.args, [])
+  })
+
+  test('takes first n and then calls disposer of source stream (async)', t => {
+    t.plan(3)
+    const disposer = stub()
+    const subscriber = stub()
+    let sink
+    const stream = lifted(_sink => {
+      sink = _sink
+      return disposer
+    })
+    stream(subscriber)
+    sink && sink(1)
+    t.deepEqual(disposer.args, [])
+    sink && sink(2)
+    t.deepEqual(disposer.args, [[]])
+    // since disposer is called at this point, we're not alowed to do `sink(3)` here
+    t.deepEqual(subscriber.args, [[1], [2]])
+  })
+
+  test('takes first n and then calls disposer of source stream (sync)', t => {
+    t.plan(2)
+    const disposer = stub()
+    const stream = lifted(sink => {
+      sink(1)
+      sink(2)
+      sink(3)
+      return disposer
+    })
+    const result = drainToArray(stream)
+    t.deepEqual(result, [1, 2])
+    t.deepEqual(disposer.args, [[]])
+  })
+
+  test('calls disposer of source stream when we sispose result stream erlier', t => {
     t.plan(1)
     const disposer = stub()
     const stream = () => disposer
