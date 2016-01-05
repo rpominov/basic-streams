@@ -218,8 +218,32 @@ export function take<A>( n:number ): LiftedFn<A,A> {
 }
 
 
+/* Given a number N, returns a function that operates on streams `Stream<A> => Stream<A>`.
+ * The result stream will contain only items from source starting from (N+1)th one
+ */
+export function skip<A>( n:number ): LiftedFn<A,A> {
+  if (n <= 0) {
+    return s => s
+  }
+
+  return stream =>
+    sink => {
+      let count = 0
+      return stream(x => {
+        count++
+        if (count > n) {
+          sink(x)
+        }
+      })
+    }
+}
+
+
 
 // NEXT:
-//  transduce, combine ([S<a>]->S<[a]>), multicast,
-//  skip, skipWhile, skipUntilEventInAnotherStream,
+//  transduce,
+//  combineArray (i.e. FLs sequence() for arrays — [S<a>]->S<[a]>),
+//  combineHash ({S<a>}->S<{a}>),
+//  multicast,
+//  skipWhile, skipUntilEventInAnotherStream,
 //  takeWhile, takeUntilEventInAnotherStream,

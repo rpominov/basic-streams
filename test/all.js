@@ -15,6 +15,7 @@ import {
   join,
   scan,
   take,
+  skip,
 } from '../src'
 
 
@@ -244,7 +245,7 @@ wrap('chainLatest', test => {
 wrap('ap', test => {
 
   // 1. a.map(f => g => x => f(g(x))).ap(u).ap(v) is equivalent to a.ap(u.ap(v)) (composition)
-  test('1st law of FL\'s Apply', t => {
+  test('1st law of FLs Apply', t => {
     t.plan(2)
     const a = just(x => x + 1)
     const u = just(x => x * 2)
@@ -260,7 +261,7 @@ wrap('ap', test => {
   })
 
   // 1. a.of(x => x).ap(v) is equivalent to v (identity)
-  test('1st law of FL\'s Applicative', t => {
+  test('1st law of FLs Applicative', t => {
     t.plan(2)
     const a = just(x => x)
     const v = just(3)
@@ -273,7 +274,7 @@ wrap('ap', test => {
   })
 
   // 2. a.of(f).ap(a.of(x)) is equivalent to a.of(f(x)) (homomorphism)
-  test('2nd law of FL\'s Applicative', t => {
+  test('2nd law of FLs Applicative', t => {
     t.plan(2)
     const f = y => y + 1
     const x = 3
@@ -288,7 +289,7 @@ wrap('ap', test => {
   })
 
   // 3. u.ap(a.of(y)) is equivalent to a.of(f => f(y)).ap(u) (interchange)
-  test('3rd law of FL\'s Applicative', t => {
+  test('3rd law of FLs Applicative', t => {
     t.plan(2)
     const u = just(x => x + 1)
     const y = 3
@@ -475,6 +476,30 @@ wrap('take', test => {
   })
 
   test('calls disposer of source stream when we sispose result stream erlier', t => {
+    t.plan(1)
+    const disposer = stub()
+    const stream = () => disposer
+    const stream2 = lifted(stream)
+    stream2(() => {})() // subscribe & immediately unsubscribe
+    t.deepEqual(disposer.args, [[]])
+  })
+
+})
+
+
+
+wrap('skip', test => {
+
+  const lifted = skip(2)
+
+  test('skips first N items', t => {
+    t.plan(1)
+    const stream = fromArray([1, 2, 3, 4])
+    const result = drainToArray(lifted(stream))
+    t.deepEqual(result, [3, 4])
+  })
+
+  test('preserves disposer', t => {
     t.plan(1)
     const disposer = stub()
     const stream = () => disposer
