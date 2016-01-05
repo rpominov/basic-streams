@@ -1,2 +1,3 @@
-dist
+lib
+umd
 test-dist

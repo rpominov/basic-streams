@@ -2,7 +2,7 @@
 
 type Sink<T> = ( payload:T ) => void
 type Disposer = () => void
-type Stream<T> = ( s:Sink<T> ) => Disposer
+export type Stream<T> = ( s:Sink<T> ) => Disposer
 type Fn<A,B> = ( x:A ) => B
 type Fn2<A,B,C> = ( x:A ) => ( y:B ) => C
 type Fn3<A,B,C,D> = ( x:A ) => ( y:B ) => ( z:C ) => D

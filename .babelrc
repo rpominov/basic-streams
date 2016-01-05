@@ -14,9 +14,10 @@
     "transform-es2015-destructuring",
     "transform-es2015-block-scoping",
     "transform-es2015-modules-commonjs",
-    "syntax-flow",
     "transform-flow-strip-types",
-    "transform-object-rest-spread"
+    "transform-object-rest-spread",
+    "transform-class-properties",
+    "transform-es2015-classes"
   ]
 }
 

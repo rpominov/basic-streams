@@ -1,5 +1,6 @@
 node_modules
-dist
+lib
+umd
 lcov.info
 .nyc_output
 npm-debug.log
