@@ -1,4 +1,4 @@
-export * from './index'
+const main = require('./index')
+const fantasy = require('./fantasy')
 
-import * as fantasy from './fantasy'
-export {fantasy}
+module.exports = {...main, fantasy}
