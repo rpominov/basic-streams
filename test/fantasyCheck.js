@@ -1,5 +1,3 @@
-/* @flow */
-
 import mochaAdapter from 'fantasy-check/src/adapters/mocha'
 import applicative from 'fantasy-check/src/laws/applicative'
 import functor from 'fantasy-check/src/laws/functor'
