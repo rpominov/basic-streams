@@ -1,4 +1,4 @@
-# basic-streams [![Build Status](https://travis-ci.org/rpominov/basic-streams.svg?branch=master)](https://travis-ci.org/rpominov/basic-streams)
+# basic-streams [![Build Status](https://travis-ci.org/rpominov/basic-streams.svg?branch=master)](https://travis-ci.org/rpominov/basic-streams) [![Coverage Status](https://coveralls.io/repos/rpominov/basic-streams/badge.svg?branch=master&service=github)](https://coveralls.io/github/rpominov/basic-streams?branch=master)
 
 Experimental very basic reactive streams implementation for JavaScript
 
