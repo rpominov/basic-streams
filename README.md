@@ -76,4 +76,4 @@ const stream = Stream.of(1).map(x => x * 2)
 stream.observe(x => {  console.log(x)  }) // > 2
 ```
 
-In the UMD build (umd/basicStreams.js), `fantasy` is exposed as `basicStreams.fantasy`.
+In the UMD build (umd/basicStreams.js), `fantasy` is exposed as `BasicStreams.fantasy`.
