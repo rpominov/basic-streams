@@ -57,10 +57,12 @@ unsub()
 
 
 
-## [Fantasy Land](https://github.com/fantasyland/fantasy-land) wrapper
+## Fantasy Land wrapper
 
 The library also provides a wrapper that can wrap a basic stream (function)
-to an object that exposes methods as Fantasy Land Specification requires.
+to an object that exposes methods as
+[Fantasy Land Specification](https://github.com/fantasyland/fantasy-land)
+requires.
 
 See `src/fantasy.js` for docs.
 
