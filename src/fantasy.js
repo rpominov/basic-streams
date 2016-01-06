@@ -63,4 +63,37 @@ export class Stream<T> {
     return new Stream(bs.chain(x => f(x).observe)(this.observe))
   }
 
+
+  // ------------------ Not from FL ------------------
+
+  filter( f:( x:T ) => boolean ): Stream<T> {
+    return new Stream(bs.filter(f)(this.observe))
+  }
+
+  scan<A>( f:( r:A, x:T ) => A, seed:A ): Stream<A> {
+    return new Stream(bs.scan(f, seed)(this.observe))
+  }
+
+  chainLatest<A>( f:( x:T ) => Stream<A> ): Stream<A> {
+    return new Stream(bs.chainLatest(x => f(x).observe)(this.observe))
+  }
+
+  take( n:number ): Stream<T> {
+    return new Stream(bs.take(n)(this.observe))
+  }
+
+  skip( n:number ): Stream<T> {
+    return new Stream(bs.skip(n)(this.observe))
+  }
+
+  static join<A>( streams:Array<Stream<A>> ): Stream<A> {
+    return new Stream(bs.join(streams.map(x => x.observe)))
+  }
+
+  // TODO
+  // static lift2<A,B,C>()
+  // static lift3<A,B,C,D>()
+
+
+
 }
