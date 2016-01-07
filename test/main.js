@@ -321,7 +321,7 @@ wrap('lift2', test => {
 
   test('works with just', t => {
     t.plan(1)
-    const stream = lift2(x => y => [x, y])(just(5))(just(3))
+    const stream = lift2((x, y) => [x, y])(just(5), just(3))
     stream(z => {
       t.deepEqual(z, [5, 3])
     })
@@ -331,7 +331,7 @@ wrap('lift2', test => {
     t.plan(2)
     const disposer1 = stub()
     const disposer2 = stub()
-    const stream = lift2(x => y => [x, y])(() => disposer1)(() => disposer2)
+    const stream = lift2((x, y) => [x, y])(() => disposer1, () => disposer2)
     stream(() => {})()
     t.deepEqual(disposer1.args, [[]])
     t.deepEqual(disposer2.args, [[]])
@@ -345,7 +345,7 @@ wrap('lift3', test => {
 
   test('works with just', t => {
     t.plan(1)
-    const stream = lift3(x => y => z => [x, y, z])(just(5))(just(3))(just(2))
+    const stream = lift3((x, y, z) => [x, y, z])(just(5), just(3), just(2))
     stream(a => {
       t.deepEqual(a, [5, 3, 2])
     })
@@ -356,7 +356,7 @@ wrap('lift3', test => {
     const disposer1 = stub()
     const disposer2 = stub()
     const disposer3 = stub()
-    const stream = lift3(x => y => z => [x, y, z])(() => disposer1)(() => disposer2)(() => disposer3)
+    const stream = lift3((x, y, z) => [x, y, z])(() => disposer1, () => disposer2, () => disposer3)
     stream(() => {})()
     t.deepEqual(disposer1.args, [[]])
     t.deepEqual(disposer2.args, [[]])

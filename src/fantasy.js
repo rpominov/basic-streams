@@ -90,10 +90,12 @@ export class Stream<T> {
     return new Stream(bs.join(streams.map(x => x.observe)))
   }
 
-  // TODO
-  // static lift2<A,B,C>()
-  // static lift3<A,B,C,D>()
+  static lift2<A,B,C>( f:( a:A, b:B ) => C ): ( sA:Stream<A>, sB:Stream<B> ) => Stream<C> {
+    return (sA, sB) => new Stream(bs.lift2(f)(sA.observe, sB.observe))
+  }
 
-
+  static lift3<A,B,C,D>( f:( a:A, b:B, c:C ) => D ): ( sA:Stream<A>, sB:Stream<B>, sC:Stream<C> ) => Stream<D> {
+    return (sA, sB, sC) => new Stream(bs.lift3(f)(sA.observe, sB.observe, sC.observe))
+  }
 
 }

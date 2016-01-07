@@ -140,19 +140,30 @@ export function ap<A,B>( streamf:Stream<Fn<A,B>> ): LiftedFn<A,B> {
 }
 
 
-/* Lifts a 2 arity curried function `A => B => C` to a curried function that operates
- * on streams `Stream<A> => Stream<B> => Stream<C>`
+/* Lifts a 2 arity function `(A, B) => C` to a function that operates
+ * on streams `(Stream<A>, Stream<B>) => Stream<C>`
  */
-export function lift2<A,B,C>( fn:Fn2<A,B,C> ): LiftedFn2<A,B,C> {
-  return s1 => ap(lift(fn)(s1))
+export function lift2<A,B,C>( fn:( a:A, b:B ) => C ):
+  ( sA:Stream<A>, sB:Stream<B> ) => Stream<C> {
+  return (sA, sB) => {
+    const AtoFb = lift(a => b => fn(a, b))
+    const BtoC = ap(AtoFb(sA))
+    return BtoC(sB)
+  }
 }
 
 
-/* Lifts a 3 arity curried function `A => B => C => D` to a curried function that operates
- * on streams `Stream<A> => Stream<B> => Stream<C> => Stream<D>`
+/* Lifts a 3 arity function `(A, B, C) => D` to a function that operates
+ * on streams `(Stream<A>, Stream<B>, Stream<C>) => Stream<D>`
  */
-export function lift3<A,B,C,D>( fn:Fn3<A,B,C,D> ): LiftedFn3<A,B,C,D> {
-  return s1 => s2 => ap(lift2(fn)(s1)(s2))
+export function lift3<A,B,C,D>( fn:( a:A, b:B, c:C ) => D ):
+  ( sA:Stream<A>, sB:Stream<B>, sC:Stream<C> ) => Stream<D> {
+  return (sA, sB, sC) => {
+    const AtoFb = lift(a => b => c => fn(a, b, c))
+    const FbToFc = ap(AtoFb(sA))
+    const CtoD = ap(FbToFc(sB))
+    return CtoD(sC)
+  }
 }
 
 
