@@ -4,11 +4,7 @@ type Sink<T> = ( payload:T ) => void
 type Disposer = () => void
 export type Stream<T> = ( s:Sink<T> ) => Disposer
 type Fn<A,B> = ( x:A ) => B
-type Fn2<A,B,C> = ( x:A ) => ( y:B ) => C
-type Fn3<A,B,C,D> = ( x:A ) => ( y:B ) => ( z:C ) => D
 type LiftedFn<A,B> = ( x:Stream<A> ) => Stream<B>
-type LiftedFn2<A,B,C> = ( x:Stream<A> ) => ( y:Stream<B> ) => Stream<C>
-type LiftedFn3<A,B,C,D> = ( x:Stream<A> ) => ( y:Stream<B> ) => ( z:Stream<C> ) => Stream<D>
 
 // A helper to utilize Flow's Disjoint Unions
 // http://flowtype.org/blog/2015/07/03/Disjoint-Unions.html
