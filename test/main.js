@@ -17,6 +17,7 @@ import {
   take,
   skip,
 } from '../src'
+import type {Stream} from '../src'
 
 
 /* Creates a stream containing given values
@@ -45,7 +46,7 @@ const drainToArray = stream => {
 const namedStreamsPool = () => {
   const sinks = {}
   return {
-    add(name) {
+    add(name): Stream<any> {
       return sink => {
         if (sinks[name]) {
           throw new Error('in namedStreamsPool you can\'t have more than one subscriber to a same stream at a same time')
@@ -76,16 +77,6 @@ const wrap = (prefix, cb) => {
     }
   })
 }
-
-/* Applies given functions to give value
- */
-const pipe = (x, ...fs:Array<(x:any) => any>) => {
-  return fs.reduce((r, f) => f(r), x)
-}
-
-/* Usable in pipe...
- */
-const thrush = x => f => f(x)
 
 
 
@@ -244,63 +235,19 @@ wrap('chainLatest', test => {
 
 wrap('ap', test => {
 
-  // 1. a.map(f => g => x => f(g(x))).ap(u).ap(v) is equivalent to a.ap(u.ap(v)) (composition)
-  test('1st law of FLs Apply', t => {
-    t.plan(2)
-    const a = just(x => x + 1)
-    const u = just(x => x * 2)
-    const v = just(3)
-    const stream1 = pipe(a, lift(f => g => x => f(g(x))), ap, thrush(u), ap, thrush(v))
-    const stream2 = ap(a)(ap(u)(v))
-    stream1(x => {
-      t.equal(x, 7)
-    })
-    stream2(x => {
-      t.equal(x, 7)
-    })
-  })
-
-  // 1. a.of(x => x).ap(v) is equivalent to v (identity)
-  test('1st law of FLs Applicative', t => {
-    t.plan(2)
-    const a = just(x => x)
-    const v = just(3)
-    ap(a)(v)(x => {
-      t.equal(x, 3)
-    })
-    v(x => {
-      t.equal(x, 3)
-    })
-  })
-
-  // 2. a.of(f).ap(a.of(x)) is equivalent to a.of(f(x)) (homomorphism)
-  test('2nd law of FLs Applicative', t => {
-    t.plan(2)
-    const f = y => y + 1
-    const x = 3
-    const stream1 = ap(just(f))(just(x))
-    const stream2 = just(f(x))
-    stream1(x => {
-      t.equal(x, 4)
-    })
-    stream2(x => {
-      t.equal(x, 4)
-    })
-  })
-
-  // 3. u.ap(a.of(y)) is equivalent to a.of(f => f(y)).ap(u) (interchange)
-  test('3rd law of FLs Applicative', t => {
-    t.plan(2)
-    const u = just(x => x + 1)
-    const y = 3
-    const stream1 = ap(u)(just(y))
-    const stream2 = ap(just(f => f(y)))(u)
-    stream1(x => {
-      t.equal(x, 4)
-    })
-    stream2(x => {
-      t.equal(x, 4)
-    })
+  test('updates result when inputs update', t => {
+    t.plan(1)
+    const pool = namedStreamsPool()
+    const ofF = pool.add('ofF')
+    const ofV = pool.add('ofV')
+    const result = ap(ofF)(ofV)
+    const listener = stub()
+    result(listener)
+    pool.pushTo('ofF', x => x + 1)
+    pool.pushTo('ofV', 2)
+    pool.pushTo('ofF', x => x * 2)
+    pool.pushTo('ofV', 3)
+    t.deepEqual(listener.args, [[3], [4], [6]])
   })
 
   test('preserves disposers...', t => {
