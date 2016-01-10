@@ -142,9 +142,8 @@ export function ap<A,B>( streamf:Stream<Fn<A,B>> ): LiftedFn<A,B> {
 export function lift2<A,B,C>( fn:( a:A, b:B ) => C ):
   ( sA:Stream<A>, sB:Stream<B> ) => Stream<C> {
   return (sA, sB) => {
-    const AtoFb = lift(a => b => fn(a, b))
-    const BtoC = ap(AtoFb(sA))
-    return BtoC(sB)
+    const ofFn = lift(a => b => fn(a, b))(sA)
+    return ap(ofFn)(sB)
   }
 }
 
@@ -155,10 +154,8 @@ export function lift2<A,B,C>( fn:( a:A, b:B ) => C ):
 export function lift3<A,B,C,D>( fn:( a:A, b:B, c:C ) => D ):
   ( sA:Stream<A>, sB:Stream<B>, sC:Stream<C> ) => Stream<D> {
   return (sA, sB, sC) => {
-    const AtoFb = lift(a => b => c => fn(a, b, c))
-    const FbToFc = ap(AtoFb(sA))
-    const CtoD = ap(FbToFc(sB))
-    return CtoD(sC)
+    const ofFn = lift(a => b => c => fn(a, b, c))(sA)
+    return ap(ap(ofFn)(sB))(sC)
   }
 }
 
