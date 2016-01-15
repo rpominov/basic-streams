@@ -86,6 +86,10 @@ export class Stream<T> {
     return new Stream(bs.skip(n)(this.observe))
   }
 
+  multicast(): Stream<T> {
+    return new Stream(bs.multicast(this.observe))
+  }
+
   static join<A>( streams:Array<Stream<A>> ): Stream<A> {
     return new Stream(bs.join(streams.map(x => x.observe)))
   }

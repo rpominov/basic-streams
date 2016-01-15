@@ -180,3 +180,12 @@ wrap('lift3', test => {
 })
 
 
+wrap('multicast', test => {
+  test('works fine with of', t => {
+    t.plan(1)
+    Stream.of(1).multicast().observe(x => {
+      t.equal(x, 1)
+    })
+  })
+})
+

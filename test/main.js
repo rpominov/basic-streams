@@ -16,6 +16,7 @@ import {
   scan,
   take,
   skip,
+  multicast,
 } from '../src'
 import type {Stream} from '../src'
 
@@ -459,6 +460,87 @@ wrap('skip', test => {
     const stream = () => disposer
     const stream2 = lifted(stream)
     stream2(() => {})() // subscribe & immediately unsubscribe
+    t.deepEqual(disposer.args, [[]])
+  })
+
+})
+
+
+
+wrap('multicast', test => {
+
+  test('first subscribers gets sync events', t => {
+    t.plan(1)
+    const stream = fromArray([1, 2])
+    const result = drainToArray(multicast(stream))
+    t.deepEqual(result, [1, 2])
+  })
+
+  test('second subscribers doesn\'t get sync events (unfortunately)', t => {
+    t.plan(1)
+    const stream = fromArray([1, 2])
+    const stream2 = multicast(stream)
+    stream2(() => {})
+    const result = drainToArray(stream2)
+    t.deepEqual(result, [])
+  })
+
+  test('first and second sunscribers get same async events', t => {
+    t.plan(2)
+    let sink = null
+    let stream = multicast(_sink => {
+      sink = _sink
+      return () => {sink = null}
+    })
+    const sub1 = stub()
+    const sub2 = stub()
+    stream(sub1)
+    stream(sub2)
+    sink && sink(1)
+    sink && sink(2)
+    t.deepEqual(sub1.args, [[1], [2]])
+    t.deepEqual(sub2.args, [[1], [2]])
+  })
+
+  test('subscriber doesn\'t get event after unsub() in response to that event', t => {
+    t.plan(1)
+    let sink = null
+    let stream = multicast(_sink => {
+      sink = _sink
+      return () => {sink = null}
+    })
+    let unsub = null
+    stream(x => {
+      if (x === 2) {
+        unsub && unsub()
+      }
+    })
+    const sub = stub()
+    unsub = stream(sub)
+    sink && sink(1)
+    sink && sink(2)
+    sink && sink(3)
+    t.deepEqual(sub.args, [[1]])
+  })
+
+  test('preserves disposer (single subscriber)', t => {
+    t.plan(1)
+    const disposer = stub()
+    const stream = () => disposer
+    const stream2 = multicast(stream)
+    stream2(() => {})() // subscribe & immediately unsubscribe
+    t.deepEqual(disposer.args, [[]])
+  })
+
+  test('preserves disposer (two subscribers)', t => {
+    t.plan(1)
+    const disposer = stub()
+    const stream = () => disposer
+    const stream2 = multicast(stream)
+    const unsub1 = stream2(() => {})
+    const unsub2 = stream2(() => {})
+    unsub1()
+    unsub2()
     t.deepEqual(disposer.args, [[]])
   })
 

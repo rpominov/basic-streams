@@ -251,3 +251,34 @@ export function skip<A>( n:number ): LiftedFn<A,A> {
 //  multicast,
 //  skipWhile, skipUntilEventInAnotherStream,
 //  takeWhile, takeUntilEventInAnotherStream,
+/* Given a stream returns a new stream of same type. The new stream will
+ * have at most one subscription at any given time to the original stream.
+ * It allows you to connects several subscribers to a stream using only one subscription.
+ */
+export function multicast<A>( stream:Stream<A> ): Stream<A> {
+  let sinks = []
+  const push = x => {
+    sinks.forEach(sink => {
+      if (sinks.indexOf(sink) !== -1) {
+        sink(x)
+      }
+    })
+  }
+  let unsub = null
+  return sink => {
+    sinks = sinks.concat([sink])
+    if (sinks.length === 1) {
+      unsub = stream(push)
+    }
+    return () => {
+      const index = sinks.indexOf(sink)
+      if (index !== -1) {
+        sinks = sinks.slice(0, index).concat(sinks.slice(index + 1, sinks.length))
+        if (sinks.length === 0 && unsub !== null) {
+          unsub()
+          unsub = null
+        }
+      }
+    }
+  }
+}
