@@ -6,11 +6,7 @@ import {Stream} from '../src/fantasy'
  */
 const wrap = (prefix, cb) => {
   cb((text, opts, cb) => {
-    if (typeof text === 'string') {
-      test(`FL wrapper. ${prefix}. ${text}`, opts, cb)
-    } else {
-      test(prefix, text, opts)
-    }
+    test(`FL wrapper. ${prefix}. ${text}`, opts, cb)
   })
 }
 

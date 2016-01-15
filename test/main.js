@@ -71,11 +71,7 @@ const namedStreamsPool = () => {
  */
 const wrap = (prefix, cb) => {
   cb((text, opts, cb) => {
-    if (typeof text === 'string') {
-      test(`${prefix}. ${text}`, opts, cb)
-    } else {
-      test(prefix, text, opts)
-    }
+    test(`${prefix}. ${text}`, opts, cb)
   })
 }
 
