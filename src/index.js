@@ -245,7 +245,7 @@ export function skip<A>( n:number ): LiftedFn<A,A> {
 
 /* Given a stream returns a new stream of same type. The new stream will
  * have at most one subscription at any given time to the original stream.
- * It allows you to connects several subscribers to a stream using only one subscription.
+ * It allows you to connect several subscribers to a stream using only one subscription.
  */
 export function multicast<A>( stream:Stream<A> ): Stream<A> {
   let sinks = []
