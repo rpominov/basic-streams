@@ -1,6 +1,6 @@
 {
   "name": "basic-streams",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Experimental very basic reactive streams implementation for JavaScript",
   "main": "lib/index.js",
   "files": [
