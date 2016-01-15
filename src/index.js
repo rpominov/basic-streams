@@ -243,14 +243,6 @@ export function skip<A>( n:number ): LiftedFn<A,A> {
 }
 
 
-
-// NEXT:
-//  transduce,
-//  combineArray (i.e. FLs sequence() for arrays — [S<a>]->S<[a]>),
-//  combineHash ({S<a>}->S<{a}>),
-//  multicast,
-//  skipWhile, skipUntilEventInAnotherStream,
-//  takeWhile, takeUntilEventInAnotherStream,
 /* Given a stream returns a new stream of same type. The new stream will
  * have at most one subscription at any given time to the original stream.
  * It allows you to connects several subscribers to a stream using only one subscription.
