@@ -540,4 +540,20 @@ wrap('multicast', test => {
     t.deepEqual(disposer.args, [[]])
   })
 
+  test('unsub doesn\'t remove another version of same subscriber', t => {
+    t.plan(1)
+    let sink = null
+    let stream = multicast(_sink => {
+      sink = _sink
+      return () => {sink = null}
+    })
+    const sub = stub()
+    const unsub = stream(sub)
+    stream(sub)
+    unsub()
+    unsub() // should be noop
+    sink && sink(1)
+    t.deepEqual(sub.args, [[1]])
+  })
+
 })

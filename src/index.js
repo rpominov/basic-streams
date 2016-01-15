@@ -258,21 +258,24 @@ export function multicast<A>( stream:Stream<A> ): Stream<A> {
   }
   let unsub = null
   return sink => {
+    let disposed = false
     sinks = [...sinks, sink]
     if (sinks.length === 1) {
       unsub = stream(push)
     }
     return () => {
+      if (disposed) {
+        return
+      }
+      disposed = true
       const index = sinks.indexOf(sink)
-      if (index !== -1) {
-        sinks = [
-          ...sinks.slice(0, index),
-          ...sinks.slice(index + 1, sinks.length),
-        ]
-        if (sinks.length === 0 && unsub !== null) {
-          unsub()
-          unsub = null
-        }
+      sinks = [
+        ...sinks.slice(0, index),
+        ...sinks.slice(index + 1, sinks.length),
+      ]
+      if (sinks.length === 0 && unsub !== null) {
+        unsub()
+        unsub = null
       }
     }
   }
