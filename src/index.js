@@ -294,27 +294,6 @@ type tTransformer<R,I> = {
 
 export type Transducer<A,B> = ( transformer:tTransformer<mixed,A> ) => tTransformer<mixed,B>
 
-function transducerRunner<A,B>( transducer:Transducer<A,B> ): (x:B) => {results:Array<A>, isDone:boolean} {
-  let results = []
-  const xform = {
-    '@@transducer/result'() {
-    },
-    '@@transducer/step'(result, input) {
-      results.push(input)
-      return result
-    },
-  }
-  const xform2 = transducer(xform)
-  return input => {
-    results = []
-    const nullOrReduced = xform2['@@transducer/step'](null, input)
-    if (nullOrReduced !== null) {
-      xform2['@@transducer/result'](null)
-    }
-    return {results, isDone: nullOrReduced !== null}
-  }
-}
-
 /* Given a transducer that conforms [Protocol][1],
  * returns a function that operates on streams `Stream<A> => Stream<B>`.
  *
@@ -323,10 +302,20 @@ function transducerRunner<A,B>( transducer:Transducer<A,B> ): (x:B) => {results:
 export function transduce<A,B>( transducer:Transducer<B,A> ): LiftedFn<A,B> {
   return stream =>
     sink => {
-      const runner = transducerRunner(transducer)
       let thisDisposed = false
       let transducerDone = false
       let sourceDisposer = null
+
+      const transformer = transducer({
+        '@@transducer/result'() {
+        },
+        '@@transducer/step'(result, input) {
+          if (!thisDisposed) {
+            sink(input)
+          }
+          return result
+        },
+      })
 
       const disposeSource = () => {
         if (sourceDisposer !== null) {
@@ -340,15 +329,12 @@ export function transduce<A,B>( transducer:Transducer<B,A> ): LiftedFn<A,B> {
           return
         }
 
-        const {results, isDone} = runner(x)
-        transducerDone = isDone
+        // it returns either null or Reduced<null>
+        transducerDone = null !== transformer['@@transducer/step'](null, x)
 
         if (transducerDone) {
+          transformer['@@transducer/result'](null)
           disposeSource()
-        }
-
-        for (let i = 0; !thisDisposed && i < results.length; i++) {
-          sink(results[i])
         }
       })
 
