@@ -2,6 +2,7 @@
 
 import test from 'tape-catch'
 import {stub} from 'sinon'
+import transducers from 'transducers-js'
 import {
   empty,
   just,
@@ -17,19 +18,21 @@ import {
   take,
   skip,
   multicast,
+  transduce,
 } from '../src'
 import type {Stream} from '../src'
 
 
 /* Creates a stream containing given values
  */
-const fromArray = arr =>
-  sink => {
-    arr.forEach(x => {
+function fromArray<T>( xs:Array<T> ): Stream<T> {
+  return sink => {
+    xs.forEach(x => {
       sink(x)
     })
     return () => {}
   }
+}
 
 /* Takes all values pushed synchronously from a stream,
  * and returns them as an array
@@ -419,7 +422,7 @@ wrap('take', test => {
     t.deepEqual(disposer.args, [[]])
   })
 
-  test('calls disposer of source stream when we sispose result stream erlier', t => {
+  test('calls disposer of source stream when we dispose result stream erlier', t => {
     t.plan(1)
     const disposer = stub()
     const stream = () => disposer
@@ -556,4 +559,135 @@ wrap('multicast', test => {
     t.deepEqual(sub.args, [[1]])
   })
 
+})
+
+
+
+wrap('transduce. map', test => {
+
+  const lifted = transduce(transducers.map(x => x + 1))
+
+  test('modifies values', t => {
+    t.plan(1)
+    const stream = just(1)
+    const stream2 = lifted(stream)
+    stream2(payload => {
+      t.equal(payload, 2)
+    })
+  })
+
+  test('preserves disposer', t => {
+    t.plan(1)
+    const disposer = stub()
+    const stream = () => disposer
+    const stream2 = lifted(stream)
+    stream2(() => {})() // subscribe & immediately unsubscribe
+    t.deepEqual(disposer.args, [[]])
+  })
+
+})
+
+wrap('transduce. take', test => {
+
+  const lifted = transduce(transducers.take(2))
+
+  test('takes first n and then calls disposer of source stream (async)', t => {
+    t.plan(4)
+    const disposer = stub()
+    const subscriber = stub()
+    let sink
+    const stream = lifted(_sink => {
+      sink = _sink
+      return disposer
+    })
+    stream(subscriber)
+    sink && sink(1)
+    t.deepEqual(disposer.args, [])
+    sink && sink(2)
+    t.deepEqual(disposer.args, [])
+    sink && sink(3)
+    t.deepEqual(disposer.args, [[]])
+    t.deepEqual(subscriber.args, [[1], [2]])
+  })
+
+  test('takes first n and then calls disposer of source stream (sync)', t => {
+    t.plan(2)
+    const disposer = stub()
+    const stream = lifted(sink => {
+      sink(1)
+      sink(2)
+      sink(3)
+      sink(4)
+      return disposer
+    })
+    const result = drainToArray(stream)
+    t.deepEqual(result, [1, 2])
+    t.deepEqual(disposer.args, [[]])
+  })
+
+  test('calls disposer of source stream when we dispose result stream erlier', t => {
+    t.plan(1)
+    const disposer = stub()
+    const stream = () => disposer
+    const stream2 = lifted(stream)
+    stream2(() => {})() // subscribe & immediately unsubscribe
+    t.deepEqual(disposer.args, [[]])
+  })
+
+})
+
+
+wrap('transduce. cat+take', test => {
+
+  const lifted = transduce(transducers.comp(transducers.cat, transducers.take(3)))
+
+  test('works... (sync)', t => {
+    t.plan(1)
+    const stream = lifted(fromArray([ [1, 2], [3, 4] ]))
+    const result = drainToArray(stream)
+    t.deepEqual(result, [1, 2, 3])
+  })
+
+})
+
+wrap('transduce. cat', test => {
+
+  const lifted = transduce(transducers.cat)
+
+  test('works... (sync)', t => {
+    t.plan(1)
+    const stream = lifted(fromArray([ [1, 2], [3, 4] ]))
+    const result = drainToArray(stream)
+    t.deepEqual(result, [1, 2, 3, 4])
+  })
+
+  test('does not call subscriber after unsub', t => {
+    t.plan(1)
+    let sink = null
+    const stream = lifted(_sink => {
+      sink = _sink
+      return () => {sink=null}
+    })
+    const results = []
+    const unsub = stream(x => {
+      results.push(x)
+      if (x === 3) {
+        unsub()
+      }
+    })
+    sink && sink([1, 2])
+    sink && sink([3, 4])
+    t.deepEqual(results, [1, 2, 3])
+  })
+
+})
+
+wrap('transduce. take+partitionAll', test => {
+  const lifted = transduce(transducers.comp(transducers.take(3), transducers.partitionAll(2)))
+  test('works... (sync)', t => {
+    t.plan(1)
+    const stream = lifted(fromArray([1, 2, 3, 4, 5]))
+    const result = drainToArray(stream)
+    t.deepEqual(result, [ [1, 2], [3] ])
+  })
 })

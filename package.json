@@ -66,6 +66,7 @@
     "tap-notify": "0.0.3",
     "tape": "4.4.0",
     "tape-catch": "1.0.4",
+    "transducers-js": "0.4.174",
     "webpack": "1.12.9"
   },
   "dependencies": {},

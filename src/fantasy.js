@@ -1,7 +1,7 @@
 /* @flow */
 
 import * as bs from './index'
-import type {Stream as BasicStream} from './index'
+import type {Stream as BasicStream, Transducer} from './index'
 
 export class Stream<T> {
 
@@ -88,6 +88,10 @@ export class Stream<T> {
 
   multicast(): Stream<T> {
     return new Stream(bs.multicast(this.observe))
+  }
+
+  transduce<A>( transducer:Transducer<A,T> ): Stream<A> {
+    return new Stream(bs.transduce(transducer)(this.observe))
   }
 
   static join<A>( streams:Array<Stream<A>> ): Stream<A> {

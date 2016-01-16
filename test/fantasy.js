@@ -1,5 +1,6 @@
 import test from 'tape-catch'
 import {stub} from 'sinon'
+import transducers from 'transducers-js'
 import {Stream} from '../src/fantasy'
 
 /* Wraps a group of tests
@@ -181,6 +182,16 @@ wrap('multicast', test => {
     t.plan(1)
     Stream.of(1).multicast().observe(x => {
       t.equal(x, 1)
+    })
+  })
+})
+
+
+wrap('transduce', test => {
+  test('works fine with of', t => {
+    t.plan(1)
+    Stream.of(1).transduce(transducers.map(x => x + 1)).observe(x => {
+      t.equal(x, 2)
     })
   })
 })

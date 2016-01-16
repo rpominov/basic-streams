@@ -280,3 +280,85 @@ export function multicast<A>( stream:Stream<A> ): Stream<A> {
     }
   }
 }
+
+
+type tReduced<R> = {
+  '@@transducer/reduced': true,
+  '@@transducer/value': R
+}
+
+type tTransformer<R,I> = {
+  '@@transducer/result': ( result:R ) => R,
+  '@@transducer/step': ( result:R, input:I ) => R|tReduced<R>
+}
+
+export type Transducer<A,B> = ( transformer:tTransformer<mixed,A> ) => tTransformer<mixed,B>
+
+function transducerRunner<A,B>( transducer:Transducer<A,B> ): (x:B) => {results:Array<A>, isDone:boolean} {
+  let results = []
+  const xform = {
+    '@@transducer/result'() {
+    },
+    '@@transducer/step'(result, input) {
+      results.push(input)
+      return result
+    },
+  }
+  const xform2 = transducer(xform)
+  return input => {
+    results = []
+    const nullOrReduced = xform2['@@transducer/step'](null, input)
+    if (nullOrReduced !== null) {
+      xform2['@@transducer/result'](null)
+    }
+    return {results, isDone: nullOrReduced !== null}
+  }
+}
+
+/* Given a transducer that conforms [Protocol][1],
+ * returns a function that operates on streams `Stream<A> => Stream<B>`.
+ *
+ * [1]: https://github.com/cognitect-labs/transducers-js#the-transducer-protocol
+ */
+export function transduce<A,B>( transducer:Transducer<B,A> ): LiftedFn<A,B> {
+  return stream =>
+    sink => {
+      const runner = transducerRunner(transducer)
+      let thisDisposed = false
+      let transducerDone = false
+      let sourceDisposer = null
+
+      const disposeSource = () => {
+        if (sourceDisposer !== null) {
+          sourceDisposer()
+          sourceDisposer = null
+        }
+      }
+
+      sourceDisposer = stream(x => {
+        if (transducerDone) {
+          return
+        }
+
+        const {results, isDone} = runner(x)
+        transducerDone = isDone
+
+        if (transducerDone) {
+          disposeSource()
+        }
+
+        for (let i = 0; !thisDisposed && i < results.length; i++) {
+          sink(results[i])
+        }
+      })
+
+      if (transducerDone) {
+        disposeSource()
+      }
+
+      return () => {
+        thisDisposed = true
+        disposeSource()
+      }
+    }
+}
