@@ -303,10 +303,9 @@ export function transduce<A,B>( transducer:Transducer<B,A> ): LiftedFn<A,B> {
   return stream =>
     sink => {
       let thisDisposed = false
-      let transducerDone = false
       let sourceDisposer = null
 
-      const transformer = transducer({
+      let transformer = transducer({
         '@@transducer/result'() {
         },
         '@@transducer/step'(result, input) {
@@ -325,20 +324,19 @@ export function transduce<A,B>( transducer:Transducer<B,A> ): LiftedFn<A,B> {
       }
 
       sourceDisposer = stream(x => {
-        if (transducerDone) {
+        if (transformer === null) {
           return
         }
 
-        // it returns either null or Reduced<null>
-        transducerDone = null !== transformer['@@transducer/step'](null, x)
-
-        if (transducerDone) {
+        // it returns either null or tReduced<null>
+        if (null !== transformer['@@transducer/step'](null, x)) {
           transformer['@@transducer/result'](null)
+          transformer = null
           disposeSource()
         }
       })
 
-      if (transducerDone) {
+      if (transformer === null) {
         disposeSource()
       }
 
