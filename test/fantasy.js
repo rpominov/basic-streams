@@ -42,6 +42,30 @@ wrap('of', test => {
 })
 
 
+wrap('concat', test => {
+  test('works with of + empty', t => {
+    t.plan(1)
+    Stream.of(1).concat(Stream.empty()).observe(x => {
+      t.equal(x, 1)
+    })
+  })
+  test('works with empty + of', t => {
+    t.plan(1)
+    Stream.empty().concat(Stream.of(1)).observe(x => {
+      t.equal(x, 1)
+    })
+  })
+  test('works with of + of', t => {
+    t.plan(1)
+    const results = []
+    Stream.of(1).concat(Stream.of(2)).observe(x => {
+      results.push(x)
+    })
+    t.deepEqual(results, [1, 2])
+  })
+})
+
+
 wrap('empty', test => {
   test('returns empty stream (static method)', t => {
     Stream.empty().observe(() => {

@@ -29,7 +29,12 @@ export class Stream<T> {
     this.observe = basicStream
   }
 
-  // Monoid (we don't have .concat though)
+  // Semigroup
+  concat( other:Stream<T> ): Stream<T> {
+    return new Stream(bs.join([this.observe, other.observe]))
+  }
+
+  // Monoid
   static empty(): Stream<any> {
     return new Stream(bs.empty)
   }
