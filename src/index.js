@@ -222,6 +222,40 @@ export function take<A>( n:number ): LiftedFn<A,A> {
 }
 
 
+/* Given a predicate `A => boolean` returns a function
+ * that operates on streams `Stream<A> => Stream<A>`.
+ * The result stream will contain values from source stream
+ * before the first value that doesn't satisfy predicate.
+ */
+export function takeWhile<A>( pred:Fn<A,boolean> ): LiftedFn<A,A> {
+  return stream =>
+    sink => {
+      let completed = false
+      let disposer = null
+      const dispose = () => {
+        if (disposer !== null) {
+          disposer()
+          disposer = null
+        }
+      }
+      disposer = stream(x => {
+        if (!completed) {
+          if (pred(x)) {
+            sink(x)
+          } else {
+            completed = true
+            dispose()
+          }
+        }
+      })
+      if (completed) {
+        dispose()
+      }
+      return dispose
+    }
+}
+
+
 /* Given a number N, returns a function that operates on streams `Stream<A> => Stream<A>`.
  * The result stream will contain only items from source starting from (N+1)th one
  */

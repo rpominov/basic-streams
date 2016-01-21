@@ -16,6 +16,7 @@ import {
   join,
   scan,
   take,
+  takeWhile,
   skip,
   multicast,
   transduce,
@@ -409,6 +410,64 @@ wrap('take', test => {
   })
 
   test('takes first n and then calls disposer of source stream (sync)', t => {
+    t.plan(2)
+    const disposer = stub()
+    const stream = lifted(sink => {
+      sink(1)
+      sink(2)
+      sink(3)
+      return disposer
+    })
+    const result = drainToArray(stream)
+    t.deepEqual(result, [1, 2])
+    t.deepEqual(disposer.args, [[]])
+  })
+
+  test('calls disposer of source stream when we dispose result stream erlier', t => {
+    t.plan(1)
+    const disposer = stub()
+    const stream = () => disposer
+    const stream2 = lifted(stream)
+    stream2(() => {})() // subscribe & immediately unsubscribe
+    t.deepEqual(disposer.args, [[]])
+  })
+
+})
+
+
+
+wrap('takeWhile', test => {
+
+  const lifted = takeWhile(x => x < 3)
+
+  test('takeWhile(() => false) return empty stream', t => {
+    t.plan(1)
+    const stream = takeWhile(() => false)(just(1))
+    const sink = stub()
+    const dispose = stream(sink)
+    dispose()
+    t.deepEqual(sink.args, [])
+  })
+
+  test('takes values that satisfy predicate until first value that don\'t then calls disposer (async)', t => {
+    t.plan(3)
+    const disposer = stub()
+    const subscriber = stub()
+    let sink
+    const stream = lifted(_sink => {
+      sink = _sink
+      return disposer
+    })
+    stream(subscriber)
+    sink && sink(1)
+    sink && sink(2)
+    t.deepEqual(disposer.args, [])
+    sink && sink(3)
+    t.deepEqual(disposer.args, [[]])
+    t.deepEqual(subscriber.args, [[1], [2]])
+  })
+
+  test('takes values that satisfy predicate until first value that don\'t then calls disposer (sync)', t => {
     t.plan(2)
     const disposer = stub()
     const stream = lifted(sink => {

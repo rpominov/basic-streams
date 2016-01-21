@@ -87,6 +87,10 @@ export class Stream<T> {
     return new Stream(bs.take(n)(this.observe))
   }
 
+  takeWhile( f:( x:T ) => boolean ): Stream<T> {
+    return new Stream(bs.takeWhile(f)(this.observe))
+  }
+
   skip( n:number ): Stream<T> {
     return new Stream(bs.skip(n)(this.observe))
   }
