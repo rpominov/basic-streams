@@ -277,6 +277,27 @@ export function skip<A>( n:number ): LiftedFn<A,A> {
 }
 
 
+/* Given a predicate `A => boolean` returns a function
+ * that operates on streams `Stream<A> => Stream<A>`.
+ * The result stream will contain values from source stream
+ * starting from the first that doesn't satisfy predicate.
+ */
+export function skipWhile<A>( pred:Fn<A,boolean> ): LiftedFn<A,A> {
+  return stream =>
+    sink => {
+      let started = false
+      return stream(x => {
+        if (!started) {
+          started = !pred(x)
+        }
+        if (started) {
+          sink(x)
+        }
+      })
+    }
+}
+
+
 /* Given a stream returns a new stream of same type. The new stream will
  * have at most one subscription at any given time to the original stream.
  * It allows you to connect several subscribers to a stream using only one subscription.

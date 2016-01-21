@@ -18,6 +18,7 @@ import {
   take,
   takeWhile,
   skip,
+  skipWhile,
   multicast,
   transduce,
 } from '../src'
@@ -509,6 +510,37 @@ wrap('skip', test => {
     t.plan(1)
     const stream = fromArray([1, 2, 3, 4])
     const result = drainToArray(skip(0)(stream))
+    t.deepEqual(result, [1, 2, 3, 4])
+  })
+
+  test('preserves disposer', t => {
+    t.plan(1)
+    const disposer = stub()
+    const stream = () => disposer
+    const stream2 = lifted(stream)
+    stream2(() => {})() // subscribe & immediately unsubscribe
+    t.deepEqual(disposer.args, [[]])
+  })
+
+})
+
+
+
+wrap('skipWhile', test => {
+
+  const lifted = skipWhile(x => x < 3)
+
+  test('skips first items that satisfy predicate', t => {
+    t.plan(1)
+    const stream = fromArray([1, 2, 3, 4])
+    const result = drainToArray(lifted(stream))
+    t.deepEqual(result, [3, 4])
+  })
+
+  test('returns equivalent stream if predicate is () => false', t => {
+    t.plan(1)
+    const stream = fromArray([1, 2, 3, 4])
+    const result = drainToArray(skipWhile(() => false)(stream))
     t.deepEqual(result, [1, 2, 3, 4])
   })
 

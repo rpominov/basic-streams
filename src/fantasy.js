@@ -95,6 +95,10 @@ export class Stream<T> {
     return new Stream(bs.skip(n)(this.observe))
   }
 
+  skipWhile( f:( x:T ) => boolean ): Stream<T> {
+    return new Stream(bs.skipWhile(f)(this.observe))
+  }
+
   multicast(): Stream<T> {
     return new Stream(bs.multicast(this.observe))
   }
