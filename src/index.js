@@ -256,6 +256,39 @@ export function takeWhile<A>( pred:Fn<A,boolean> ): LiftedFn<A,A> {
 }
 
 
+/* Given a controller stream, returns a function that operates
+ * on streams `Stream<A> => Stream<A>`. The result stream will contain values
+ * from source stream until the first value from controller stream.
+ */
+export function takeUntil<A>( controller:Stream<mixed> ): LiftedFn<A,A> {
+  return stream =>
+    sink => {
+      let mainDisposer = null
+      let ctrlDisposer = null
+      const dispose = () => {
+        if (mainDisposer !== null) {
+          mainDisposer()
+          mainDisposer = null
+        }
+        if (ctrlDisposer !== null) {
+          ctrlDisposer()
+          ctrlDisposer = null
+        }
+      }
+
+      mainDisposer = stream(sink)
+      ctrlDisposer = controller(dispose)
+
+      // in case controller cb was called sync before we obtained ctrlDisposer
+      if (mainDisposer === null) {
+        dispose()
+      }
+
+      return dispose
+    }
+}
+
+
 /* Given a number N, returns a function that operates on streams `Stream<A> => Stream<A>`.
  * The result stream will contain only items from source starting from (N+1)th one
  */
@@ -335,40 +368,6 @@ export function multicast<A>( stream:Stream<A> ): Stream<A> {
     }
   }
 }
-
-
-/* Given a controller stream, returns a function that operates
- * on streams `Stream<A> => Stream<A>`. The result stream will contain values
- * from source stream until the first value from controller stream.
- */
-export function takeUntil<A>( controller:Stream<mixed> ): LiftedFn<A,A> {
-  return stream =>
-    sink => {
-      let mainDisposer = null
-      let ctrlDisposer = null
-      const dispose = () => {
-        if (mainDisposer !== null) {
-          mainDisposer()
-          mainDisposer = null
-        }
-        if (ctrlDisposer !== null) {
-          ctrlDisposer()
-          ctrlDisposer = null
-        }
-      }
-
-      mainDisposer = stream(sink)
-      ctrlDisposer = controller(dispose)
-
-      // in case controller cb was called sync before we obtained ctrlDisposer
-      if (mainDisposer === null) {
-        dispose()
-      }
-
-      return dispose
-    }
-}
-
 
 
 type tReduced<R> = {
