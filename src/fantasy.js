@@ -91,6 +91,10 @@ export class Stream<T> {
     return new Stream(bs.takeWhile(f)(this.observe))
   }
 
+  takeUntil( other:Stream<mixed> ): Stream<T> {
+    return new Stream(bs.takeUntil(other.observe)(this.observe))
+  }
+
   skip( n:number ): Stream<T> {
     return new Stream(bs.skip(n)(this.observe))
   }

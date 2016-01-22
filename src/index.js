@@ -337,6 +337,40 @@ export function multicast<A>( stream:Stream<A> ): Stream<A> {
 }
 
 
+/* Given a controller stream, returns a function that operates
+ * on streams `Stream<A> => Stream<A>`. The result stream will contain values
+ * from source stream until the first value from controller stream.
+ */
+export function takeUntil<A>( controller:Stream<mixed> ): LiftedFn<A,A> {
+  return stream =>
+    sink => {
+      let mainDisposer = null
+      let ctrlDisposer = null
+      const dispose = () => {
+        if (mainDisposer !== null) {
+          mainDisposer()
+          mainDisposer = null
+        }
+        if (ctrlDisposer !== null) {
+          ctrlDisposer()
+          ctrlDisposer = null
+        }
+      }
+
+      mainDisposer = stream(sink)
+      ctrlDisposer = controller(dispose)
+
+      // in case controller cb was called sync before we obtained ctrlDisposer
+      if (mainDisposer === null) {
+        dispose()
+      }
+
+      return dispose
+    }
+}
+
+
+
 type tReduced<R> = {
   '@@transducer/reduced': true,
   '@@transducer/value': R

@@ -17,6 +17,7 @@ import {
   scan,
   take,
   takeWhile,
+  takeUntil,
   skip,
   skipWhile,
   multicast,
@@ -489,6 +490,96 @@ wrap('takeWhile', test => {
     const stream2 = lifted(stream)
     stream2(() => {})() // subscribe & immediately unsubscribe
     t.deepEqual(disposer.args, [[]])
+  })
+
+})
+
+
+
+wrap('takeUntil', test => {
+
+  test('takes async values from source until async value from controller', t => {
+    t.plan(1)
+    let sinkS = null
+    let sinkC = null
+    const source = _sink => {
+      sinkS = _sink
+      return () => {sinkS = null}
+    }
+    const controller = _sink => {
+      sinkC = _sink
+      return () => {sinkC = null}
+    }
+    let results = []
+    takeUntil(controller)(source)(x => {
+      results.push(x)
+    })
+    sinkS && sinkS(1)
+    sinkS && sinkS(2)
+    sinkC && sinkC(0)
+    sinkS && sinkS(3)
+    t.deepEqual(results, [1, 2])
+  })
+
+  test('controller has sync value: contains sync values from source', t => {
+    t.plan(1)
+    const results = drainToArray( takeUntil(just(1))(fromArray([1, 2])) )
+    t.deepEqual(results, [1, 2])
+  })
+
+  test('controller has sync value: doesn\'t contain async values from source', t => {
+    t.plan(1)
+    let sink = null
+    const source = _sink => {
+      sink = _sink
+      return () => {sink = null}
+    }
+    let results = []
+    takeUntil(just(1))(source)(x => {
+      results.push(x)
+    })
+    sink && sink(1)
+    t.deepEqual(results, [])
+  })
+
+  test('controller has sync value: calls disposers', t => {
+    t.plan(2)
+    const dis1 = stub()
+    const dis2 = stub()
+    const controller = sink => {
+      sink(1)
+      return dis2
+    }
+    takeUntil(controller)(() => dis1)(() => {})
+    t.deepEqual(dis1.args, [[]])
+    t.deepEqual(dis2.args, [[]])
+  })
+
+  test('calls disposers properly (async value in controller)', t => {
+    t.plan(4)
+    const dis1 = stub()
+    const dis2 = stub()
+    let sink = null
+    const controller = _sink => {
+      sink = _sink
+      return dis2
+    }
+    const resultDis = takeUntil(controller)(() => dis1)(() => {})
+    sink && sink(0)
+    t.deepEqual(dis1.args, [[]])
+    t.deepEqual(dis2.args, [[]])
+    resultDis() // should't cause additional call of disposers
+    t.deepEqual(dis1.args, [[]])
+    t.deepEqual(dis2.args, [[]])
+  })
+
+  test('calls disposers when we dispose result stream erlier', t => {
+    t.plan(2)
+    const dis1 = stub()
+    const dis2 = stub()
+    takeUntil(() => dis2)(() => dis1)(() => {})()
+    t.deepEqual(dis1.args, [[]])
+    t.deepEqual(dis2.args, [[]])
   })
 
 })

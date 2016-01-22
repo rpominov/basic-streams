@@ -171,6 +171,16 @@ wrap('takeWhile', test => {
 })
 
 
+wrap('takeUntil', test => {
+  test('works fine with of', t => {
+    t.plan(1)
+    Stream.of(1).takeUntil(Stream.of(0)).observe(x => {
+      t.equal(x, 1)
+    })
+  })
+})
+
+
 wrap('skip', test => {
   test('works fine with of', t => {
     t.plan(1)
