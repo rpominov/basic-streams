@@ -385,12 +385,18 @@ wrap('take', test => {
   const lifted = take(2)
 
   test('take(0) return empty stream', t => {
+    take(0)(just(1))(t.fail)
+    t.end()
+  })
+
+  test('subscribes to source even if n=0', t => {
     t.plan(1)
-    const stream = take(0)(just(1))
-    const sink = stub()
-    const dispose = stream(sink)
-    dispose()
-    t.deepEqual(sink.args, [])
+    const stream = () => {
+      t.ok(true)
+      return () => {}
+    }
+    take(0)(stream)(() => {})
+    t.end()
   })
 
   test('takes first n and then calls disposer of source stream (async)', t => {

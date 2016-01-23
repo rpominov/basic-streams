@@ -191,10 +191,6 @@ export function scan<A,B>( reducer:( r:B, x:A ) => B, seed:B ): LiftedFn<A,B> {
  * The result stream will contain only first N items from source stream
  */
 export function take<A>( n:number ): LiftedFn<A,A> {
-  if (n <= 0) {
-    return () => empty
-  }
-
   return stream =>
     sink => {
       let count = 0
@@ -293,10 +289,6 @@ export function takeUntil<A>( controller:Stream<mixed> ): LiftedFn<A,A> {
  * The result stream will contain only items from source starting from (N+1)th one
  */
 export function skip<A>( n:number ): LiftedFn<A,A> {
-  if (n <= 0) {
-    return s => s
-  }
-
   return stream =>
     sink => {
       let count = 0
