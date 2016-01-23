@@ -71,16 +71,6 @@ const wrap = (prefix, cb) => {
     test(`${prefix}. ${text}`, t => {
       cb({
         ...t,
-        equal(...args) {
-          return args.length === 1
-            ? b => t.equal(args[0], b)
-            : t.equal(args[0], args[1])
-        },
-        deepEqual(...args) {
-          return args.length === 1
-            ? b => t.deepEqual(args[0], b)
-            : t.deepEqual(args[0], args[1])
-        },
         calledWith(...xs) {
           return x => {
             t.deepEqual(x, xs.shift())
@@ -115,7 +105,7 @@ wrap('just', test => {
 
   test('calls callback with the value', t => {
     t.plan(1)
-    just(1)(t.equal(1))
+    just(1)(t.calledWith(1))
   })
 
 })
@@ -128,7 +118,7 @@ wrap('lift', test => {
 
   test('modifies values with provided fn', t => {
     t.plan(1)
-    lifted(just(1))(t.equal(2))
+    lifted(just(1))(t.calledWith(2))
   })
 
   test('preserves disposer', t => {
@@ -244,7 +234,7 @@ wrap('lift2', test => {
 
   test('works with just', t => {
     t.plan(1)
-    lift2((x, y) => [x, y])(just(5), just(3))(t.deepEqual([5, 3]))
+    lift2((x, y) => [x, y])(just(5), just(3))(t.calledWith([5, 3]))
   })
 
   test('disposers work', t => {
@@ -260,7 +250,7 @@ wrap('lift3', test => {
 
   test('works with just', t => {
     t.plan(1)
-    lift3((x, y, z) => [x, y, z])(just(5), just(3), just(2))(t.deepEqual([5, 3, 2]))
+    lift3((x, y, z) => [x, y, z])(just(5), just(3), just(2))(t.calledWith([5, 3, 2]))
   })
 
   test('disposers work', t => {
