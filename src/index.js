@@ -323,6 +323,26 @@ export function skipWhile<A>( pred:Fn<A,boolean> ): LiftedFn<A,A> {
 }
 
 
+/* Given a comparator function `(A, A) => boolean` returns a function that
+ * operates on streams `Stream<A> => Stream<A>`. For each element X from
+ * the source stream (except the first one) calls comparator with (Y, X)
+ * as arguments, where Y is the last element in the result stream.
+ * If comparator returns false, X goes to the result stream.
+ */
+export function skipDuplicates<A>( comp:( y:A, x:A ) => boolean ): LiftedFn<A,A> {
+  return stream =>
+    sink => {
+      let latest:Maybe<A> = {type: 'nothing'}
+      return stream(x => {
+        if (latest.type === 'nothing' || !comp(latest.value, x)) {
+          latest = {type: 'just', value: x}
+          sink(x)
+        }
+      })
+    }
+}
+
+
 /* Given a stream returns a new stream of same type. The new stream will
  * have at most one subscription at any given time to the original stream.
  * It allows you to connect several subscribers to a stream using only one subscription.

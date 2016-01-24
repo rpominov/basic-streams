@@ -207,6 +207,16 @@ wrap('skipWhile', test => {
 })
 
 
+wrap('skipDuplicates', test => {
+  test('works fine with of', t => {
+    t.plan(1)
+    Stream.of(1).skipDuplicates(() => false).observe(x => {
+      t.equal(x, 1)
+    })
+  })
+})
+
+
 wrap('join', test => {
   test('works fine with of', t => {
     t.plan(1)

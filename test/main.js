@@ -20,6 +20,7 @@ import {
   takeUntil,
   skip,
   skipWhile,
+  skipDuplicates,
   multicast,
   transduce,
 } from '../src'
@@ -489,6 +490,29 @@ wrap('skipWhile', test => {
   test('returns equivalent stream if predicate is () => false', t => {
     t.plan(2)
     skipWhile(() => false)(fromArray([1, 2]))(t.calledWith(1, 2))
+  })
+
+  test('preserves disposer', t => {
+    t.plan(1)
+    lifted(() => t.calledOnce())(noop)()
+  })
+
+})
+
+
+
+wrap('skipDuplicates', test => {
+
+  const lifted = skipDuplicates((x, y) => Math.round(x) === Math.round(y))
+
+  test('first element always comes through', t => {
+    t.plan(1)
+    lifted(just(1))(t.calledWith(1))
+  })
+
+  test('removes duplicates', t => {
+    t.plan(3)
+    lifted(fromArray([1, 1, 1, 2.1, 2, 3]))(t.calledWith(1, 2.1, 3))
   })
 
   test('preserves disposer', t => {
