@@ -42,7 +42,7 @@ export function just<A>( x:A ): Stream<A> {
 /* Lifts function `A => B` to a function that operates
  * on streams `Stream<A> => Stream<B>`
  */
-export function lift<A,B>( fn:Fn<A,B> ): LiftedFn<A,B> {
+export function map<A,B>( fn:Fn<A,B> ): LiftedFn<A,B> {
   return stream =>
     sink => stream(payload => sink(fn(payload)))
 }
@@ -139,10 +139,10 @@ export function ap<A,B>( streamf:Stream<Fn<A,B>> ): LiftedFn<A,B> {
 /* Lifts a 2 arity function `(A, B) => C` to a function that operates
  * on streams `(Stream<A>, Stream<B>) => Stream<C>`
  */
-export function lift2<A,B,C>( fn:( a:A, b:B ) => C ):
+export function map2<A,B,C>( fn:( a:A, b:B ) => C ):
   ( sA:Stream<A>, sB:Stream<B> ) => Stream<C> {
   return (sA, sB) => {
-    const ofFn = lift(a => b => fn(a, b))(sA)
+    const ofFn = map(a => b => fn(a, b))(sA)
     return ap(ofFn)(sB)
   }
 }
@@ -151,10 +151,10 @@ export function lift2<A,B,C>( fn:( a:A, b:B ) => C ):
 /* Lifts a 3 arity function `(A, B, C) => D` to a function that operates
  * on streams `(Stream<A>, Stream<B>, Stream<C>) => Stream<D>`
  */
-export function lift3<A,B,C,D>( fn:( a:A, b:B, c:C ) => D ):
+export function map3<A,B,C,D>( fn:( a:A, b:B, c:C ) => D ):
   ( sA:Stream<A>, sB:Stream<B>, sC:Stream<C> ) => Stream<D> {
   return (sA, sB, sC) => {
-    const ofFn = lift(a => b => c => fn(a, b, c))(sA)
+    const ofFn = map(a => b => c => fn(a, b, c))(sA)
     return ap(ap(ofFn)(sB))(sC)
   }
 }

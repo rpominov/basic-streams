@@ -217,20 +217,20 @@ wrap('join', test => {
 })
 
 
-wrap('lift2', test => {
+wrap('map2', test => {
   test('works fine with of', t => {
     t.plan(1)
-    Stream.lift2((x, y) => x + y)(Stream.of(1), Stream.of(2)).observe(x => {
+    Stream.map2((x, y) => x + y)(Stream.of(1), Stream.of(2)).observe(x => {
       t.equal(x, 3)
     })
   })
 })
 
 
-wrap('lift3', test => {
+wrap('map3', test => {
   test('works fine with of', t => {
     t.plan(1)
-    Stream.lift3((x, y, z) => x + y + z)(Stream.of(1), Stream.of(2), Stream.of(3)).observe(x => {
+    Stream.map3((x, y, z) => x + y + z)(Stream.of(1), Stream.of(2), Stream.of(3)).observe(x => {
       t.equal(x, 6)
     })
   })

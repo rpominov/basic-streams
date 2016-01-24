@@ -24,7 +24,7 @@ export class Stream<T> {
     //
     // Or you can use `wrapped.observe` to extract BasicStream from the wrapper e.g.:
     //
-    //    const basicStream2 = lift(x => x * 2)(wrapped.observe)
+    //    const basicStream2 = map(x => x * 2)(wrapped.observe)
     //
     this.observe = basicStream
   }
@@ -44,7 +44,7 @@ export class Stream<T> {
 
   // Functor
   map<A>( f:( x:T ) => A ): Stream<A> {
-    return new Stream(bs.lift(f)(this.observe))
+    return new Stream(bs.map(f)(this.observe))
   }
 
   // Apply
@@ -115,13 +115,13 @@ export class Stream<T> {
     return new Stream(bs.join(streams.map(x => x.observe)))
   }
 
-  static lift2<A,B,C>( f:( a:A, b:B ) => C ): ( sA:Stream<A>, sB:Stream<B> ) => Stream<C> {
-    const lifted = bs.lift2(f)
+  static map2<A,B,C>( f:( a:A, b:B ) => C ): ( sA:Stream<A>, sB:Stream<B> ) => Stream<C> {
+    const lifted = bs.map2(f)
     return (sA, sB) => new Stream(lifted(sA.observe, sB.observe))
   }
 
-  static lift3<A,B,C,D>( f:( a:A, b:B, c:C ) => D ): ( sA:Stream<A>, sB:Stream<B>, sC:Stream<C> ) => Stream<D> {
-    const lifted = bs.lift3(f)
+  static map3<A,B,C,D>( f:( a:A, b:B, c:C ) => D ): ( sA:Stream<A>, sB:Stream<B>, sC:Stream<C> ) => Stream<D> {
+    const lifted = bs.map3(f)
     return (sA, sB, sC) => new Stream(lifted(sA.observe, sB.observe, sC.observe))
   }
 

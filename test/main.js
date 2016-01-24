@@ -6,13 +6,13 @@ import transducers from 'transducers-js'
 import {
   empty,
   just,
-  lift,
+  map,
   filter,
   chain,
   chainLatest,
   ap,
-  lift2,
-  lift3,
+  map2,
+  map3,
   join,
   scan,
   take,
@@ -112,9 +112,9 @@ wrap('just', test => {
 
 
 
-wrap('lift', test => {
+wrap('map', test => {
 
-  const lifted = lift(x => x + 1)
+  const lifted = map(x => x + 1)
 
   test('modifies values with provided fn', t => {
     t.plan(1)
@@ -230,32 +230,32 @@ wrap('ap', test => {
 
 
 
-wrap('lift2', test => {
+wrap('map2', test => {
 
   test('works with just', t => {
     t.plan(1)
-    lift2((x, y) => [x, y])(just(5), just(3))(t.calledWith([5, 3]))
+    map2((x, y) => [x, y])(just(5), just(3))(t.calledWith([5, 3]))
   })
 
   test('disposers work', t => {
     t.plan(2)
-    lift2((x, y) => [x, y])(() => t.calledOnce(), () => t.calledOnce())(noop)()
+    map2((x, y) => [x, y])(() => t.calledOnce(), () => t.calledOnce())(noop)()
   })
 
 })
 
 
 
-wrap('lift3', test => {
+wrap('map3', test => {
 
   test('works with just', t => {
     t.plan(1)
-    lift3((x, y, z) => [x, y, z])(just(5), just(3), just(2))(t.calledWith([5, 3, 2]))
+    map3((x, y, z) => [x, y, z])(just(5), just(3), just(2))(t.calledWith([5, 3, 2]))
   })
 
   test('disposers work', t => {
     t.plan(3)
-    const stream = lift3((x, y, z) => [x, y, z])(() => t.calledOnce(), () => t.calledOnce(), () => t.calledOnce())
+    const stream = map3((x, y, z) => [x, y, z])(() => t.calledOnce(), () => t.calledOnce(), () => t.calledOnce())
     stream(noop)()
   })
 
