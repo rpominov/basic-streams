@@ -4,7 +4,9 @@ Experimental very basic reactive streams implementation for JavaScript
 
 ## Project status
 
-It's experimental and in a very early stage of development.
+It's experimental but somewhat stable.
+You can use it if you find it usable, I did't use it myself though.
+The minor (middle) number of version is incremented when breaking changes are made.
 
 ## Installation
 
