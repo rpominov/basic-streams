@@ -89,7 +89,7 @@ In the UMD build (umd/basicStreams.js), `fantasy` is exposed as `BasicStreams.fa
 ## Utils
 
 The package also provides some utilities that you might want to use when
-working with main library functionality. Thouse utils are available as
+working with main library functionality. Those utils are available as
 `basic-streams/lib/utils` for CommonJS module users,
 and as `BasicStreams.utils` in the UMD build.
 
