@@ -129,4 +129,16 @@ export class Stream<T> {
     return (sA, sB, sC) => new Stream(lifted(sA.observe, sB.observe, sC.observe))
   }
 
+  static combineArray<A>( arr:Array<Stream<A>> ): Stream<Array<A>> {
+    return new Stream(bs.combineArray(arr.map(x => x.observe)))
+  }
+
+  static combineObject<A>( obj:{[ k:string ]: Stream<A>} ): Stream<{[ k:string ]: A}> {
+    const ofBasicStreams = {}
+    Object.keys(obj).forEach(key => {
+      ofBasicStreams[key] = obj[key].observe
+    })
+    return new Stream(bs.combineObject(ofBasicStreams))
+  }
+
 }

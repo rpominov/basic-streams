@@ -382,6 +382,32 @@ export function multicast<A>( stream:Stream<A> ): Stream<A> {
 }
 
 
+/* Given an array of streams returns a stream of arrays.
+ * This is basically an implementation of FantasyLand's sequence() for Array
+ * specialized to Streams.
+ */
+export function combineArray<A>( arr:Array<Stream<A>> ): Stream<Array<A>> {
+  return arr.reduce(map2((arr, i) => arr.concat([i])), just([]))
+}
+
+
+const fromPairsLifted = map(pairs => {
+  const result = {}
+  pairs.forEach(([key, value]) => {
+    result[key] = value
+  })
+  return result
+})
+
+/* Given an object (a.k.a map/hash) of streams returns a stream of objects.
+ * Same as combineArray but for objects.
+ */
+export function combineObject<A>( obj:{[ k:string ]: Stream<A>} ): Stream<{[ k:string ]: A}> {
+  const ofPairs = Object.keys(obj).map(  key => map(x => [key, x])(obj[key])  )
+  return fromPairsLifted(combineArray(ofPairs))
+}
+
+
 type tReduced<R> = {
   '@@transducer/reduced': true,
   '@@transducer/value': R

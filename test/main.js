@@ -21,6 +21,8 @@ import {
   skipWhile,
   skipDuplicates,
   multicast,
+  combineArray,
+  combineObject,
   transduce,
 } from '../src'
 import type {Stream} from '../src'
@@ -583,6 +585,96 @@ wrap('multicast', test => {
     unsub()
     unsub() // should be noop
     p.pushTo('main', 1)
+  })
+
+})
+
+
+
+wrap('combineArray', test => {
+
+  test('works fine with just()', t => {
+    t.plan(1)
+    combineArray([
+      just(1),
+      just(2),
+      just(3),
+    ])(t.calledWith([1, 2, 3]))
+  })
+
+  test('works fine with regular (not just) streams', t => {
+    t.plan(4)
+    const p = pool()
+    combineArray([
+      p.add('a'),
+      p.add('b'),
+      p.add('c'),
+    ])(t.calledWith(
+      [1, 2, 3],
+      [4, 2, 3],
+      [4, 5, 3],
+      [4, 5, 6]
+    ))
+    p.pushTo('a', 1)
+    p.pushTo('b', 2)
+    p.pushTo('c', 3)
+    p.pushTo('a', 4)
+    p.pushTo('b', 5)
+    p.pushTo('c', 6)
+  })
+
+  test('disposers work', t => {
+    t.plan(3)
+    combineArray([
+      () => t.calledOnce(),
+      () => t.calledOnce(),
+      () => t.calledOnce(),
+    ])(noop)()
+  })
+
+})
+
+
+
+wrap('combineObject', test => {
+
+  test('works fine with just()', t => {
+    t.plan(1)
+    combineObject({
+      a: just(1),
+      b: just(2),
+      c: just(3),
+    })(t.calledWith({a: 1, b: 2, c: 3}))
+  })
+
+  test('works fine with regular (not just) streams', t => {
+    t.plan(4)
+    const p = pool()
+    combineObject({
+      a: p.add('a'),
+      b: p.add('b'),
+      c: p.add('c'),
+    })(t.calledWith(
+      {a: 1, b: 2, c: 3},
+      {a: 4, b: 2, c: 3},
+      {a: 4, b: 5, c: 3},
+      {a: 4, b: 5, c: 6}
+    ))
+    p.pushTo('a', 1)
+    p.pushTo('b', 2)
+    p.pushTo('c', 3)
+    p.pushTo('a', 4)
+    p.pushTo('b', 5)
+    p.pushTo('c', 6)
+  })
+
+  test('disposers work', t => {
+    t.plan(3)
+    combineObject({
+      a: () => t.calledOnce(),
+      b: () => t.calledOnce(),
+      c: () => t.calledOnce(),
+    })(noop)()
   })
 
 })

@@ -266,3 +266,23 @@ wrap('transduce', test => {
   })
 })
 
+
+wrap('combineArray', test => {
+  test('works fine with of', t => {
+    t.plan(1)
+    Stream.combineArray([Stream.of(1), Stream.of(2)]).observe(arr => {
+      t.deepEqual(arr, [1, 2])
+    })
+  })
+})
+
+
+wrap('combineObject', test => {
+  test('works fine with of', t => {
+    t.plan(1)
+    Stream.combineObject({a: Stream.of(1), b: Stream.of(2)}).observe(obj => {
+      t.deepEqual(obj, {a: 1, b: 2})
+    })
+  })
+})
+
