@@ -21,8 +21,10 @@ Also available on https://npmcdn.com to play in JSFiddle etc.:
 
 ## Main idea
 
-The main idea is to take the most basic definition of Stream possible, and build functions to do generic operations with that streams.
-In basic-streams Stream is just a function that accepts subscriber and must return function to unsubscribe.
+The main idea is to take the most basic definition of Stream possible, and
+build functions to do generic operations with that streams.
+In basic-streams Stream is just a function that accepts subscriber and must
+return function to unsubscribe.
 
 Here is how Stream's type signature looks like:
 
@@ -30,8 +32,10 @@ Here is how Stream's type signature looks like:
 <T>( sink:( payload:T ) => void ) => () => void
 ```
 
-The library provides functions like `lift` (aka `map`), `filter`, `chain` (aka `flatMap`) etc. to work with such simple streams.
-See `src/index.js` for docs in form of code comments, this is all docs we have for now.
+The library provides functions like `lift` (aka `map`), `filter`, `chain`
+(aka `flatMap`) etc. to work with such simple streams.
+See [`src/index.js`](https://github.com/rpominov/basic-streams/blob/master/src/index.js)
+for docs in form of code comments, this is all docs we have for now.
 
 A quick example to get you started:
 
@@ -66,7 +70,8 @@ to an object that exposes methods as
 [Fantasy Land Specification](https://github.com/fantasyland/fantasy-land)
 requires.
 
-See `src/fantasy.js` for docs.
+See [`src/fantasy.js`](https://github.com/rpominov/basic-streams/blob/master/src/fantasy.js)
+for docs.
 
 Quick example:
 
@@ -79,3 +84,14 @@ stream.observe(x => {  console.log(x)  }) // > 2
 ```
 
 In the UMD build (umd/basicStreams.js), `fantasy` is exposed as `BasicStreams.fantasy`.
+
+
+## Utils
+
+The package also provides some utilities that you might want to use when
+working with main library functionality. Thouse utils are available as
+`basic-streams/lib/utils` for CommonJS module users,
+and as `BasicStreams.utils` in the UMD build.
+
+Check [`src/utils.js`](https://github.com/rpominov/basic-streams/blob/master/src/utils.js)
+to see what is in there.
