@@ -1,7 +1,6 @@
 /* @flow */
 
 import test from 'tape-catch'
-import {stub} from 'sinon'
 import transducers from 'transducers-js'
 import {
   empty,
@@ -165,16 +164,10 @@ wrap('chain', test => {
 
   test('preserves disposer of spawned streams', t => {
     t.plan(2)
-    const disposers = []
     const lifted = chain(() => {
-      const disposer = stub()
-      disposers.push(disposer)
-      return () => disposer
+      return () => t.calledOnce()
     })
     lifted(fromArray([1, 2]))(noop)()
-    disposers.forEach(disposer => {
-      t.deepEqual(disposer.args, [[]])
-    })
   })
 
 })
