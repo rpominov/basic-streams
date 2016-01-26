@@ -32,7 +32,7 @@ Here is how Stream's type signature looks like:
 <T>( sink:( payload:T ) => void ) => () => void
 ```
 
-The library provides functions like `lift` (aka `map`), `filter`, `chain`
+The library provides functions like `map`, `filter`, `chain`
 (aka `flatMap`) etc. to work with such simple streams.
 See [`src/index.js`](https://github.com/rpominov/basic-streams/blob/master/src/index.js)
 for docs in form of code comments, this is all docs we have for now.
@@ -40,7 +40,7 @@ for docs in form of code comments, this is all docs we have for now.
 A quick example to get you started:
 
 ```js
-import {lift} from 'basic-streams'
+import {map} from 'basic-streams'
 
 const myStream = sink => {
   sink(1)
@@ -49,7 +49,7 @@ const myStream = sink => {
   return () => {}
 }
 
-const myStream2 = lift(x => x * 2)(myStream)
+const myStream2 = map(x => x * 2)(myStream)
 
 // subscribe
 const unsub = myStream2(x => {
