@@ -258,6 +258,16 @@ wrap('multicast', test => {
 })
 
 
+wrap('startWith', test => {
+  test('works fine with empty', t => {
+    t.plan(1)
+    Stream[empty]().startWith(1).observe(x => {
+      t.equal(x, 1)
+    })
+  })
+})
+
+
 wrap('transduce', test => {
   test('works fine with of', t => {
     t.plan(1)

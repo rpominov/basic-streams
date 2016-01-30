@@ -21,6 +21,7 @@ import {
   skipWhile,
   skipDuplicates,
   multicast,
+  startWith,
   combineArray,
   combineObject,
   transduce,
@@ -587,6 +588,22 @@ wrap('multicast', test => {
     p.pushTo('main', 1)
   })
 
+})
+
+
+
+wrap('startWith', test => {
+  const lifted = startWith(0)
+
+  test('adds a value', t => {
+    t.plan(2)
+    lifted(just(1))(t.calledWith(0, 1))
+  })
+
+  test('preserves disposer', t => {
+    t.plan(1)
+    lifted(() => t.calledOnce())(noop)()
+  })
 })
 
 

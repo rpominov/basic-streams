@@ -382,6 +382,20 @@ export function multicast<A>( stream:Stream<A> ): Stream<A> {
 }
 
 
+/* Given a value of type `A` returns a function that
+ * operates on streams `Stream<A> => Stream<A>`.
+ * The result stream is a copy of source stream
+ * with the given value added at the beginning.
+ */
+export function startWith<A>( x:A ): LiftedFn<A,A> {
+  return stream =>
+    sink => {
+      sink(x)
+      return stream(sink)
+    }
+}
+
+
 /* Given an array of streams returns a stream of arrays.
  * This is basically an implementation of FantasyLand's sequence() for Array
  * specialized to Streams.

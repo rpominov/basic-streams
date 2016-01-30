@@ -112,6 +112,10 @@ export class Stream<T> {
     return new Stream(bs.multicast(this.observe))
   }
 
+  startWith( x:T ): Stream<T> {
+    return new Stream(bs.startWith(x)(this.observe))
+  }
+
   transduce<A>( transducer:Transducer<A,T> ): Stream<A> {
     return new Stream(bs.transduce(transducer)(this.observe))
   }
