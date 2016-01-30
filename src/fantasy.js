@@ -1,5 +1,6 @@
 /* @flow */
 
+import fl from 'fantasy-land'
 import * as bs from './index'
 import type {Stream as BasicStream, Transducer} from './index'
 
@@ -142,3 +143,16 @@ export class Stream<T> {
   }
 
 }
+
+// Flow doesn't support computed method names,
+// we have to bypass type cheking for FL methods :(
+//
+function addFlMethods( constructor:any, proto:any ): void {
+  ['concat', 'empty', 'map', 'ap', 'of', 'chain'].forEach(name => {
+    proto[fl[name]] = proto[name]
+  })
+  ;['empty', 'of'].forEach(name => {
+    constructor[fl[name]] = constructor[name]
+  })
+}
+addFlMethods(Stream, Stream.prototype)
