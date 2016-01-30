@@ -145,7 +145,7 @@ export class Stream<T> {
 }
 
 // Flow doesn't support computed method names,
-// we have to bypass type cheking for FL methods :(
+// we have to bypass type checking for FL methods :(
 //
 function addFlMethods( constructor:any, proto:any ): void {
   ['concat', 'empty', 'map', 'ap', 'of', 'chain'].forEach(name => {
