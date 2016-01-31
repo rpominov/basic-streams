@@ -61,6 +61,24 @@ unsub()
 ```
 
 
+## Basic-stream protocol
+
+A valid basic-stream must obey the following rules:
+
+1. basic-stream is a function
+1. it accepts one argument, the subscriber function (aka `sink`)
+1. it must return unsubscribe function (aka `disposer`)
+1. `sink` must be called with one argument
+1. `disposer` must always return `undefined`
+1. after `disposer` was called, `sink` must not be called
+
+When basic-stream is used the following rules must be obeyed:
+
+1. `sink` must always return `undefined`
+1. `disposer` must be called with no arguments
+1. `disposer` must be called at most once
+
+If an invalid basic-stream is used with this library, behavior is undefined.
 
 
 ## Fantasy Land wrapper
