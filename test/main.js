@@ -12,7 +12,7 @@ import {
   ap,
   map2,
   map3,
-  join,
+  merge,
   scan,
   take,
   takeWhile,
@@ -260,17 +260,17 @@ wrap('map3', test => {
 
 
 
-wrap('join', test => {
+wrap('merge', test => {
 
   test('result stream contains values from sources (using just)', t => {
     t.plan(2)
-    join([just(1), just(2)])(t.calledWith(1, 2))
+    merge([just(1), just(2)])(t.calledWith(1, 2))
   })
 
   test('result stream contains values from sources (using pool)', t => {
     t.plan(4)
     const p = pool()
-    join([p.add('a'), p.add('b')])(t.calledWith(1, 2, 3, 4))
+    merge([p.add('a'), p.add('b')])(t.calledWith(1, 2, 3, 4))
     p.pushTo('a', 1)
     p.pushTo('b', 2)
     p.pushTo('a', 3)
@@ -279,7 +279,7 @@ wrap('join', test => {
 
   test('disposers called properly', t => {
     t.plan(3)
-    join([() => t.calledOnce(), () => t.calledOnce(), () => t.calledOnce()])(noop)()
+    merge([() => t.calledOnce(), () => t.calledOnce(), () => t.calledOnce()])(noop)()
   })
 
 })

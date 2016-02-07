@@ -162,10 +162,8 @@ export function map3<A,B,C,D>( fn:( a:A, b:B, c:C ) => D ):
 
 /* Merges several streams of same type to a single stream of that type.
  * The result stream will contain values from all streams
- *
- * We should use name "merge" for this, but Flow behaves weirdly with that name https://github.com/facebook/flow/issues/1238
  */
-export function join<T>( streams:Array<Stream<T>> ): Stream<T> {
+export function merge<T>( streams:Array<Stream<T>> ): Stream<T> {
   return chain(x => x)(fromArray(streams))
 }
 

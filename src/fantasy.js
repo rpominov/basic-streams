@@ -32,7 +32,7 @@ export class Stream<T> {
 
   // Semigroup
   concat( other:Stream<T> ): Stream<T> {
-    return new Stream(bs.join([this.observe, other.observe]))
+    return new Stream(bs.merge([this.observe, other.observe]))
   }
 
   // Monoid
@@ -120,8 +120,8 @@ export class Stream<T> {
     return new Stream(bs.transduce(transducer)(this.observe))
   }
 
-  static join<A>( streams:Array<Stream<A>> ): Stream<A> {
-    return new Stream(bs.join(streams.map(x => x.observe)))
+  static merge<A>( streams:Array<Stream<A>> ): Stream<A> {
+    return new Stream(bs.merge(streams.map(x => x.observe)))
   }
 
   static map2<A,B,C>( f:( a:A, b:B ) => C ): ( sA:Stream<A>, sB:Stream<B> ) => Stream<C> {
