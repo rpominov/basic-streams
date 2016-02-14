@@ -27,7 +27,7 @@ export class Stream<T> {
     //
     //    const basicStream2 = map(x => x * 2)(wrapped.observe)
     //
-    this.observe = basicStream
+    this.observe = bs.fromLoose(basicStream)
   }
 
   // Semigroup
