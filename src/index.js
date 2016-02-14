@@ -23,6 +23,36 @@ function fromArray<T>( xs:Array<T> ): Stream<T> {
 }
 
 
+/* Given a loose basic-stream, that obeys at least following laws:
+ *   1. Stream is a function,
+ *   2. It accepts one argument, the subscriber function (aka `sink`);
+ * returns a valid basic-steam, that obeys all laws of a stream from protocol,
+ * and also immune to violations of any of usage laws except:
+ *   2. `sink` must be a function
+ */
+export function fromLoose<T>(looseStream: (sink: Function) => any): Stream<T> {
+  return _sink => {
+    let sink = _sink
+    let disposer = looseStream(x => { // fix usage #1
+      if (sink !== null) { // fix stream #6
+        sink(x) // fix stream #4
+      }
+      // fix usage #3
+    })
+    return () => { // fix stream #3
+      if (sink === null) { // fix usage #5
+        return
+      }
+      sink = null
+      if (typeof disposer === 'function') { // fix stream #3
+        disposer() // fix usage #4
+      }
+      disposer = null
+      // fix stream #5
+    }
+  }
+}
+
 
 /* Represents an empty stream
  */

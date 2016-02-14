@@ -3,6 +3,7 @@
 import test from 'tape-catch'
 import transducers from 'transducers-js'
 import {
+  fromLoose,
   empty,
   just,
   map,
@@ -75,7 +76,10 @@ const wrap = (prefix, cb) => {
       cb({
         ...t,
         calledWith(...xs) {
-          return x => {
+          return (x, ...rest) => {
+            if (rest.length > 0) {
+              t.fail('called with more than one arg')
+            }
             t.deepEqual(x, xs.shift())
           }
         },
@@ -94,6 +98,70 @@ const wrap = (prefix, cb) => {
 
 
 
+wrap('fromLoose', test => {
+
+  test('sink works', t => {
+    t.plan(3)
+    fromLoose(fromArray([1, 2, 3]))(t.calledWith(1, 2, 3))
+  })
+
+  test('disposer works', t => {
+    t.plan(1)
+    fromLoose(() => t.calledOnce())(noop)()
+  })
+
+  test('fixes stream #3: It must return unsubscribe function (aka `disposer`)', t => {
+    t.plan(1)
+    t.equal(typeof fromLoose(() => {})(noop), 'function')
+  })
+
+  test('fixes stream #4: `sink` must be called with one argument', t => {
+    t.plan(1)
+    fromLoose(sink => {sink(1, 2)})(t.calledWith(1))
+  })
+
+  test('fixes stream #5: `disposer` must always return `undefined`', t => {
+    t.plan(1)
+    t.equal(fromLoose(() => () => 1)(noop)(), undefined)
+  })
+
+  test('fixes stream #6: After `disposer` was called, `sink` must not be called', t => {
+    let sink
+    const unsub = fromLoose(_sink => {sink = _sink})(t.fail)
+    unsub()
+    sink && sink(1)
+  })
+
+  test('fixes usage #1: `stream` must be called with one argument, `sink`', t => {
+    t.plan(1)
+    fromLoose((sink, extra) => {
+      t.equal(extra, undefined)
+    })(noop, 1)
+  })
+
+  test('fixes usage #3: `sink` must always return `undefined`', t => {
+    t.plan(1)
+    const subscriber:any = () => 1
+    fromLoose(sink => {
+      t.equal(sink(), undefined)
+    })(subscriber)
+  })
+
+  test('fixes usage #4: `disposer` must be called with no arguments', t => {
+    t.plan(1)
+    fromLoose(() => (...args) => t.equal(args.length, 0))(noop)(1, 2)
+  })
+
+  test('fixes usage #5: `disposer` must be called at most once', t => {
+    t.plan(1)
+    const disposer = fromLoose(() => t.calledOnce())(noop)
+    disposer()
+    disposer()
+  })
+
+})
+
+
 
 wrap('empty', test => {
 
@@ -102,6 +170,7 @@ wrap('empty', test => {
   })
 
 })
+
 
 
 wrap('just', test => {
