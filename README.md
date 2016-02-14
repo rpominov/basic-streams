@@ -60,6 +60,11 @@ const unsub = myStream2(x => {
 unsub()
 ```
 
+## Examples
+
+ - [Morse code](https://jsfiddle.net/y94qt2aq/)
+ - [Reduce without built in completion](https://jsfiddle.net/sp6mj2ng/)
+
 
 ## Basic-streams protocol
 
