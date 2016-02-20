@@ -1,3 +1,4 @@
 lib
 umd
 test-dist
+examples/*/node_modules

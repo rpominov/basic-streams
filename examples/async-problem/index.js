@@ -56,7 +56,7 @@ const main = dir => {
       // console.log(errors.map(e => e.message))
       process.stderr.write(errors.map(e => e.message).join('\n') + '\n')
       process.exit(1)
-    }
+    },
   }))
 
 }
