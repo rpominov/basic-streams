@@ -21,7 +21,6 @@ const liftNodeFn = nodeFn => (...args) =>
 // This could be in data.validation
 const vLift2 = fn => (vA, vB) => vA.map(a => b => fn(a, b)).ap(vB)
 const vCombineArray = vArr => vArr.reduce(vLift2((arr, x) => arr.concat([x])), Success([]))
-const vFlatten = vv => vv.getOrElse(vv)
 
 
 // Helpers we need to work with `Stream(Validation([e], a))` type
