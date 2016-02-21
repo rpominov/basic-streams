@@ -18,16 +18,16 @@ const liftNodeFn = nodeFn => (...args) =>
   }
 
 
-// Helpers we need to work with `Stream(Validation([e], a))` type
-const mapV = fn => map(v => v.map(fn))
-const chainV = fn => chain(v => v.fold(e => just(Failure(e)), x => map(Success)(fn(x))))
-
-
 // This could be in data.validation
 const vLift2 = fn => (vA, vB) => vA.map(a => b => fn(a, b)).ap(vB)
 const vCombineArray = vArr => vArr.reduce(vLift2((arr, x) => arr.concat([x])), Success([]))
 const vFlatten = vv => vv.getOrElse(vv)
 
+
+// Helpers we need to work with `Stream(Validation([e], a))` type
+const mapV = fn => map(v => v.map(fn))
+const combineArrayV = arr => map(vCombineArray)(combineArray(arr))
+const chainV = fn => chain(v => v.fold(e => just(Failure(e)), fn))
 
 
 // Done with helpers, the folowing is our app logic
@@ -39,19 +39,17 @@ const main = dir => {
 
   const stream = pipe(readFileFromDir('index'),                      // Stream(Val([e], string))
     mapV(index => index.match(/^.*(?=\n)/gm).map(readFileFromDir)),  // Stream(Val([e], [Stream(Val([e], string))]))
-    chainV(combineArray),                                            // Stream(Val([e], [Val([e], string)]))
-    mapV(vCombineArray),                                             // Stream(Val([e], Val([e], [string])))
-    map(vFlatten),                                                   // Stream(Val([e], [string]))
+    chainV(combineArrayV),                                           // Stream(Val([e], [string]))
     mapV(arr => arr.join(''))                                        // Stream(Val([e], string))
   )
 
   stream(v => v.fold(
     errors => {
-      process.stderr.write(errors.map(e => e.message).join('\n'))
+      process.stderr.write(errors.map(e => e.message).join('\n') + '\n')
       process.exit(1)
     },
     result => {
-      process.stdout.write(String(result))
+      process.stdout.write(String(result) + '\n')
       process.exit(0)
     }
   ))
