@@ -79,7 +79,7 @@
     "tape": "4.4.0",
     "tape-catch": "1.0.4",
     "transducers-js": "0.4.174",
-    "uglify-js": "2.6.2",
+    "uglify-js": "2.6.2"
   },
   "dependencies": {},
   "peerDependencies": {
