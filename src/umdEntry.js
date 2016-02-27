@@ -1,5 +1,5 @@
-const main = require('./index')
-const fantasy = require('./fantasy')
-const utils = require('./utils')
+export * from './index'
+import * as fantasy from './fantasy'
+import * as utils from './utils'
 
-module.exports = {...main, fantasy, utils}
+export {fantasy, utils}

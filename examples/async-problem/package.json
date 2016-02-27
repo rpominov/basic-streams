@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node -r babel-register index.js"
+    "start": "BABEL_ENV=commonjs node -r babel-register index.js"
   },
   "author": "Roman Pominov <rpominov@gmail.com>",
   "license": "MIT",

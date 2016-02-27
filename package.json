@@ -3,16 +3,22 @@
   "version": "0.4.1",
   "description": "Experimental very basic reactive streams implementation for JavaScript",
   "main": "lib/index.js",
+  "jsnext:main": "lib-es/index.js",
   "files": [
     "lib",
+    "lib-es",
     "umd"
   ],
   "scripts": {
-    "build": "rm -rf lib umd && babel src --out-dir lib && webpack",
-    "coverage": "nyc --require=babel-register tape test/*.js && nyc report --reporter=text-lcov > lcov.info",
-    "coveralls": "nyc --require=babel-register tape test/*.js && nyc report --reporter=text-lcov | coveralls",
-    "tapec": "nodemon --watch test --watch src --exec \"tape -r babel-register test/*.js | tap-notify | faucet\"",
-    "test": "eslint . && flow check && tape -r babel-register test/*.js | faucet",
+    "es": "babel src --out-dir lib-es",
+    "commonjs": "BABEL_ENV=commonjs babel src --out-dir lib",
+    "umd": "rollup -c",
+    "umd-min": "uglifyjs -m -c -- umd/basicStreams.js > umd/basicStreams.min.js",
+    "build": "rm -rf lib lib-es umd && npm run es && npm run commonjs && npm run umd && npm run umd-min",
+    "coverage": "BABEL_ENV=commonjs nyc --require=babel-register tape test/*.js && nyc report --reporter=text-lcov > lcov.info",
+    "coveralls": "BABEL_ENV=commonjs nyc --require=babel-register tape test/*.js && nyc report --reporter=text-lcov | coveralls",
+    "tapec": "nodemon --watch test --watch src --exec \"BABEL_ENV=commonjs tape -r babel-register test/*.js | tap-notify | faucet\"",
+    "test": "eslint . && flow check && BABEL_ENV=commonjs tape -r babel-register test/*.js | faucet",
     "preversion": "npm run test && npm run build",
     "postversion": "git push && git push origin --tags && npm publish"
   },
@@ -36,6 +42,7 @@
     "babel-eslint": "5.0.0-beta6",
     "babel-loader": "6.2.2",
     "babel-plugin-check-es2015-constants": "6.3.13",
+    "babel-plugin-external-helpers": "6.5.0",
     "babel-plugin-transform-class-properties": "6.4.0",
     "babel-plugin-transform-es2015-arrow-functions": "6.4.0",
     "babel-plugin-transform-es2015-block-scoped-functions": "6.3.13",
@@ -63,12 +70,16 @@
     "flow-bin": "0.21.0",
     "nodemon": "1.8.1",
     "nyc": "5.6.0",
+    "rollup": "0.25.4",
+    "rollup-plugin-babel": "2.4.0",
+    "rollup-plugin-commonjs": "2.2.1",
+    "rollup-plugin-node-resolve": "1.4.0",
     "sinon": "1.17.3",
     "tap-notify": "0.0.3",
     "tape": "4.4.0",
     "tape-catch": "1.0.4",
     "transducers-js": "0.4.174",
-    "webpack": "1.12.13"
+    "uglify-js": "2.6.2",
   },
   "dependencies": {},
   "peerDependencies": {
@@ -90,17 +101,38 @@
       "transform-es2015-block-scoped-functions",
       "transform-es2015-shorthand-properties",
       "transform-es2015-computed-properties",
-      ["transform-es2015-for-of", {"loose": true}],
+      [
+        "transform-es2015-for-of",
+        {
+          "loose": true
+        }
+      ],
       "check-es2015-constants",
-      ["transform-es2015-spread", {"loose": true}],
+      [
+        "transform-es2015-spread",
+        {
+          "loose": true
+        }
+      ],
       "transform-es2015-parameters",
       "transform-es2015-destructuring",
       "transform-es2015-block-scoping",
-      "transform-es2015-modules-commonjs",
       "transform-flow-strip-types",
       "transform-object-rest-spread",
       "transform-class-properties",
-      ["transform-es2015-classes", {"loose": true}]
-    ]
+      [
+        "transform-es2015-classes",
+        {
+          "loose": true
+        }
+      ]
+    ],
+    "env": {
+      "commonjs": {
+        "plugins": [
+          "transform-es2015-modules-commonjs"
+        ]
+      }
+    }
   }
 }
