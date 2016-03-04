@@ -1,9 +1,10 @@
+/* eslint-disable no-unexpected-multiline */
+
 import {readFile} from 'fs'
 import {join} from 'path'
 import Validation, {Success, Failure} from 'data.validation'
 import R from 'ramda'
 import {map, chain, sequence} from 'fantasy-land'
-import {Stream} from '../../src/fantasy'
 import {StreamT} from '../../src/fantasyT'
 
 // Turns a NodeJS style function, to a function that returns `StreamT(Validation([e], a))`
