@@ -1,8 +1,5 @@
 [ignore]
 .*/node_modules/babel.*
-.*/node_modules/.*[^e]\.json$
-.*/json-schema-draft4/.*\.json$
-.*/node_modules/resolve/lib/core\.json$
 .*bad-locale\.json$
 
 [include]
