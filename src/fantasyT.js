@@ -35,7 +35,7 @@ export class StreamT {
 
   [ap](s_t_x) {
     const s_t_fnxy = this
-    const s_fntxy = s_t_fnxy._stream.map(t_fnxy => t_x => t_fnxy[ap](t_x))
+    const s_fntxy = s_t_fnxy._stream[map](t_fnxy => t_x => t_fnxy[ap](t_x))
     const s_t_y = s_fntxy[ap](s_t_x)
     return s_t_y
   }
