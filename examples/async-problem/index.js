@@ -4,17 +4,8 @@ import {readFile} from 'fs'
 import {join} from 'path'
 import Validation, {Success, Failure} from 'data.validation'
 import R from 'ramda'
-import {map, chain, sequence} from 'fantasy-land'
-import {StreamT} from '../../src/fantasyT'
-
-// Turns a NodeJS style function, to a function that returns `StreamT(Validation([e], a))`
-const liftNodeFn = nodeFn => (...args) =>
-  StreamT.fromBasic(sink => {
-    nodeFn(...args, (error, result) => {
-      sink(error ? Failure([error]) : Success(result))
-    })
-  })
-
+import {map, chain, sequence, of} from 'fantasy-land'
+import {Stream} from '../../src/fantasy'
 
 // This could be in data.validation
 Validation.prototype[sequence] = function(of) {
@@ -27,6 +18,19 @@ Validation.prototype[chain] = function(fn) {
   return this[map](fn).getOrElse(this)
 }
 
+const StreamV = Stream.Compose(Validation)
+
+// Turns a NodeJS style function, to a function that returns `StreamV<[e], a>`
+const liftNodeFn = nodeFn => (...args) =>
+  StreamV.fromBasic(sink => {
+    nodeFn(...args, (error, result) => {
+      sink(error ? Failure([error]) : Success(result))
+    })
+  })
+
+
+
+
 
 const readFileLifted = liftNodeFn(readFile)
 
@@ -35,7 +39,7 @@ const main = dir => {
 
   const stream = readFileFromDir('index')
     [map](index => index.match(/^.*(?=\n)/gm).map(readFileFromDir))
-    [chain](R.sequence(StreamT.genOf(Success)))
+    [chain](R.sequence(StreamV[of]))
     [map](arr => arr.join(''))
 
   stream.observe(v => v.fold(

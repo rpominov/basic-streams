@@ -3,6 +3,7 @@
 import fl from 'fantasy-land'
 import * as bs from './index'
 import type {Stream as BasicStream, Transducer} from './index'
+import Compose from './compose'
 
 export class Stream<T> {
 
@@ -144,6 +145,10 @@ export class Stream<T> {
       ofBasicStreams[key] = obj[key].observe
     })
     return new Stream(bs.combineObject(ofBasicStreams))
+  }
+
+  static Compose(InnerType: any): any {
+    return Compose(InnerType)
   }
 
 }
