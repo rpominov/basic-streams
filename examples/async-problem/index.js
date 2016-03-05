@@ -10,13 +10,9 @@ import {StreamT} from '../../src/fantasyT'
 // Turns a NodeJS style function, to a function that returns `StreamT(Validation([e], a))`
 const liftNodeFn = nodeFn => (...args) =>
   StreamT.fromBasic(sink => {
-    let disposed = false
     nodeFn(...args, (error, result) => {
-      if (!disposed) {
-        sink(error ? Failure([error]) : Success(result))
-      }
+      sink(error ? Failure([error]) : Success(result))
     })
-    return () => {disposed = true}
   })
 
 
