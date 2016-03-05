@@ -38,8 +38,8 @@ const main = dir => {
   const readFileFromDir = name => readFileLifted(join(dir, name), {encoding: 'utf8'})
 
   const stream = readFileFromDir('index')
-    [map](index => index.match(/^.*(?=\n)/gm).map(readFileFromDir))
-    [chain](R.sequence(StreamV[of]))
+    [map](index => index.match(/^.*(?=\n)/gm))
+    [chain](filenames => R.sequence(StreamV[of], filenames.map(readFileFromDir)))
     [map](arr => arr.join(''))
 
   stream.observe(v => v.fold(
