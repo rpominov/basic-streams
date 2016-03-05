@@ -43,15 +43,13 @@ export class StreamT {
 
   // Custom methods
 
-  fromBasic(bs) {
-    return new StreamT(new Stream(bs))
-  }
-
   observe(fn) {
     // fn will get values of type T
     return this._stream.observe(fn)
   }
 
 }
+
+StreamT.fromBasic = bs => new StreamT(new Stream(bs))
 
 StreamT.genOf = innerOf => x => Stream[of](innerOf(x))
