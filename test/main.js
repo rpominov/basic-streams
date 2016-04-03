@@ -1,5 +1,3 @@
-/* @flow */
-
 import test from 'tape-catch'
 import transducers from 'transducers-js'
 import {
@@ -26,14 +24,13 @@ import {
   combineArray,
   combineObject,
   transduce,
-} from '../src'
-import type {Stream} from '../src'
+} from '../src/main'
 
 const noop = () => {}
 
 /* Creates a stream containing given values
  */
-function fromArray<T>( xs:Array<T> ): Stream<T> {
+function fromArray(xs) {
   return sink => {
     xs.forEach(x => {
       sink(x)
@@ -48,7 +45,7 @@ function fromArray<T>( xs:Array<T> ): Stream<T> {
 const pool = () => {
   const sinks = {}
   return {
-    add(name): Stream<any> {
+    add(name) {
       return sink => {
         if (sinks[name]) {
           throw new Error('in pool you can\'t have more than one subscriber to a same stream at a same time')
@@ -141,7 +138,7 @@ wrap('fromLoose', test => {
 
   test('fixes usage #3: `sink` must always return `undefined`', t => {
     t.plan(1)
-    const subscriber:any = () => 1
+    const subscriber = () => 1
     fromLoose(sink => {
       t.equal(sink(), undefined)
     })(subscriber)

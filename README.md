@@ -120,3 +120,12 @@ and as `BasicStreams.utils` in the UMD build.
 
 Check [`src/utils.js`](https://github.com/rpominov/basic-streams/blob/master/src/utils.js)
 to see what is in there.
+
+
+## Development
+
+```
+npm run lobot -- --help
+```
+
+Run [lobot](https://github.com/rpominov/lobot) commands as `npm run lobot -- args...`

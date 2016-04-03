@@ -1,5 +1,3 @@
-/* @flow */
-
 import test from 'tape-catch'
 import {pipe} from '../src/utils'
 
