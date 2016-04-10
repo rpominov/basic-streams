@@ -2,7 +2,6 @@
 
 import fl from 'fantasy-land'
 import BS from './main'
-// import Compose from './compose'
 
 export class Stream {
 
@@ -60,7 +59,7 @@ export class Stream {
     return Stream.of(x)
   }
 
-  // Chain
+  // Monad
   [fl.chain](f) {
     return new Stream(BS.chain(x => f(x).observe)(this.observe))
   }
@@ -137,9 +136,5 @@ export class Stream {
     })
     return new Stream(BS.combineObject(ofBasicStreams))
   }
-
-  // static Compose(InnerType) {
-  //   return Compose(InnerType)
-  // }
 
 }

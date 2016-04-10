@@ -1,48 +1,64 @@
-/* eslint-disable no-unexpected-multiline */
+const fs = require('fs')
+const path = require('path')
+const Validation = require('data.validation')
+const Stream = require('../../lib').Stream
+const SL = require('static-land')
 
-import {readFile} from 'fs'
-import {join} from 'path'
-import Validation, {Success, Failure} from 'data.validation'
-import R from 'ramda'
-import {map, chain, sequence, of} from 'fantasy-land'
-import {Stream} from '../../src/fantasy'
+// Convert FL Validation type to a SL type, also add two missing methods that we need
+const SValidation = Object.assign({}, SL.fromFLType(Validation), SL.curryAll({
+  chain(fn, validation) {
+    return validation.map(fn).getOrElse(validation)
+  },
+  sequence(Inner, validation) {
+    return validation.fold(
+      error => Inner.of(Validation.Failure(error)),
+      inner => Inner.map(Validation.Success, inner)
+    )
+  },
+}))
 
-// This could be in data.validation
-Validation.prototype[sequence] = function(of) {
-  return this.fold(
-    e => of(Failure(e)),
-    x => x[map](Success)
-  )
+// Combine two types
+const StreamV = Stream.composeWithInnerType(SValidation)
+StreamV.create = executor => {
+  return Stream.fromLoose(sink => executor(
+    successValue => sink(Validation.Success(successValue)),
+    failureValue => sink(Validation.Failure([failureValue]))
+  ))
 }
-Validation.prototype[chain] = function(fn) {
-  return this[map](fn).getOrElse(this)
-}
 
-const StreamV = Stream.Compose(Validation)
-
-// Turns a NodeJS style function, to a function that returns `StreamV<[e], a>`
-const liftNodeFn = nodeFn => (...args) =>
-  StreamV.fromBasic(sink => {
-    nodeFn(...args, (error, result) => {
-      sink(error ? Failure([error]) : Success(result))
+// Another helper
+function liftNodeFn(nodeFn) {
+  return function() {
+    const args = Array.prototype.slice.call(arguments)
+    return StreamV.create((onSucc, onFail) => {
+      const allArgs = args.concat([(error, result) => {
+        if (error) {
+          onFail(error)
+        } else {
+          onSucc(result)
+        }
+      }])
+      nodeFn.apply(null, allArgs)
     })
-  })
+  }
+}
 
 
+// Now goes the app logic...
 
-
-
-const readFileLifted = liftNodeFn(readFile)
+const readFile = liftNodeFn(fs.readFile)
 
 const main = dir => {
-  const readFileFromDir = name => readFileLifted(join(dir, name), {encoding: 'utf8'})
+  const readFileFromDir = name => readFile(path.join(dir, name), {encoding: 'utf8'})
 
-  const stream = readFileFromDir('index')
-    [map](index => index.match(/^.*(?=\n)/gm))
-    [chain](filenames => R.sequence(StreamV[of], filenames.map(readFileFromDir)))
-    [map](arr => arr.join(''))
+  const stream = SL.flow(
+    readFileFromDir('index'),
+    StreamV.map(index => index.match(/^.*(?=\n)/gm).map(readFileFromDir)),
+    StreamV.chain(SL.SArray.sequence(StreamV)),
+    StreamV.map(arr => arr.join(''))
+  )
 
-  stream.observe(v => v.fold(
+  stream(validation => validation.fold(
     errors => {
       process.stderr.write(errors.map(e => e.message).join('\n') + '\n')
       process.exit(1)
@@ -52,7 +68,6 @@ const main = dir => {
       process.exit(0)
     }
   ))
-
 }
 
 main('files')
