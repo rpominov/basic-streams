@@ -2,3 +2,4 @@ lib
 lib-es
 umd
 .build-artifacts
+node_modules
