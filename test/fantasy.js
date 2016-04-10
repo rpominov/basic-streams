@@ -218,16 +218,6 @@ wrap('skipDuplicates', test => {
 })
 
 
-wrap('merge', test => {
-  test('works fine with of', t => {
-    t.plan(1)
-    const listener = stub()
-    Stream.merge([Stream[of_](1), Stream[of_](2)]).observe(listener)
-    t.deepEqual(listener.args, [ [ 1 ], [ 2 ] ])
-  })
-})
-
-
 wrap('map2', test => {
   test('works fine with of', t => {
     t.plan(1)

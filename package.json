@@ -35,11 +35,13 @@
     "fantasy-land": "0.2.1",
     "lobot": "0.1.9",
     "sinon": "1.17.3",
+    "static-land": "0.1.5",
     "transducers-js": "0.4.174"
   },
   "dependencies": {},
   "peerDependencies": {
-    "fantasy-land": ">=0.2.0"
+    "fantasy-land": ">=0.2.0",
+    "static-land": "0.1.5"
   },
   "repository": {
     "type": "git",

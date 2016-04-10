@@ -1,3 +1,5 @@
+import {fromIncomplete, SArray, SObject} from 'static-land'
+
 // We're not sure yet if this function should be public
 function fromArray(xs) {
   return sink => {
@@ -8,126 +10,45 @@ function fromArray(xs) {
   }
 }
 
+const Stream = fromIncomplete({
 
-/* Given a loose basic-stream, that obeys at least following laws:
- *   1. Stream is a function,
- *   2. It accepts one argument, the subscriber function (aka `sink`);
- * returns a valid basic-steam, that obeys all laws of a stream from protocol,
- * and also immune to violations of any of usage laws except:
- *   2. `sink` must be a function
- */
-export function fromLoose(looseStream) {
-  return _sink => {
-    let sink = _sink
-    let disposer = looseStream(x => { // fix usage #1
-      if (sink !== null) { // fix stream #6
-        sink(x) // fix stream #4
-      }
-      // fix usage #3
-    })
-    return () => { // fix stream #3
-      if (sink === null) { // fix usage #5
-        return
-      }
-      sink = null
-      if (typeof disposer === 'function') { // fix stream #3
-        disposer() // fix usage #4
-      }
-      disposer = null
-      // fix stream #5
+  /* Creates an empty stream
+   */
+  empty() {
+    return () => () => {}
+  },
+
+  /* Merges several streams of same type to a single stream of that type.
+   * The result stream will contain values from all streams
+   */
+  concat(streams) {
+    return Stream.chain(x => x)(fromArray(streams))
+  },
+
+  /* Creates a stream containing given value
+   */
+  of(x) {
+    return sink => {
+      sink(x)
+      return () => {}
     }
-  }
-}
+  },
 
+  /* Lifts function `A => B` to a function that operates
+   * on streams `Stream<A> => Stream<B>`
+   */
+  map(fn, stream) {
+    return sink => stream(payload => sink(fn(payload)))
+  },
 
-/* Represents an empty stream
- */
-export const empty = () => () => {}
-
-
-/* Creates a stream containing given value
- */
-export function just(x) {
-  return sink => {
-    sink(x)
-    return () => {}
-  }
-}
-
-
-/* Lifts function `A => B` to a function that operates
- * on streams `Stream<A> => Stream<B>`
- */
-export function map(fn) {
-  return stream =>
-    sink => stream(payload => sink(fn(payload)))
-}
-
-
-/* Given a predicate `A => boolean` returns a function
- * that operates on streams `Stream<A> => Stream<A>`.
- * The result function returns a stream without values that don't satisfy predicate.
- */
-export function filter(predicate) {
-  return stream =>
-    sink => stream(payload => {
-      if (predicate(payload)) {
-        sink(payload)
-      }
-    })
-}
-
-
-/* Given a function `A => Stream<B>` returns a function
- * that operates on streams `Stream<A> => Stream<B>`.
- * The result function will spawn a `Stream<B>`
- * for each value from `Stream<A>` using the provided function.
- * The final `Stream<B>` will contain values from all spawned streams.
- */
-export function chain(fn) {
-  return stream =>
-    sink => {
-      let spawnedDisposers = []
-      const mainDisposer = stream(payload => {
-        spawnedDisposers.push(fn(payload)(sink))
-      })
-      return () => {
-        spawnedDisposers.forEach(fn => fn())
-        mainDisposer()
-      }
-    }
-}
-
-
-/* Same as `chain()`, except the final stream will contain
- * only that values from each spawned streams that was
- * emitted before the next stream was spawned.
- */
-export function chainLatest(fn) {
-  return stream =>
-    sink => {
-      let spawnedDisposers = () => {}
-      const mainDisposer = stream(payload => {
-        spawnedDisposers()
-        spawnedDisposers = fn(payload)(sink)
-      })
-      return () => {
-        spawnedDisposers()
-        mainDisposer()
-      }
-    }
-}
-
-
-/* Given a stream of functions `Stream<A => B>`, returns a function
- * that operates on streams `Stream<A> => Stream<B>`.
- * The result stream `Stream<B>` will contain values created by applying
- * the latest function from `Stream<A => B>` to the latest value from `Stream<A>`
- * every time one of them updates.
- */
-export function ap(streamf) {
-  return streamv =>
-    sink => {
+  /* Given a stream of functions `Stream<A => B>`, returns a function
+   * that operates on streams `Stream<A> => Stream<B>`.
+   * The result stream `Stream<B>` will contain values created by applying
+   * the latest function from `Stream<A => B>` to the latest value from `Stream<A>`
+   * every time one of them updates.
+   */
+  ap(streamf, streamv) {
+    return sink => {
       let latestF = {type: 'nothing'}
       let latestV = {type: 'nothing'}
       const push = () => {
@@ -149,46 +70,109 @@ export function ap(streamf) {
         disposev()
       }
     }
-}
+  },
 
+  /* Given a function `A => Stream<B>` returns a function
+   * that operates on streams `Stream<A> => Stream<B>`.
+   * The result function will spawn a `Stream<B>`
+   * for each value from `Stream<A>` using the provided function.
+   * The final `Stream<B>` will contain values from all spawned streams.
+   */
+  chain(fn, stream) {
+    return sink => {
+      let spawnedDisposers = []
+      const mainDisposer = stream(payload => {
+        spawnedDisposers.push(fn(payload)(sink))
+      })
+      return () => {
+        spawnedDisposers.forEach(fn => fn())
+        mainDisposer()
+      }
+    }
+  },
 
-/* Lifts a 2 arity function `(A, B) => C` to a function that operates
- * on streams `(Stream<A>, Stream<B>) => Stream<C>`
- */
-export function map2(fn) {
-  return (sA, sB) => {
-    const ofFn = map(a => b => fn(a, b))(sA)
-    return ap(ofFn)(sB)
-  }
-}
+  /* Given an array of streams returns a stream of arrays.
+   */
+  combineArray(arr) {
+    return SArray.sequence(Stream, arr)
+  },
 
+  /* Given an object (a.k.a map/hash/dictionary) of streams returns a stream of objects.
+   * Same as combineArray but for objects.
+   */
+  combineObject(obj) {
+    return SObject.sequence(Stream, obj)
+  },
 
-/* Lifts a 3 arity function `(A, B, C) => D` to a function that operates
- * on streams `(Stream<A>, Stream<B>, Stream<C>) => Stream<D>`
- */
-export function map3(fn) {
-  return (sA, sB, sC) => {
-    const ofFn = map(a => b => c => fn(a, b, c))(sA)
-    return ap(ap(ofFn)(sB))(sC)
-  }
-}
+  /* Given a loose basic-stream, that obeys at least following laws:
+   *
+   *   1. Stream is a function,
+   *   2. It accepts one argument, the subscriber function (aka `sink`);
+   *
+   * returns a valid basic-steam, that obeys all laws of a stream from protocol,
+   * and also immune to violations of any of usage laws except:
+   *
+   *   2. `sink` must be a function
+   */
+  fromLoose(looseStream) {
+    return _sink => {
+      let sink = _sink
+      let disposer = looseStream(x => { // fix usage #1
+        if (sink !== null) { // fix stream #6
+          sink(x) // fix stream #4
+        }
+        // fix usage #3
+      })
+      return () => { // fix stream #3
+        if (sink === null) { // fix usage #5
+          return
+        }
+        sink = null
+        if (typeof disposer === 'function') { // fix stream #3
+          disposer() // fix usage #4
+        }
+        disposer = null
+        // fix stream #5
+      }
+    }
+  },
 
+  /* Given a predicate `A => boolean` returns a function
+   * that operates on streams `Stream<A> => Stream<A>`.
+   * The result function returns a stream without values that don't satisfy predicate.
+   */
+  filter(predicate, stream) {
+    return sink => stream(payload => {
+      if (predicate(payload)) {
+        sink(payload)
+      }
+    })
+  },
 
-/* Merges several streams of same type to a single stream of that type.
- * The result stream will contain values from all streams
- */
-export function merge(streams) {
-  return chain(x => x)(fromArray(streams))
-}
+  /* Same as `chain()`, except the final stream will contain
+   * only that values from each spawned streams that was
+   * emitted before the next stream was spawned.
+   */
+  chainLatest(fn, stream) {
+    return sink => {
+      let spawnedDisposers = () => {}
+      const mainDisposer = stream(payload => {
+        spawnedDisposers()
+        spawnedDisposers = fn(payload)(sink)
+      })
+      return () => {
+        spawnedDisposers()
+        mainDisposer()
+      }
+    }
+  },
 
-
-/* Given a reducer function `(B, A) => B`, and a seed value of type B,
- * returns a function that operates on streams `Stream<A> => Stream<B>`.
- * Will apply reducer to each value in `Stream<A>` and push the result to `Stream<B>`
- */
-export function scan(reducer, seed) {
-  return stream =>
-    sink => {
+  /* Given a reducer function `(B, A) => B`, and a seed value of type B,
+   * returns a function that operates on streams `Stream<A> => Stream<B>`.
+   * Will apply reducer to each value in `Stream<A>` and push the result to `Stream<B>`
+   */
+  scan(reducer, seed, stream) {
+    return sink => {
       let current = seed
       sink(current)
       return stream(x => {
@@ -196,15 +180,13 @@ export function scan(reducer, seed) {
         sink(current)
       })
     }
-}
+  },
 
-
-/* Given a number N, returns a function that operates on streams `Stream<A> => Stream<A>`.
- * The result stream will contain only first N items from source stream
- */
-export function take(n) {
-  return stream =>
-    sink => {
+  /* Given a number N, returns a function that operates on streams `Stream<A> => Stream<A>`.
+   * The result stream will contain only first N items from source stream
+   */
+  take(n, stream) {
+    return sink => {
       let count = 0
       let disposer = null
       const dispose = () => {
@@ -227,17 +209,15 @@ export function take(n) {
       }
       return dispose
     }
-}
+  },
 
-
-/* Given a predicate `A => boolean` returns a function
- * that operates on streams `Stream<A> => Stream<A>`.
- * The result stream will contain values from source stream
- * before the first value that doesn't satisfy predicate.
- */
-export function takeWhile(pred) {
-  return stream =>
-    sink => {
+  /* Given a predicate `A => boolean` returns a function
+   * that operates on streams `Stream<A> => Stream<A>`.
+   * The result stream will contain values from source stream
+   * before the first value that doesn't satisfy predicate.
+   */
+  takeWhile(pred, stream) {
+    return sink => {
       let completed = false
       let disposer = null
       const dispose = () => {
@@ -261,16 +241,14 @@ export function takeWhile(pred) {
       }
       return dispose
     }
-}
+  },
 
-
-/* Given a controller stream, returns a function that operates
- * on streams `Stream<A> => Stream<A>`. The result stream will contain values
- * from source stream until the first value from controller stream.
- */
-export function takeUntil(controller) {
-  return stream =>
-    sink => {
+  /* Given a controller stream, returns a function that operates
+   * on streams `Stream<A> => Stream<A>`. The result stream will contain values
+   * from source stream until the first value from controller stream.
+   */
+  takeUntil(controller, stream) {
+    return sink => {
       let mainDisposer = null
       let ctrlDisposer = null
       const dispose = () => {
@@ -294,15 +272,13 @@ export function takeUntil(controller) {
 
       return dispose
     }
-}
+  },
 
-
-/* Given a number N, returns a function that operates on streams `Stream<A> => Stream<A>`.
- * The result stream will contain only items from source starting from (N+1)th one
- */
-export function skip(n) {
-  return stream =>
-    sink => {
+  /* Given a number N, returns a function that operates on streams `Stream<A> => Stream<A>`.
+   * The result stream will contain only items from source starting from (N+1)th one
+   */
+  skip(n, stream) {
+    return sink => {
       let count = 0
       return stream(x => {
         count++
@@ -311,17 +287,15 @@ export function skip(n) {
         }
       })
     }
-}
+  },
 
-
-/* Given a predicate `A => boolean` returns a function
- * that operates on streams `Stream<A> => Stream<A>`.
- * The result stream will contain values from source stream
- * starting from the first that doesn't satisfy predicate.
- */
-export function skipWhile(pred) {
-  return stream =>
-    sink => {
+  /* Given a predicate `A => boolean` returns a function
+   * that operates on streams `Stream<A> => Stream<A>`.
+   * The result stream will contain values from source stream
+   * starting from the first that doesn't satisfy predicate.
+   */
+  skipWhile(pred, stream) {
+    return sink => {
       let started = false
       return stream(x => {
         if (!started) {
@@ -332,18 +306,16 @@ export function skipWhile(pred) {
         }
       })
     }
-}
+  },
 
-
-/* Given a comparator function `(A, A) => boolean` returns a function that
- * operates on streams `Stream<A> => Stream<A>`. For each element X from
- * the source stream (except the first one) calls comparator with (Y, X)
- * as arguments, where Y is the last element in the result stream.
- * If comparator returns false, X goes to the result stream.
- */
-export function skipDuplicates(comp) {
-  return stream =>
-    sink => {
+  /* Given a comparator function `(A, A) => boolean` returns a function that
+   * operates on streams `Stream<A> => Stream<A>`. For each element X from
+   * the source stream (except the first one) calls comparator with (Y, X)
+   * as arguments, where Y is the last element in the result stream.
+   * If comparator returns false, X goes to the result stream.
+   */
+  skipDuplicates(comp, stream) {
+    return sink => {
       let latest = {type: 'nothing'}
       return stream(x => {
         if (latest.type === 'nothing' || !comp(latest.value, x)) {
@@ -352,97 +324,65 @@ export function skipDuplicates(comp) {
         }
       })
     }
-}
+  },
 
-
-/* Given a stream returns a new stream of same type. The new stream will
- * have at most one subscription at any given time to the original stream.
- * It allows you to connect several subscribers to a stream using only one subscription.
- */
-export function multicast(stream) {
-  let sinks = []
-  const push = x => {
-    sinks.forEach(sink => {
-      if (sinks.indexOf(sink) !== -1) {
-        sink(x)
-      }
-    })
-  }
-  let unsub = null
-  return sink => {
-    let disposed = false
-    sinks = [...sinks, sink]
-    if (sinks.length === 1) {
-      unsub = stream(push)
+  /* Given a stream returns a new stream of same type. The new stream will
+   * have at most one subscription at any given time to the original stream.
+   * It allows you to connect several subscribers to a stream using only one subscription.
+   */
+  multicast(stream) {
+    let sinks = []
+    const push = x => {
+      sinks.forEach(sink => {
+        if (sinks.indexOf(sink) !== -1) {
+          sink(x)
+        }
+      })
     }
-    return () => {
-      if (disposed) {
-        return
+    let unsub = null
+    return sink => {
+      let disposed = false
+      sinks = [...sinks, sink]
+      if (sinks.length === 1) {
+        unsub = stream(push)
       }
-      disposed = true
-      const index = sinks.indexOf(sink)
-      sinks = [
-        ...sinks.slice(0, index),
-        ...sinks.slice(index + 1, sinks.length),
-      ]
-      if (sinks.length === 0 && unsub !== null) {
-        unsub()
-        unsub = null
+      return () => {
+        if (disposed) {
+          return
+        }
+        disposed = true
+        const index = sinks.indexOf(sink)
+        sinks = [
+          ...sinks.slice(0, index),
+          ...sinks.slice(index + 1, sinks.length),
+        ]
+        if (sinks.length === 0 && unsub !== null) {
+          unsub()
+          unsub = null
+        }
       }
     }
-  }
-}
+  },
 
-
-/* Given a value of type `A` returns a function that
- * operates on streams `Stream<A> => Stream<A>`.
- * The result stream is a copy of source stream
- * with the given value added at the beginning.
- */
-export function startWith(x) {
-  return stream =>
-    sink => {
+  /* Given a value of type `A` returns a function that
+   * operates on streams `Stream<A> => Stream<A>`.
+   * The result stream is a copy of source stream
+   * with the given value added at the beginning.
+   */
+  startWith(x, stream) {
+    return sink => {
       sink(x)
       return stream(sink)
     }
-}
+  },
 
-
-/* Given an array of streams returns a stream of arrays.
- * This is basically an implementation of FantasyLand's sequence() for Array
- * specialized to Streams.
- */
-export function combineArray(arr) {
-  return arr.reduce(map2((arr, i) => arr.concat([i])), just([]))
-}
-
-
-const fromPairsLifted = map(pairs => {
-  const result = {}
-  pairs.forEach(([key, value]) => {
-    result[key] = value
-  })
-  return result
-})
-
-/* Given an object (a.k.a map/hash) of streams returns a stream of objects.
- * Same as combineArray but for objects.
- */
-export function combineObject(obj) {
-  const ofPairs = Object.keys(obj).map(  key => map(x => [key, x])(obj[key])  )
-  return fromPairsLifted(combineArray(ofPairs))
-}
-
-
-
-/* Given a transducer that conforms [Protocol][1],
- * returns a function that operates on streams `Stream<A> => Stream<B>`.
- *
- * [1]: https://github.com/cognitect-labs/transducers-js#the-transducer-protocol
- */
-export function transduce(transducer) {
-  return stream =>
-    sink => {
+  /* Given a transducer that conforms [Protocol][1],
+   * returns a function that operates on streams `Stream<A> => Stream<B>`.
+   *
+   * [1]: https://github.com/cognitect-labs/transducers-js#the-transducer-protocol
+   */
+  transduce(transducer, stream) {
+    return sink => {
       let thisDisposed = false
       let sourceDisposer = null
 
@@ -486,4 +426,8 @@ export function transduce(transducer) {
         disposeSource()
       }
     }
-}
+  },
+
+})
+
+export default Stream

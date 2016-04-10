@@ -1,8 +1,8 @@
 /* @flow */
 
 import fl from 'fantasy-land'
-import * as bs from './main'
-import Compose from './compose'
+import BS from './main'
+// import Compose from './compose'
 
 export class Stream {
 
@@ -25,113 +25,109 @@ export class Stream {
     //
     //    const basicStream2 = map(x => x * 2)(wrapped.observe)
     //
-    this.observe = bs.fromLoose(basicStream)
+    this.observe = BS.fromLoose(basicStream)
   }
 
   // Semigroup
-  concat(other) {
-    return new Stream(bs.merge([this.observe, other.observe]))
+  [fl.concat](other) {
+    return new Stream(BS.concat([this.observe, other.observe]))
   }
 
   // Monoid
-  static empty() {
-    return new Stream(bs.empty)
+  static [fl.empty]() {
+    return new Stream(BS.empty())
   }
-  empty() {
+  [fl.empty]() {
     return Stream.empty()
   }
 
   // Functor
-  map(f) {
-    return new Stream(bs.map(f)(this.observe))
+  [fl.map](f) {
+    return new Stream(BS.map(f)(this.observe))
   }
 
   // Apply
-  ap(other) {
+  [fl.ap](other) {
     const streamF = this.observe
-    return new Stream(bs.ap(streamF)(other.observe))
+    return new Stream(BS.ap(streamF)(other.observe))
   }
 
   // Applicative
-  static of(x) {
-    return new Stream(bs.just(x))
+  static [fl.of](x) {
+    return new Stream(BS.of(x))
   }
-  of(x) {
+  [fl.of](x) {
     return Stream.of(x)
   }
 
   // Chain
-  chain(f) {
-    return new Stream(bs.chain(x => f(x).observe)(this.observe))
+  [fl.chain](f) {
+    return new Stream(BS.chain(x => f(x).observe)(this.observe))
   }
 
 
   // ------------------ Not from FL ------------------
 
   filter(f) {
-    return new Stream(bs.filter(f)(this.observe))
+    return new Stream(BS.filter(f)(this.observe))
   }
 
   scan(f, seed) {
-    return new Stream(bs.scan(f, seed)(this.observe))
+    return new Stream(BS.scan(f, seed)(this.observe))
   }
 
   chainLatest(f) {
-    return new Stream(bs.chainLatest(x => f(x).observe)(this.observe))
+    return new Stream(BS.chainLatest(x => f(x).observe)(this.observe))
   }
 
   take(n) {
-    return new Stream(bs.take(n)(this.observe))
+    return new Stream(BS.take(n)(this.observe))
   }
 
   takeWhile(f) {
-    return new Stream(bs.takeWhile(f)(this.observe))
+    return new Stream(BS.takeWhile(f)(this.observe))
   }
 
   takeUntil(other) {
-    return new Stream(bs.takeUntil(other.observe)(this.observe))
+    return new Stream(BS.takeUntil(other.observe)(this.observe))
   }
 
   skip(n) {
-    return new Stream(bs.skip(n)(this.observe))
+    return new Stream(BS.skip(n)(this.observe))
   }
 
   skipWhile(f) {
-    return new Stream(bs.skipWhile(f)(this.observe))
+    return new Stream(BS.skipWhile(f)(this.observe))
   }
 
   skipDuplicates(f) {
-    return new Stream(bs.skipDuplicates(f)(this.observe))
+    return new Stream(BS.skipDuplicates(f)(this.observe))
   }
 
   multicast() {
-    return new Stream(bs.multicast(this.observe))
+    return new Stream(BS.multicast(this.observe))
   }
 
   startWith(x) {
-    return new Stream(bs.startWith(x)(this.observe))
+    return new Stream(BS.startWith(x)(this.observe))
   }
 
   transduce(transducer) {
-    return new Stream(bs.transduce(transducer)(this.observe))
-  }
-
-  static merge(streams) {
-    return new Stream(bs.merge(streams.map(x => x.observe)))
+    return new Stream(BS.transduce(transducer)(this.observe))
   }
 
   static map2(f) {
-    const lifted = bs.map2(f)
+    const lifted = BS.map2(f)
     return (sA, sB) => new Stream(lifted(sA.observe, sB.observe))
   }
 
   static map3(f) {
-    const lifted = bs.map3(f)
+    const lifted = BS.map3(f)
     return (sA, sB, sC) => new Stream(lifted(sA.observe, sB.observe, sC.observe))
   }
 
   static combineArray(arr) {
-    return new Stream(bs.combineArray(arr.map(x => x.observe)))
+    return new Stream(BS.combineArray(arr.map(x => x.observe)))
   }
 
   static combineObject(obj) {
@@ -139,21 +135,11 @@ export class Stream {
     Object.keys(obj).forEach(key => {
       ofBasicStreams[key] = obj[key].observe
     })
-    return new Stream(bs.combineObject(ofBasicStreams))
+    return new Stream(BS.combineObject(ofBasicStreams))
   }
 
-  static Compose(InnerType) {
-    return Compose(InnerType)
-  }
+  // static Compose(InnerType) {
+  //   return Compose(InnerType)
+  // }
 
 }
-
-function addFlMethods(constructor, proto) {
-  ['concat', 'empty', 'map', 'ap', 'of', 'chain'].forEach(name => {
-    proto[fl[name]] = proto[name]
-  })
-  ;['empty', 'of'].forEach(name => {
-    constructor[fl[name]] = constructor[name]
-  })
-}
-addFlMethods(Stream, Stream.prototype)

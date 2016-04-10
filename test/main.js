@@ -1,9 +1,11 @@
 import test from 'tape-catch'
 import transducers from 'transducers-js'
-import {
+import Stream from '../src/main'
+
+const {
   fromLoose,
   empty,
-  just,
+  of,
   map,
   filter,
   chain,
@@ -11,7 +13,7 @@ import {
   ap,
   map2,
   map3,
-  merge,
+  concat,
   scan,
   take,
   takeWhile,
@@ -24,7 +26,7 @@ import {
   combineArray,
   combineObject,
   transduce,
-} from '../src/main'
+} = Stream
 
 const noop = () => {}
 
@@ -163,18 +165,18 @@ wrap('fromLoose', test => {
 wrap('empty', test => {
 
   test('works ...', t => {
-    empty(t.fail)()
+    empty()(t.fail)()
   })
 
 })
 
 
 
-wrap('just', test => {
+wrap('of', test => {
 
   test('calls callback with the value', t => {
     t.plan(1)
-    just(1)(t.calledWith(1))
+    of(1)(t.calledWith(1))
   })
 
 })
@@ -187,7 +189,7 @@ wrap('map', test => {
 
   test('modifies values with provided fn', t => {
     t.plan(1)
-    lifted(just(1))(t.calledWith(2))
+    lifted(of(1))(t.calledWith(2))
   })
 
   test('preserves disposer', t => {
@@ -295,9 +297,9 @@ wrap('ap', test => {
 
 wrap('map2', test => {
 
-  test('works with just', t => {
+  test('works with of', t => {
     t.plan(1)
-    map2((x, y) => [x, y])(just(5), just(3))(t.calledWith([5, 3]))
+    map2((x, y) => [x, y])(of(5), of(3))(t.calledWith([5, 3]))
   })
 
   test('disposers work', t => {
@@ -311,9 +313,9 @@ wrap('map2', test => {
 
 wrap('map3', test => {
 
-  test('works with just', t => {
+  test('works with of', t => {
     t.plan(1)
-    map3((x, y, z) => [x, y, z])(just(5), just(3), just(2))(t.calledWith([5, 3, 2]))
+    map3((x, y, z) => [x, y, z])(of(5), of(3), of(2))(t.calledWith([5, 3, 2]))
   })
 
   test('disposers work', t => {
@@ -326,17 +328,17 @@ wrap('map3', test => {
 
 
 
-wrap('merge', test => {
+wrap('concat', test => {
 
-  test('result stream contains values from sources (using just)', t => {
+  test('result stream contains values from sources (using of)', t => {
     t.plan(2)
-    merge([just(1), just(2)])(t.calledWith(1, 2))
+    concat([of(1), of(2)])(t.calledWith(1, 2))
   })
 
   test('result stream contains values from sources (using pool)', t => {
     t.plan(4)
     const p = pool()
-    merge([p.add('a'), p.add('b')])(t.calledWith(1, 2, 3, 4))
+    concat([p.add('a'), p.add('b')])(t.calledWith(1, 2, 3, 4))
     p.pushTo('a', 1)
     p.pushTo('b', 2)
     p.pushTo('a', 3)
@@ -345,7 +347,7 @@ wrap('merge', test => {
 
   test('disposers called properly', t => {
     t.plan(3)
-    merge([() => t.calledOnce(), () => t.calledOnce(), () => t.calledOnce()])(noop)()
+    concat([() => t.calledOnce(), () => t.calledOnce(), () => t.calledOnce()])(noop)()
   })
 
 })
@@ -375,7 +377,7 @@ wrap('take', test => {
   const lifted = take(2)
 
   test('take(0) return empty stream', t => {
-    take(0)(just(1))(t.fail)
+    take(0)(of(1))(t.fail)
   })
 
   test('subscribes to source even if n=0', t => {
@@ -426,7 +428,7 @@ wrap('takeWhile', test => {
   const lifted = takeWhile(x => x < 3)
 
   test('takeWhile(() => false) return empty stream', t => {
-    takeWhile(() => false)(just(1))(t.fail)
+    takeWhile(() => false)(of(1))(t.fail)
   })
 
   test('takes values that satisfy predicate until first value that don\'t then calls disposer (async)', t => {
@@ -478,12 +480,12 @@ wrap('takeUntil', test => {
 
   test('controller has sync value: contains sync values from source', t => {
     t.plan(2)
-    takeUntil(just(1))(fromArray([1, 2]))(t.calledWith(1, 2))
+    takeUntil(of(1))(fromArray([1, 2]))(t.calledWith(1, 2))
   })
 
   test('controller has sync value: doesn\'t contain async values from source', t => {
     const p = pool()
-    takeUntil(just(1))(p.add('source'))(t.fail)
+    takeUntil(of(1))(p.add('source'))(t.fail)
     p.pushTo('source', 1)
   })
 
@@ -569,7 +571,7 @@ wrap('skipDuplicates', test => {
 
   test('first element always comes through', t => {
     t.plan(1)
-    lifted(just(1))(t.calledWith(1))
+    lifted(of(1))(t.calledWith(1))
   })
 
   test('removes duplicates', t => {
@@ -663,7 +665,7 @@ wrap('startWith', test => {
 
   test('adds a value', t => {
     t.plan(2)
-    lifted(just(1))(t.calledWith(0, 1))
+    lifted(of(1))(t.calledWith(0, 1))
   })
 
   test('preserves disposer', t => {
@@ -676,16 +678,16 @@ wrap('startWith', test => {
 
 wrap('combineArray', test => {
 
-  test('works fine with just()', t => {
+  test('works fine with of()', t => {
     t.plan(1)
     combineArray([
-      just(1),
-      just(2),
-      just(3),
+      of(1),
+      of(2),
+      of(3),
     ])(t.calledWith([1, 2, 3]))
   })
 
-  test('works fine with regular (not just) streams', t => {
+  test('works fine with regular (not of) streams', t => {
     t.plan(4)
     const p = pool()
     combineArray([
@@ -721,16 +723,16 @@ wrap('combineArray', test => {
 
 wrap('combineObject', test => {
 
-  test('works fine with just()', t => {
+  test('works fine with of()', t => {
     t.plan(1)
     combineObject({
-      a: just(1),
-      b: just(2),
-      c: just(3),
+      a: of(1),
+      b: of(2),
+      c: of(3),
     })(t.calledWith({a: 1, b: 2, c: 3}))
   })
 
-  test('works fine with regular (not just) streams', t => {
+  test('works fine with regular (not of) streams', t => {
     t.plan(4)
     const p = pool()
     combineObject({
@@ -770,7 +772,7 @@ wrap('transduce. map', test => {
 
   test('modifies values', t => {
     t.plan(1)
-    const stream = just(1)
+    const stream = of(1)
     const stream2 = lifted(stream)
     stream2(payload => {
       t.equal(payload, 2)

@@ -40,7 +40,7 @@ for docs in form of code comments, this is all docs we have for now.
 A quick example to get you started:
 
 ```js
-import {map} from 'basic-streams'
+import {Stream} from 'basic-streams'
 
 const myStream = sink => {
   sink(1)
@@ -49,7 +49,7 @@ const myStream = sink => {
   return () => {}
 }
 
-const myStream2 = map(x => x * 2)(myStream)
+const myStream2 = Stream.map(x => x * 2, myStream)
 
 // subscribe
 const unsub = myStream2(x => {
@@ -101,25 +101,12 @@ for docs.
 Quick example:
 
 ```js
-import {Stream} from 'basic-streams/lib/fantasy'
+import {FantasyStream} from 'basic-streams'
 
-const stream = Stream.of(1).map(x => x * 2)
+const stream = FantasyStream.of(1).map(x => x * 2)
 
 stream.observe(x => {  console.log(x)  }) // > 2
 ```
-
-In the UMD build (umd/basicStreams.js), `fantasy` is exposed as `BasicStreams.fantasy`.
-
-
-## Utils
-
-The package also provides some utilities that you might want to use when
-working with main library functionality. Those utils are available as
-`basic-streams/lib/utils` for CommonJS module users,
-and as `BasicStreams.utils` in the UMD build.
-
-Check [`src/utils.js`](https://github.com/rpominov/basic-streams/blob/master/src/utils.js)
-to see what is in there.
 
 
 ## Development

@@ -1,5 +1,4 @@
-export * from './main'
-import * as fantasy from './fantasy'
-import * as utils from './utils'
+import Stream from './main'
+import {Stream as FantasyStream} from './fantasy'
 
-export {fantasy, utils}
+export {Stream, FantasyStream}
