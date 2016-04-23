@@ -105,13 +105,13 @@ const Stream = fromIncomplete({
     return SObject.sequence(Stream, obj)
   },
 
-  /* Given a loose basic-stream, that obeys at least following laws:
+  /* Given a loose basic-stream, that obeys at least following rules:
    *
    *   1. Stream is a function,
    *   2. It accepts one argument, the subscriber function (aka `sink`);
    *
-   * returns a valid basic-steam, that obeys all laws of a stream from protocol,
-   * and also immune to violations of any of usage laws except:
+   * returns a valid basic-steam, that obeys all rules of a stream from protocol,
+   * and also immune to violations of any of usage rules except:
    *
    *   2. `sink` must be a function
    */

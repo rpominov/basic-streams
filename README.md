@@ -68,7 +68,7 @@ unsub()
 
 ## Basic-streams protocol
 
-A valid Stream must obey the following laws:
+A valid Stream must obey the following rules:
 
 1. Stream is a function
 1. It accepts one argument, the subscriber function (aka `sink`)
@@ -77,7 +77,7 @@ A valid Stream must obey the following laws:
 1. `disposer` must always return `undefined`
 1. After `disposer` was called, `sink` must not be called
 
-When a Stream is used the following laws must be obeyed:
+When a Stream is used the following rules must be obeyed:
 
 1. `stream` must be called with one argument, `sink`
 1. `sink` must be a function
