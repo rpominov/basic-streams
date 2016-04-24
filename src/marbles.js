@@ -158,14 +158,24 @@ export function toString(marbles) {
 export function exec(sourcesSpec, transformer) {
 
   let queue = []
-  function mapQueue(f) {
-    queue = f(queue)
+  let inUpdate = false
+  const plannedUpdates = []
+  function updateQueue(f) {
+    plannedUpdates.push(f)
+    if (inUpdate) {
+      return
+    }
+    inUpdate = true
+    while(plannedUpdates.length > 0) {
+      queue = plannedUpdates.shift()(queue)
+    }
+    inUpdate = false
   }
 
   const sources = SObject.map(marbles => {
     return sink => {
-      mapQueue(Queue.push({sink, marbles}))
-      return () => {mapQueue(Queue.removeBySink(sink))}
+      updateQueue(Queue.push({sink, marbles}))
+      return () => {updateQueue(Queue.removeBySink(sink))}
     }
   }, sourcesSpec)
 
@@ -178,7 +188,7 @@ export function exec(sourcesSpec, transformer) {
   const disposeTarget = targetStream(toResult(value))
 
   while (Queue.isNotEmpty(queue)) {
-    mapQueue(Queue.execNext(toResult(span)))
+    updateQueue(Queue.execNext(toResult(span)))
   }
 
   disposeTarget()
