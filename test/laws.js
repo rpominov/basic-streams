@@ -1,5 +1,5 @@
 import test from 'lobot/test'
-import {fromString as _, exec as _exec, toString} from '../src/marbles'
+import {fromString as _, exec as _exec/*, toString*/} from '../src/marbles'
 import S from '../src/main'
 
 const prep = sourcesSpec => transformer => _exec(sourcesSpec, transformer)
@@ -54,18 +54,18 @@ testl('Chain. Derived Apply. Composition.', 1, t => {
 
   // A.ap(A.ap(A.map(f => g => x => f(g(x)), a), u), v) ≡ A.ap(a, A.ap(u, v))
   t.deepEqual(
-    toString(exec(s => {
+    exec(s => {
       const a = S.map(x => y => [x, y], s.a)
       const u = S.map(x => y => [x, y], s.u)
       const v = s.v
       return ap(ap(S.map(f => g => x => f(g(x)), a), u), v)
-    })),
-    toString(exec(s => {
+    }),
+    exec(s => {
       const a = S.map(x => y => [x, y], s.a)
       const u = S.map(x => y => [x, y], s.u)
       const v = s.v
       return ap(a, ap(u, v))
-    }))
+    })
   )
 })
 
