@@ -42,7 +42,7 @@ const source = sequentially([1, 2, 3], 1000)
 
 const result2 = StreamMonad.Do(function*() {
   const x = yield source
-  const y = yield sequentially([x + 10, x + 20, x + 30], 600)
-  return y
+  const y = yield sequentially([10, 20, 30], 600)
+  return x + y
 })
 result2(log('with do:'))
