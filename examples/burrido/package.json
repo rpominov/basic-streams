@@ -1,0 +1,6 @@
+{
+  "private": true,
+  "dependencies": {
+    "burrido": "1.0.2"
+  }
+}
