@@ -14,10 +14,10 @@ The minor (middle) number of version is incremented when breaking changes are ma
 npm install basic-streams
 ```
 
-Also available on https://npmcdn.com to play in JSFiddle etc.:
+Also available on https://unpkg.com to play in JSFiddle etc.:
 
- - https://npmcdn.com/basic-streams/umd/basicStreams.js
- - https://npmcdn.com/basic-streams/umd/basicStreams.min.js
+ - https://unpkg.com/basic-streams/umd/basicStreams.js
+ - https://unpkg.com/basic-streams/umd/basicStreams.min.js
 
 ## Main idea
 
