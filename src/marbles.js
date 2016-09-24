@@ -194,3 +194,18 @@ export function exec(sourcesSpec, transformer) {
   disposeTarget()
   return Marbles.squashSpans(result)
 }
+
+/* TODO
+
+renderMany({
+  a: fromString(...),
+  b: fromString(...),
+  c: fromString(...),
+})
+
+a: _ _1___
+b: _1_ ___
+
+& add `+ 1` in Span.toString
+
+*/
