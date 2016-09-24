@@ -1,7 +1,7 @@
 {
   "name": "basic-streams",
   "version": "0.4.4",
-  "description": "Experimental very basic reactive streams implementation for JavaScript",
+  "description": "Very basic reactive streams implementation for JavaScript",
   "main": "lib/index.js",
   "jsnext:main": "lib-es/index.js",
   "files": [
@@ -24,7 +24,8 @@
     "streams",
     "stream",
     "observables",
-    "observable"
+    "observable",
+    "static-land"
   ],
   "author": "Roman Pominov <rpominov@gmail.com>",
   "license": "MIT",
@@ -32,7 +33,6 @@
     "babel-eslint": "6.1.2",
     "eslint": "3.6.0",
     "lobot": "0.1.22",
-    "static-land": "0.1.5",
     "transducers-js": "0.4.174"
   },
   "repository": {
