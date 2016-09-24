@@ -1,5 +1,4 @@
 import {fromIncomplete, SArray, SObject} from 'static-land'
-import composeWithInnerType from './compose'
 
 // We're not sure yet if this function should be public
 function fromArray(xs) {
@@ -428,8 +427,6 @@ const Stream = fromIncomplete({
       }
     }
   },
-
-  composeWithInnerType,
 
 })
 

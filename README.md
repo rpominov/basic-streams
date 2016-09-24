@@ -60,11 +60,6 @@ const unsub = myStream2(x => {
 unsub()
 ```
 
-## Examples
-
- - [Morse code](https://jsfiddle.net/y94qt2aq/)
- - [Reduce without built in completion](https://jsfiddle.net/sp6mj2ng/)
-
 
 ## Basic-streams protocol
 
@@ -87,26 +82,6 @@ When a Stream is used the following rules must be obeyed:
 
 If an invalid Stream is used with this library, behavior is undefined.
 
-
-## Fantasy Land wrapper
-
-The library also provides a wrapper that can wrap a basic stream (function)
-to an object that exposes methods as
-[Fantasy Land Specification](https://github.com/fantasyland/fantasy-land)
-requires.
-
-See [`src/fantasy.js`](https://github.com/rpominov/basic-streams/blob/master/src/fantasy.js)
-for docs.
-
-Quick example:
-
-```js
-import {FantasyStream} from 'basic-streams'
-
-const stream = FantasyStream.of(1).map(x => x * 2)
-
-stream.observe(x => {  console.log(x)  }) // > 2
-```
 
 
 ## Development
