@@ -11,8 +11,8 @@ const {
   chain,
   chainLatest,
   ap,
-  map2,
-  map3,
+  // map2,
+  // map3,
   concat,
   scan,
   take,
@@ -23,8 +23,8 @@ const {
   skipDuplicates,
   multicast,
   startWith,
-  combineArray,
-  combineObject,
+  // combineArray,
+  // combineObject,
   transduce,
 } = Stream
 
@@ -185,7 +185,7 @@ wrap('of', test => {
 
 wrap('map', test => {
 
-  const lifted = map(x => x + 1)
+  const lifted = s => map(x => x + 1, s)
 
   test('modifies values with provided fn', t => {
     t.plan(1)
@@ -203,7 +203,7 @@ wrap('map', test => {
 
 wrap('filter', test => {
 
-  const lifted = filter(x => x > 1)
+  const lifted = s => filter(x => x > 1, s)
 
   test('removes values', t => {
     t.plan(2)
@@ -221,7 +221,7 @@ wrap('filter', test => {
 
 wrap('chain', test => {
 
-  const lifted = chain(x => fromArray([x, x]))
+  const lifted = s => chain(x => fromArray([x, x]), s)
 
   test('result stream contains values from spawned', t => {
     t.plan(4)
@@ -235,10 +235,9 @@ wrap('chain', test => {
 
   test('preserves disposer of spawned streams', t => {
     t.plan(2)
-    const lifted = chain(() => {
+    chain(() => {
       return () => t.calledOnce()
-    })
-    lifted(fromArray([1, 2]))(noop)()
+    }, fromArray([1, 2]))(noop)()
   })
 
 })
@@ -247,7 +246,7 @@ wrap('chain', test => {
 
 wrap('chainLatest', test => {
 
-  const lifted = chainLatest(x => fromArray([x, x]))
+  const lifted = s => chainLatest(x => fromArray([x, x]), s)
 
   test('result stream contains values from spawned', t => {
     t.plan(4)
@@ -257,7 +256,7 @@ wrap('chainLatest', test => {
   test('result stream contain only values that was emited before next spawned & disposers called correctly', t => {
     t.plan(6)
     const p = pool()
-    const unsub = chainLatest(p.add)(p.add('main'))(t.calledWith(1, 2, 3))
+    const unsub = chainLatest(p.add, p.add('main'))(t.calledWith(1, 2, 3))
     p.pushTo('main', 'aaa')
     p.pushTo('aaa', 1)
     p.pushTo('aaa', 2)
@@ -273,13 +272,12 @@ wrap('chainLatest', test => {
 
 
 
-
 wrap('ap', test => {
 
   test('updates result when inputs update', t => {
     t.plan(3)
     const p = pool()
-    ap(p.add('ofF'))(p.add('ofV'))(t.calledWith(3, 4, 6))
+    ap(p.add('ofF'), p.add('ofV'))(t.calledWith(3, 4, 6))
     p.pushTo('ofF', x => x + 1)
     p.pushTo('ofV', 2)
     p.pushTo('ofF', x => x * 2)
@@ -288,43 +286,44 @@ wrap('ap', test => {
 
   test('preserves disposers...', t => {
     t.plan(2)
-    ap(() => t.calledOnce())(() => t.calledOnce())(noop)()
+    ap(() => t.calledOnce(), () => t.calledOnce())(noop)()
   })
 
 })
 
 
 
-wrap('map2', test => {
+// TODO: reimplement, we had it for free from static-land
+// wrap('map2', test => {
+//
+//   test('works with of', t => {
+//     t.plan(1)
+//     map2((x, y) => [x, y], of(5), of(3))(t.calledWith([5, 3]))
+//   })
+//
+//   test('disposers work', t => {
+//     t.plan(2)
+//     map2((x, y) => [x, y], () => t.calledOnce(), () => t.calledOnce())(noop)()
+//   })
+//
+// })
 
-  test('works with of', t => {
-    t.plan(1)
-    map2((x, y) => [x, y])(of(5), of(3))(t.calledWith([5, 3]))
-  })
 
-  test('disposers work', t => {
-    t.plan(2)
-    map2((x, y) => [x, y])(() => t.calledOnce(), () => t.calledOnce())(noop)()
-  })
-
-})
-
-
-
-wrap('map3', test => {
-
-  test('works with of', t => {
-    t.plan(1)
-    map3((x, y, z) => [x, y, z])(of(5), of(3), of(2))(t.calledWith([5, 3, 2]))
-  })
-
-  test('disposers work', t => {
-    t.plan(3)
-    const stream = map3((x, y, z) => [x, y, z])(() => t.calledOnce(), () => t.calledOnce(), () => t.calledOnce())
-    stream(noop)()
-  })
-
-})
+// TODO: reimplement, we had it for free from static-land
+// wrap('map3', test => {
+//
+//   test('works with of', t => {
+//     t.plan(1)
+//     map3((x, y, z) => [x, y, z])(of(5), of(3), of(2))(t.calledWith([5, 3, 2]))
+//   })
+//
+//   test('disposers work', t => {
+//     t.plan(3)
+//     const stream = map3((x, y, z) => [x, y, z])(() => t.calledOnce(), () => t.calledOnce(), () => t.calledOnce())
+//     stream(noop)()
+//   })
+//
+// })
 
 
 
@@ -356,7 +355,7 @@ wrap('concat', test => {
 
 wrap('scan', test => {
 
-  const lifted = scan((r, x) => r.concat([x]), [])
+  const lifted = s => scan((r, x) => r.concat([x]), [], s)
 
   test('contains correct values', t => {
     t.plan(4)
@@ -374,10 +373,10 @@ wrap('scan', test => {
 
 wrap('take', test => {
 
-  const lifted = take(2)
+  const lifted = s => take(2, s)
 
   test('take(0) return empty stream', t => {
-    take(0)(of(1))(t.fail)
+    take(0, of(1))(t.fail)
   })
 
   test('subscribes to source even if n=0', t => {
@@ -386,7 +385,7 @@ wrap('take', test => {
       t.calledOnce()()
       return noop
     }
-    take(0)(stream)(noop)
+    take(0, stream)(noop)
 
   })
 
@@ -425,10 +424,10 @@ wrap('take', test => {
 
 wrap('takeWhile', test => {
 
-  const lifted = takeWhile(x => x < 3)
+  const lifted = s => takeWhile(x => x < 3, s)
 
   test('takeWhile(() => false) return empty stream', t => {
-    takeWhile(() => false)(of(1))(t.fail)
+    takeWhile(() => false, of(1))(t.fail)
   })
 
   test('takes values that satisfy predicate until first value that don\'t then calls disposer (async)', t => {
@@ -471,7 +470,7 @@ wrap('takeUntil', test => {
   test('takes async values from source until async value from controller', t => {
     t.plan(2)
     const p = pool()
-    takeUntil(p.add('controller'))(p.add('source'))(t.calledWith(1, 2))
+    takeUntil(p.add('controller'), p.add('source'))(t.calledWith(1, 2))
     p.pushTo('source', 1)
     p.pushTo('source', 2)
     p.pushTo('controller', 0)
@@ -480,12 +479,12 @@ wrap('takeUntil', test => {
 
   test('controller has sync value: contains sync values from source', t => {
     t.plan(2)
-    takeUntil(of(1))(fromArray([1, 2]))(t.calledWith(1, 2))
+    takeUntil(of(1), fromArray([1, 2]))(t.calledWith(1, 2))
   })
 
   test('controller has sync value: doesn\'t contain async values from source', t => {
     const p = pool()
-    takeUntil(of(1))(p.add('source'))(t.fail)
+    takeUntil(of(1), p.add('source'))(t.fail)
     p.pushTo('source', 1)
   })
 
@@ -495,7 +494,7 @@ wrap('takeUntil', test => {
       sink(1)
       return t.calledOnce()
     }
-    takeUntil(controller)(() => t.calledOnce())(noop)
+    takeUntil(controller, () => t.calledOnce())(noop)
   })
 
   test('calls disposers properly (async value in controller)', t => {
@@ -505,14 +504,14 @@ wrap('takeUntil', test => {
       sink = _sink
       return t.calledOnce()
     }
-    const resultDis = takeUntil(controller)(() => t.calledOnce())(noop)
+    const resultDis = takeUntil(controller, () => t.calledOnce())(noop)
     sink && sink(0)
     resultDis() // should't cause additional call of disposers
   })
 
   test('calls disposers when we dispose result stream erlier', t => {
     t.plan(2)
-    takeUntil(() => t.calledOnce())(() => t.calledOnce())(noop)()
+    takeUntil(() => t.calledOnce(), () => t.calledOnce())(noop)()
   })
 
 })
@@ -521,7 +520,7 @@ wrap('takeUntil', test => {
 
 wrap('skip', test => {
 
-  const lifted = skip(2)
+  const lifted = s => skip(2, s)
 
   test('skips first N items', t => {
     t.plan(2)
@@ -530,7 +529,7 @@ wrap('skip', test => {
 
   test('returns equivalent stream if N=0', t => {
     t.plan(2)
-    skip(0)(fromArray([1, 2]))(t.calledWith(1, 2))
+    skip(0, fromArray([1, 2]))(t.calledWith(1, 2))
   })
 
   test('preserves disposer', t => {
@@ -544,7 +543,7 @@ wrap('skip', test => {
 
 wrap('skipWhile', test => {
 
-  const lifted = skipWhile(x => x < 3)
+  const lifted = s => skipWhile(x => x < 3, s)
 
   test('skips first items that satisfy predicate', t => {
     t.plan(2)
@@ -553,7 +552,7 @@ wrap('skipWhile', test => {
 
   test('returns equivalent stream if predicate is () => false', t => {
     t.plan(2)
-    skipWhile(() => false)(fromArray([1, 2]))(t.calledWith(1, 2))
+    skipWhile(() => false, fromArray([1, 2]))(t.calledWith(1, 2))
   })
 
   test('preserves disposer', t => {
@@ -567,7 +566,7 @@ wrap('skipWhile', test => {
 
 wrap('skipDuplicates', test => {
 
-  const lifted = skipDuplicates((x, y) => Math.round(x) === Math.round(y))
+  const lifted = s => skipDuplicates((x, y) => Math.round(x) === Math.round(y), s)
 
   test('first element always comes through', t => {
     t.plan(1)
@@ -661,7 +660,7 @@ wrap('multicast', test => {
 
 
 wrap('startWith', test => {
-  const lifted = startWith(0)
+  const lifted = s => startWith(0, s)
 
   test('adds a value', t => {
     t.plan(2)
@@ -676,99 +675,100 @@ wrap('startWith', test => {
 
 
 
-wrap('combineArray', test => {
+// TODO: reimplement, we had it for free from static-land
+// wrap('combineArray', test => {
+//
+//   test('works fine with of()', t => {
+//     t.plan(1)
+//     combineArray([
+//       of(1),
+//       of(2),
+//       of(3),
+//     ])(t.calledWith([1, 2, 3]))
+//   })
+//
+//   test('works fine with regular (not of) streams', t => {
+//     t.plan(4)
+//     const p = pool()
+//     combineArray([
+//       p.add('a'),
+//       p.add('b'),
+//       p.add('c'),
+//     ])(t.calledWith(
+//       [1, 2, 3],
+//       [4, 2, 3],
+//       [4, 5, 3],
+//       [4, 5, 6]
+//     ))
+//     p.pushTo('a', 1)
+//     p.pushTo('b', 2)
+//     p.pushTo('c', 3)
+//     p.pushTo('a', 4)
+//     p.pushTo('b', 5)
+//     p.pushTo('c', 6)
+//   })
+//
+//   test('disposers work', t => {
+//     t.plan(3)
+//     combineArray([
+//       () => t.calledOnce(),
+//       () => t.calledOnce(),
+//       () => t.calledOnce(),
+//     ])(noop)()
+//   })
+//
+// })
 
-  test('works fine with of()', t => {
-    t.plan(1)
-    combineArray([
-      of(1),
-      of(2),
-      of(3),
-    ])(t.calledWith([1, 2, 3]))
-  })
 
-  test('works fine with regular (not of) streams', t => {
-    t.plan(4)
-    const p = pool()
-    combineArray([
-      p.add('a'),
-      p.add('b'),
-      p.add('c'),
-    ])(t.calledWith(
-      [1, 2, 3],
-      [4, 2, 3],
-      [4, 5, 3],
-      [4, 5, 6]
-    ))
-    p.pushTo('a', 1)
-    p.pushTo('b', 2)
-    p.pushTo('c', 3)
-    p.pushTo('a', 4)
-    p.pushTo('b', 5)
-    p.pushTo('c', 6)
-  })
-
-  test('disposers work', t => {
-    t.plan(3)
-    combineArray([
-      () => t.calledOnce(),
-      () => t.calledOnce(),
-      () => t.calledOnce(),
-    ])(noop)()
-  })
-
-})
-
-
-
-wrap('combineObject', test => {
-
-  test('works fine with of()', t => {
-    t.plan(1)
-    combineObject({
-      a: of(1),
-      b: of(2),
-      c: of(3),
-    })(t.calledWith({a: 1, b: 2, c: 3}))
-  })
-
-  test('works fine with regular (not of) streams', t => {
-    t.plan(4)
-    const p = pool()
-    combineObject({
-      a: p.add('a'),
-      b: p.add('b'),
-      c: p.add('c'),
-    })(t.calledWith(
-      {a: 1, b: 2, c: 3},
-      {a: 4, b: 2, c: 3},
-      {a: 4, b: 5, c: 3},
-      {a: 4, b: 5, c: 6}
-    ))
-    p.pushTo('a', 1)
-    p.pushTo('b', 2)
-    p.pushTo('c', 3)
-    p.pushTo('a', 4)
-    p.pushTo('b', 5)
-    p.pushTo('c', 6)
-  })
-
-  test('disposers work', t => {
-    t.plan(3)
-    combineObject({
-      a: () => t.calledOnce(),
-      b: () => t.calledOnce(),
-      c: () => t.calledOnce(),
-    })(noop)()
-  })
-
-})
+// TODO: reimplement, we had it for free from static-land
+// wrap('combineObject', test => {
+//
+//   test('works fine with of()', t => {
+//     t.plan(1)
+//     combineObject({
+//       a: of(1),
+//       b: of(2),
+//       c: of(3),
+//     })(t.calledWith({a: 1, b: 2, c: 3}))
+//   })
+//
+//   test('works fine with regular (not of) streams', t => {
+//     t.plan(4)
+//     const p = pool()
+//     combineObject({
+//       a: p.add('a'),
+//       b: p.add('b'),
+//       c: p.add('c'),
+//     })(t.calledWith(
+//       {a: 1, b: 2, c: 3},
+//       {a: 4, b: 2, c: 3},
+//       {a: 4, b: 5, c: 3},
+//       {a: 4, b: 5, c: 6}
+//     ))
+//     p.pushTo('a', 1)
+//     p.pushTo('b', 2)
+//     p.pushTo('c', 3)
+//     p.pushTo('a', 4)
+//     p.pushTo('b', 5)
+//     p.pushTo('c', 6)
+//   })
+//
+//   test('disposers work', t => {
+//     t.plan(3)
+//     combineObject({
+//       a: () => t.calledOnce(),
+//       b: () => t.calledOnce(),
+//       c: () => t.calledOnce(),
+//     })(noop)()
+//   })
+//
+// })
 
 
 
 wrap('transduce. map', test => {
 
-  const lifted = transduce(transducers.map(x => x + 1))
+  const lifted = s => transduce(transducers.map(x => x + 1), s)
 
   test('modifies values', t => {
     t.plan(1)
@@ -788,7 +788,7 @@ wrap('transduce. map', test => {
 
 wrap('transduce. take', test => {
 
-  const lifted = transduce(transducers.take(2))
+  const lifted = s => transduce(transducers.take(2), s)
 
   test('takes first n and then calls disposer of source stream (async)', t => {
     t.plan(4)
@@ -823,10 +823,9 @@ wrap('transduce. take', test => {
 
 })
 
-
 wrap('transduce. cat+take', test => {
 
-  const lifted = transduce(transducers.comp(transducers.cat, transducers.take(3)))
+  const lifted = s => transduce(transducers.comp(transducers.cat, transducers.take(3)), s)
 
   test('works... (sync)', t => {
     t.plan(3)
@@ -837,7 +836,7 @@ wrap('transduce. cat+take', test => {
 
 wrap('transduce. cat', test => {
 
-  const lifted = transduce(transducers.cat)
+  const lifted = s => transduce(transducers.cat, s)
 
   test('works... (sync)', t => {
     t.plan(4)
@@ -861,7 +860,7 @@ wrap('transduce. cat', test => {
 })
 
 wrap('transduce. take+partitionAll', test => {
-  const lifted = transduce(transducers.comp(transducers.take(3), transducers.partitionAll(2)))
+  const lifted = s => transduce(transducers.comp(transducers.take(3), transducers.partitionAll(2)), s)
   test('works... (sync)', t => {
     t.plan(2)
     lifted(fromArray([1, 2, 3, 4, 5]))(t.calledWith([1, 2], [3]))

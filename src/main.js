@@ -1,5 +1,3 @@
-import {fromIncomplete, SArray, SObject} from 'static-land'
-
 // We're not sure yet if this function should be public
 function fromArray(xs) {
   return sink => {
@@ -10,7 +8,7 @@ function fromArray(xs) {
   }
 }
 
-const Stream = fromIncomplete({
+const Stream = {
 
   /* Creates an empty stream
    */
@@ -22,7 +20,7 @@ const Stream = fromIncomplete({
    * The result stream will contain values from all streams
    */
   concat(streams) {
-    return Stream.chain(x => x)(fromArray(streams))
+    return Stream.chain(x => x, fromArray(streams))
   },
 
   /* Creates a stream containing given value
@@ -93,16 +91,16 @@ const Stream = fromIncomplete({
 
   /* Given an array of streams returns a stream of arrays.
    */
-  combineArray(arr) {
-    return SArray.sequence(Stream, arr)
-  },
+  // combineArray(arr) {
+  //   return SArray.sequence(Stream, arr)
+  // },
 
   /* Given an object (a.k.a map/hash/dictionary) of streams returns a stream of objects.
    * Same as combineArray but for objects.
    */
-  combineObject(obj) {
-    return SObject.sequence(Stream, obj)
-  },
+  // combineObject(obj) {
+  //   return SObject.sequence(Stream, obj)
+  // },
 
   /* Given a loose basic-stream, that obeys at least following rules:
    *
@@ -428,6 +426,6 @@ const Stream = fromIncomplete({
     }
   },
 
-})
+}
 
 export default Stream

@@ -35,9 +35,6 @@
     "static-land": "0.1.5",
     "transducers-js": "0.4.174"
   },
-  "dependencies": {
-    "static-land": "0.1.5"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rpominov/basic-streams.git"
