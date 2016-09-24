@@ -29,12 +29,12 @@
   "author": "Roman Pominov <rpominov@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "babel-eslint": "6.0.2",
-    "eslint": "2.6.0",
+    "babel-eslint": "6.1.2",
+    "eslint": "3.6.0",
     "fantasy-check": "0.3.2",
     "fantasy-land": "0.2.1",
-    "lobot": "0.1.11",
-    "sinon": "1.17.3",
+    "lobot": "0.1.22",
+    "sinon": "1.17.6",
     "static-land": "0.1.5",
     "transducers-js": "0.4.174"
   },
