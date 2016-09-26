@@ -91,16 +91,11 @@ const Stream = {
 
   /* Given an array of streams returns a stream of arrays.
    */
-  // combineArray(arr) {
-  //   return SArray.sequence(Stream, arr)
-  // },
+  combineArray(arr) {
+    const liftedConcat = (rs, is) => Stream.ap(Stream.map(r => i => r.concat([i]), rs), is)
+    return arr.reduce(liftedConcat, Stream.of([]))
+  },
 
-  /* Given an object (a.k.a map/hash/dictionary) of streams returns a stream of objects.
-   * Same as combineArray but for objects.
-   */
-  // combineObject(obj) {
-  //   return SObject.sequence(Stream, obj)
-  // },
 
   /* Given a loose basic-stream, that obeys at least following rules:
    *
