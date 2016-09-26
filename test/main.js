@@ -11,8 +11,8 @@ const {
   chain,
   chainLatest,
   ap,
-  // map2,
-  // map3,
+  map2,
+  map3,
   concat,
   scan,
   take,
@@ -292,37 +292,35 @@ wrap('ap', test => {
 
 
 
-// TODO: reimplement, we had it for free from static-land
-// wrap('map2', test => {
-//
-//   test('works with of', t => {
-//     t.plan(1)
-//     map2((x, y) => [x, y], of(5), of(3))(t.calledWith([5, 3]))
-//   })
-//
-//   test('disposers work', t => {
-//     t.plan(2)
-//     map2((x, y) => [x, y], () => t.calledOnce(), () => t.calledOnce())(noop)()
-//   })
-//
-// })
+wrap('map2', test => {
+
+  test('works with of', t => {
+    t.plan(1)
+    map2((x, y) => [x, y], of(5), of(3))(t.calledWith([5, 3]))
+  })
+
+  test('disposers work', t => {
+    t.plan(2)
+    map2((x, y) => [x, y], () => t.calledOnce(), () => t.calledOnce())(noop)()
+  })
+
+})
 
 
-// TODO: reimplement, we had it for free from static-land
-// wrap('map3', test => {
-//
-//   test('works with of', t => {
-//     t.plan(1)
-//     map3((x, y, z) => [x, y, z])(of(5), of(3), of(2))(t.calledWith([5, 3, 2]))
-//   })
-//
-//   test('disposers work', t => {
-//     t.plan(3)
-//     const stream = map3((x, y, z) => [x, y, z])(() => t.calledOnce(), () => t.calledOnce(), () => t.calledOnce())
-//     stream(noop)()
-//   })
-//
-// })
+wrap('map3', test => {
+
+  test('works with of', t => {
+    t.plan(1)
+    map3((x, y, z) => [x, y, z], of(5), of(3), of(2))(t.calledWith([5, 3, 2]))
+  })
+
+  test('disposers work', t => {
+    t.plan(3)
+    const stream = map3((x, y, z) => [x, y, z], () => t.calledOnce(), () => t.calledOnce(), () => t.calledOnce())
+    stream(noop)()
+  })
+
+})
 
 
 

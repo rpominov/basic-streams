@@ -89,10 +89,18 @@ const Stream = {
     }
   },
 
+  map2(fn, as, bs) {
+    return Stream.ap(Stream.map(a => b => fn(a, b), as), bs)
+  },
+
+  map3(fn, as, bs, cs) {
+    return Stream.ap(Stream.ap(Stream.map(a => b => c => fn(a, b, c), as), bs), cs)
+  },
+
   /* Given an array of streams returns a stream of arrays.
    */
   combineArray(arr) {
-    const liftedConcat = (rs, is) => Stream.ap(Stream.map(r => i => r.concat([i]), rs), is)
+    const liftedConcat = (rs, is) => Stream.map2((r, i) => r.concat([i]), rs, is)
     return arr.reduce(liftedConcat, Stream.of([]))
   },
 
