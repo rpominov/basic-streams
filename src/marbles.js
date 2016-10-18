@@ -1,5 +1,3 @@
-// import {SObject, curryAll} from 'static-land'
-//
 function isDigit(x) {
   return x.charCodeAt(0) >= '0'.charCodeAt(0) && x.charCodeAt(0) <= '9'.charCodeAt(0)
 }
@@ -22,9 +20,7 @@ const Span = {
     return Span.of(a.time + b.time)
   },
   toString(span) {
-    // this is intentionally returns one less symbol
-    // todo: fix
-    return Array(span.time).join('_')
+    return Array(span.time + 1).join('_')
   },
 }
 
@@ -47,15 +43,32 @@ const Value = {
 
 // Represents a marbles line
 const Marbles = {
-  skipSpan(time, marbles) {
-    return Marbles.mapHeadSpan(t => t - time, marbles)
+  ensureNotEmpty(marbles, context) {
+    if (Marbles.isEmpty(marbles)) {
+      throw new Error(`marbles are empty in ${context}`)
+    }
   },
-  mapHeadSpan(f, marbles) {
-    const span = Span.map(f, marbles[0])
+  ensureHeadSpan(marbles, context) {
+    Marbles.ensureNotEmpty(marbles, context)
+    if (!Span.isInstance(marbles[0])) {
+      throw new Error(`marbles don\'t have a Span at top in ${context}`)
+    }
+  },
+  ensureHeadValue(marbles, context) {
+    Marbles.ensureNotEmpty(marbles, context)
+    if (!Value.isInstance(marbles[0])) {
+      throw new Error(`marbles don\'t have a Value at top in ${context}`)
+    }
+  },
+  skipSpan(time, marbles) {
+    Marbles.ensureHeadSpan(marbles, 'skipSpan()')
+    const headSpan = marbles[0]
+    const nextHeadSpan = Span.map(t => t - time, headSpan)
     const rest = marbles.slice(1)
-    return Span.isEmpty(span) ? rest : [span].concat(rest)
+    return Span.isEmpty(nextHeadSpan) ? rest : [nextHeadSpan].concat(rest)
   },
   popHeadValue(f, marbles) {
+    Marbles.ensureHeadValue(marbles, 'popHeadValue()')
     f(marbles[0].value)
     return marbles.slice(1)
   },
@@ -63,9 +76,11 @@ const Marbles = {
     return marbles.length === 0
   },
   isHeadValue(marbles) {
+    Marbles.ensureNotEmpty(marbles, 'isHeadValue()')
     return Value.isInstance(marbles[0])
   },
   getHeadTime(marbles) {
+    Marbles.ensureHeadSpan(marbles, 'getHeadTime()')
     return marbles[0].time
   },
   squashSpans(marbles) {
@@ -80,11 +95,13 @@ const Marbles = {
     return marbles.map(x => Value.isInstance(x) ? Value.toString(x) : Span.toString(x)).join('')
   },
   fromString(str) {
-    // Only 1 character numbers or strings are supported here
-    const mapFn = x => x === '_'
-      ? [span(1)]
-      : [span(1), value(isDigit(x) ? Number(x) : x)] // todo: remove extra span here
-      // todo: also ignore " "
+    const mapFn = x => {
+      if (x === ' ') {
+        return []
+      }
+      // Only 1 character numbers or strings are supported here
+      return x === '_' ? [span(1)] : [value(isDigit(x) ? Number(x) : x)]
+    }
     const concat = (a, b) => a.concat(b)
     return Marbles.squashSpans(str.split('').map(mapFn).reduce(concat, []))
   },
@@ -216,7 +233,5 @@ export function exec(sourcesSpec, transformer) {
 //
 // a: _ _1___
 // b: _1_ ___
-//
-// & add `+ 1` in Span.toString
 //
 // */

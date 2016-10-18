@@ -114,23 +114,23 @@ testl('Chain. Derived Applicative. Interchange.', 1, t => {
   )
 })
 
-testl('Chain. Derived Applicative. Interchange (with map).', 1, t => {
-  const exec = prep({
-    u: _('____1_____2_____3'),
-    v: _('__4__5__6'),
-  })
-
-  // A.ap(u, v) ≡ A.ap(A.map(x => f => f(x), v), u)
-  t.deepEqual(
-    toString(exec(s => {
-      const u = S.map(x => z => [x, z], s.u)
-      const v = s.v
-      return ap(u, v)
-    })),
-    toString(exec(s => {
-      const u = S.map(x => z => [x, z], s.u)
-      const v = s.v
-      return ap(S.map(x => f => f(x), v), u)
-    }))
-  )
-})
+// testl('Chain. Derived Applicative. Interchange (with map).', 1, t => {
+//   const exec = prep({
+//     u: _('____1_____2_____3'),
+//     v: _('__4__5__6'),
+//   })
+//
+//   // A.ap(u, v) ≡ A.ap(A.map(x => f => f(x), v), u)
+//   t.deepEqual(
+//     toString(exec(s => {
+//       const u = S.map(x => z => [x, z], s.u)
+//       const v = s.v
+//       return ap(u, v)
+//     })),
+//     toString(exec(s => {
+//       const u = S.map(x => z => [x, z], s.u)
+//       const v = s.v
+//       return ap(S.map(x => f => f(x), v), u)
+//     }))
+//   )
+// })
