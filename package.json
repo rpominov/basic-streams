@@ -30,9 +30,9 @@
   "author": "Roman Pominov <rpominov@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "babel-eslint": "6.1.2",
-    "eslint": "3.6.0",
-    "lobot": "0.1.22",
+    "babel-eslint": "7.0.0",
+    "eslint": "3.8.1",
+    "lobot": "0.1.23",
     "transducers-js": "0.4.174"
   },
   "repository": {
