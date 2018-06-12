@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "umd",
+    "outDir": "package",
+    "declaration": true,
+    "esModuleInterop": true,
+    "noEmitOnError": true,
+    "strict": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true
+  },
+  "include": ["source/**/*"],
+  "exclude": ["node_modules"]
+}

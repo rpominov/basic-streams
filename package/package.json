@@ -1,0 +1,28 @@
+{
+  "name": "basic-streams",
+  "version": "0.4.4",
+  "description": "Very basic reactive streams implementation for JavaScript",
+  "keywords": [
+    "reactive",
+    "reactive programming",
+    "functional",
+    "functional programming",
+    "functional reactive programming",
+    "frp",
+    "streams",
+    "stream",
+    "observables",
+    "observable",
+    "static-land"
+  ],
+  "author": "Roman Pominov <rpominov@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rpominov/basic-streams.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rpominov/basic-streams/issues"
+  },
+  "homepage": "https://github.com/rpominov/basic-streams#readme"
+}

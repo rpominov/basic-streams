@@ -2,41 +2,40 @@
 function fromArray(xs) {
   return sink => {
     xs.forEach(x => {
-      sink(x)
-    })
-    return () => {}
-  }
+      sink(x);
+    });
+    return () => {};
+  };
 }
 
 const Stream = {
-
   /* Creates an empty stream
    */
   empty() {
-    return () => () => {}
+    return () => () => {};
   },
 
   /* Merges several streams of same type to a single stream of that type.
    * The result stream will contain values from all streams
    */
   concat(streams) {
-    return Stream.chain(x => x, fromArray(streams))
+    return Stream.chain(x => x, fromArray(streams));
   },
 
   /* Creates a stream containing given value
    */
   of(x) {
     return sink => {
-      sink(x)
-      return () => {}
-    }
+      sink(x);
+      return () => {};
+    };
   },
 
   /* Lifts function `A => B` to a function that operates
    * on streams `Stream<A> => Stream<B>`
    */
   map(fn, stream) {
-    return sink => stream(payload => sink(fn(payload)))
+    return sink => stream(payload => sink(fn(payload)));
   },
 
   /* Given a stream of functions `Stream<A => B>`, returns a function
@@ -47,27 +46,27 @@ const Stream = {
    */
   ap(streamf, streamv) {
     return sink => {
-      let latestF = {type: 'nothing'}
-      let latestV = {type: 'nothing'}
+      let latestF = { type: "nothing" };
+      let latestV = { type: "nothing" };
       const push = () => {
-        if (latestF.type === 'just' && latestV.type === 'just') {
-          const fn = latestF.value
-          sink(fn(latestV.value))
+        if (latestF.type === "just" && latestV.type === "just") {
+          const fn = latestF.value;
+          sink(fn(latestV.value));
         }
-      }
+      };
       const disposef = streamf(f => {
-        latestF = {type: 'just', value: f}
-        push()
-      })
+        latestF = { type: "just", value: f };
+        push();
+      });
       const disposev = streamv(v => {
-        latestV = {type: 'just', value: v}
-        push()
-      })
+        latestV = { type: "just", value: v };
+        push();
+      });
       return () => {
-        disposef()
-        disposev()
-      }
-    }
+        disposef();
+        disposev();
+      };
+    };
   },
 
   /* Given a function `A => Stream<B>` returns a function
@@ -78,32 +77,35 @@ const Stream = {
    */
   chain(fn, stream) {
     return sink => {
-      let spawnedDisposers = []
+      let spawnedDisposers = [];
       const mainDisposer = stream(payload => {
-        spawnedDisposers.push(fn(payload)(sink))
-      })
+        spawnedDisposers.push(fn(payload)(sink));
+      });
       return () => {
-        spawnedDisposers.forEach(fn => fn())
-        mainDisposer()
-      }
-    }
+        spawnedDisposers.forEach(fn => fn());
+        mainDisposer();
+      };
+    };
   },
 
   map2(fn, as, bs) {
-    return Stream.ap(Stream.map(a => b => fn(a, b), as), bs)
+    return Stream.ap(Stream.map(a => b => fn(a, b), as), bs);
   },
 
   map3(fn, as, bs, cs) {
-    return Stream.ap(Stream.ap(Stream.map(a => b => c => fn(a, b, c), as), bs), cs)
+    return Stream.ap(
+      Stream.ap(Stream.map(a => b => c => fn(a, b, c), as), bs),
+      cs
+    );
   },
 
   /* Given an array of streams returns a stream of arrays.
    */
   combineArray(arr) {
-    const liftedConcat = (rs, is) => Stream.map2((r, i) => r.concat([i]), rs, is)
-    return arr.reduce(liftedConcat, Stream.of([]))
+    const liftedConcat = (rs, is) =>
+      Stream.map2((r, i) => r.concat([i]), rs, is);
+    return arr.reduce(liftedConcat, Stream.of([]));
   },
-
 
   /* Given a loose basic-stream, that obeys at least following rules:
    *
@@ -117,25 +119,30 @@ const Stream = {
    */
   fromLoose(looseStream) {
     return _sink => {
-      let sink = _sink
-      let disposer = looseStream(x => { // fix usage #1
-        if (sink !== null) { // fix stream #6
-          sink(x) // fix stream #4
+      let sink = _sink;
+      let disposer = looseStream(x => {
+        // fix usage #1
+        if (sink !== null) {
+          // fix stream #6
+          sink(x); // fix stream #4
         }
         // fix usage #3
-      })
-      return () => { // fix stream #3
-        if (sink === null) { // fix usage #5
-          return
+      });
+      return () => {
+        // fix stream #3
+        if (sink === null) {
+          // fix usage #5
+          return;
         }
-        sink = null
-        if (typeof disposer === 'function') { // fix stream #3
-          disposer() // fix usage #4
+        sink = null;
+        if (typeof disposer === "function") {
+          // fix stream #3
+          disposer(); // fix usage #4
         }
-        disposer = null
+        disposer = null;
         // fix stream #5
-      }
-    }
+      };
+    };
   },
 
   /* Given a predicate `A => boolean` returns a function
@@ -143,11 +150,12 @@ const Stream = {
    * The result function returns a stream without values that don't satisfy predicate.
    */
   filter(predicate, stream) {
-    return sink => stream(payload => {
-      if (predicate(payload)) {
-        sink(payload)
-      }
-    })
+    return sink =>
+      stream(payload => {
+        if (predicate(payload)) {
+          sink(payload);
+        }
+      });
   },
 
   /* Same as `chain()`, except the final stream will contain
@@ -156,16 +164,16 @@ const Stream = {
    */
   chainLatest(fn, stream) {
     return sink => {
-      let spawnedDisposers = () => {}
+      let spawnedDisposers = () => {};
       const mainDisposer = stream(payload => {
-        spawnedDisposers()
-        spawnedDisposers = fn(payload)(sink)
-      })
+        spawnedDisposers();
+        spawnedDisposers = fn(payload)(sink);
+      });
       return () => {
-        spawnedDisposers()
-        mainDisposer()
-      }
-    }
+        spawnedDisposers();
+        mainDisposer();
+      };
+    };
   },
 
   /* Given a reducer function `(B, A) => B`, and a seed value of type B,
@@ -174,13 +182,13 @@ const Stream = {
    */
   scan(reducer, seed, stream) {
     return sink => {
-      let current = seed
-      sink(current)
+      let current = seed;
+      sink(current);
       return stream(x => {
-        current = reducer(current, x)
-        sink(current)
-      })
-    }
+        current = reducer(current, x);
+        sink(current);
+      });
+    };
   },
 
   /* Given a number N, returns a function that operates on streams `Stream<A> => Stream<A>`.
@@ -188,28 +196,28 @@ const Stream = {
    */
   take(n, stream) {
     return sink => {
-      let count = 0
-      let disposer = null
+      let count = 0;
+      let disposer = null;
       const dispose = () => {
         if (disposer !== null) {
-          disposer()
-          disposer = null
+          disposer();
+          disposer = null;
         }
-      }
+      };
       disposer = stream(x => {
-        count++
+        count++;
         if (count <= n) {
-          sink(x)
+          sink(x);
         }
         if (count >= n) {
-          dispose()
+          dispose();
         }
-      })
+      });
       if (count >= n) {
-        dispose()
+        dispose();
       }
-      return dispose
-    }
+      return dispose;
+    };
   },
 
   /* Given a predicate `A => boolean` returns a function
@@ -219,29 +227,29 @@ const Stream = {
    */
   takeWhile(pred, stream) {
     return sink => {
-      let completed = false
-      let disposer = null
+      let completed = false;
+      let disposer = null;
       const dispose = () => {
         if (disposer !== null) {
-          disposer()
-          disposer = null
+          disposer();
+          disposer = null;
         }
-      }
+      };
       disposer = stream(x => {
         if (!completed) {
           if (pred(x)) {
-            sink(x)
+            sink(x);
           } else {
-            completed = true
-            dispose()
+            completed = true;
+            dispose();
           }
         }
-      })
+      });
       if (completed) {
-        dispose()
+        dispose();
       }
-      return dispose
-    }
+      return dispose;
+    };
   },
 
   /* Given a controller stream, returns a function that operates
@@ -250,29 +258,29 @@ const Stream = {
    */
   takeUntil(controller, stream) {
     return sink => {
-      let mainDisposer = null
-      let ctrlDisposer = null
+      let mainDisposer = null;
+      let ctrlDisposer = null;
       const dispose = () => {
         if (mainDisposer !== null) {
-          mainDisposer()
-          mainDisposer = null
+          mainDisposer();
+          mainDisposer = null;
         }
         if (ctrlDisposer !== null) {
-          ctrlDisposer()
-          ctrlDisposer = null
+          ctrlDisposer();
+          ctrlDisposer = null;
         }
-      }
+      };
 
-      mainDisposer = stream(sink)
-      ctrlDisposer = controller(dispose)
+      mainDisposer = stream(sink);
+      ctrlDisposer = controller(dispose);
 
       // in case controller cb was called sync before we obtained ctrlDisposer
       if (mainDisposer === null) {
-        dispose()
+        dispose();
       }
 
-      return dispose
-    }
+      return dispose;
+    };
   },
 
   /* Given a number N, returns a function that operates on streams `Stream<A> => Stream<A>`.
@@ -280,14 +288,14 @@ const Stream = {
    */
   skip(n, stream) {
     return sink => {
-      let count = 0
+      let count = 0;
       return stream(x => {
-        count++
+        count++;
         if (count > n) {
-          sink(x)
+          sink(x);
         }
-      })
-    }
+      });
+    };
   },
 
   /* Given a predicate `A => boolean` returns a function
@@ -297,16 +305,16 @@ const Stream = {
    */
   skipWhile(pred, stream) {
     return sink => {
-      let started = false
+      let started = false;
       return stream(x => {
         if (!started) {
-          started = !pred(x)
+          started = !pred(x);
         }
         if (started) {
-          sink(x)
+          sink(x);
         }
-      })
-    }
+      });
+    };
   },
 
   /* Given a comparator function `(A, A) => boolean` returns a function that
@@ -317,14 +325,14 @@ const Stream = {
    */
   skipDuplicates(comp, stream) {
     return sink => {
-      let latest = {type: 'nothing'}
+      let latest = { type: "nothing" };
       return stream(x => {
-        if (latest.type === 'nothing' || !comp(latest.value, x)) {
-          latest = {type: 'just', value: x}
-          sink(x)
+        if (latest.type === "nothing" || !comp(latest.value, x)) {
+          latest = { type: "just", value: x };
+          sink(x);
         }
-      })
-    }
+      });
+    };
   },
 
   /* Given a stream returns a new stream of same type. The new stream will
@@ -332,37 +340,37 @@ const Stream = {
    * It allows you to connect several subscribers to a stream using only one subscription.
    */
   multicast(stream) {
-    let sinks = []
+    let sinks = [];
     const push = x => {
       sinks.forEach(sink => {
         if (sinks.indexOf(sink) !== -1) {
-          sink(x)
+          sink(x);
         }
-      })
-    }
-    let unsub = null
+      });
+    };
+    let unsub = null;
     return sink => {
-      let disposed = false
-      sinks = [...sinks, sink]
+      let disposed = false;
+      sinks = [...sinks, sink];
       if (sinks.length === 1) {
-        unsub = stream(push)
+        unsub = stream(push);
       }
       return () => {
         if (disposed) {
-          return
+          return;
         }
-        disposed = true
-        const index = sinks.indexOf(sink)
+        disposed = true;
+        const index = sinks.indexOf(sink);
         sinks = [
           ...sinks.slice(0, index),
-          ...sinks.slice(index + 1, sinks.length),
-        ]
+          ...sinks.slice(index + 1, sinks.length)
+        ];
         if (sinks.length === 0 && unsub !== null) {
-          unsub()
-          unsub = null
+          unsub();
+          unsub = null;
         }
-      }
-    }
+      };
+    };
   },
 
   /* Given a value of type `A` returns a function that
@@ -372,9 +380,9 @@ const Stream = {
    */
   startWith(x, stream) {
     return sink => {
-      sink(x)
-      return stream(sink)
-    }
+      sink(x);
+      return stream(sink);
+    };
   },
 
   /* Given a transducer that conforms [Protocol][1],
@@ -384,51 +392,49 @@ const Stream = {
    */
   transduce(transducer, stream) {
     return sink => {
-      let thisDisposed = false
-      let sourceDisposer = null
+      let thisDisposed = false;
+      let sourceDisposer = null;
 
       let transformer = transducer({
-        '@@transducer/result'() {
-        },
-        '@@transducer/step'(result, input) {
+        "@@transducer/result"() {},
+        "@@transducer/step"(result, input) {
           if (!thisDisposed) {
-            sink(input)
+            sink(input);
           }
-          return result
-        },
-      })
+          return result;
+        }
+      });
 
       const disposeSource = () => {
         if (sourceDisposer !== null) {
-          sourceDisposer()
-          sourceDisposer = null
+          sourceDisposer();
+          sourceDisposer = null;
         }
-      }
+      };
 
       sourceDisposer = stream(x => {
         if (transformer === null) {
-          return
+          return;
         }
 
         // it returns either null or tReduced<null>
-        if (null !== transformer['@@transducer/step'](null, x)) {
-          transformer['@@transducer/result'](null)
-          transformer = null
-          disposeSource()
+        if (null !== transformer["@@transducer/step"](null, x)) {
+          transformer["@@transducer/result"](null);
+          transformer = null;
+          disposeSource();
         }
-      })
+      });
 
       if (transformer === null) {
-        disposeSource()
+        disposeSource();
       }
 
       return () => {
-        thisDisposed = true
-        disposeSource()
-      }
-    }
-  },
+        thisDisposed = true;
+        disposeSource();
+      };
+    };
+  }
+};
 
-}
-
-export default Stream
+export default Stream;

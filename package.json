@@ -1,36 +1,16 @@
 {
-  "name": "basic-streams",
-  "version": "0.4.4",
-  "description": "Very basic reactive streams implementation for JavaScript",
-  "main": "lib/index.js",
-  "jsnext:main": "lib-es/index.js",
-  "files": [
-  ],
+  "name": "basic-streams-dev",
   "scripts": {
+    "cleanup": "rm -f package/*.{js,md,ts} package/LICENSE",
+    "test": "tsc --noEmit && prettier --l $npm_package_prettierFiles",
+    "prettier": "prettier --write $npm_package_prettierFiles",
+    "compile": "tsc",
+    "prepare-release": "npm run cleanup && npm run test && npm run compile && npm run _copy",
+    "_copy": "cp {,package/}README.md && cp {,package/}LICENSE"
   },
-  "keywords": [
-    "reactive",
-    "reactive programming",
-    "functional",
-    "functional programming",
-    "functional reactive programming",
-    "frp",
-    "streams",
-    "stream",
-    "observables",
-    "observable",
-    "static-land"
-  ],
-  "author": "Roman Pominov <rpominov@gmail.com>",
-  "license": "MIT",
+  "prettierFiles": "**/*.{babelrc,js,json,md,ts}",
   "devDependencies": {
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/rpominov/basic-streams.git"
-  },
-  "bugs": {
-    "url": "https://github.com/rpominov/basic-streams/issues"
-  },
-  "homepage": "https://github.com/rpominov/basic-streams#readme"
+    "prettier": "^1.13.5",
+    "typescript": "^2.9.1"
+  }
 }

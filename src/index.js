@@ -1,4 +1,4 @@
-import Stream from './main'
-import * as marbles from './marbles'
+import Stream from "./main";
+import * as marbles from "./marbles";
 
-export {Stream, marbles}
+export { Stream, marbles };
