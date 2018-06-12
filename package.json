@@ -5,14 +5,8 @@
   "main": "lib/index.js",
   "jsnext:main": "lib-es/index.js",
   "files": [
-    "lib",
-    "lib-es",
-    "umd"
   ],
   "scripts": {
-    "lobot": "lobot",
-    "lint": "eslint .",
-    "test": "eslint . && lobot test"
   },
   "keywords": [
     "reactive",
@@ -30,10 +24,6 @@
   "author": "Roman Pominov <rpominov@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "babel-eslint": "7.0.0",
-    "eslint": "3.8.1",
-    "lobot": "0.1.23",
-    "transducers-js": "0.4.174"
   },
   "repository": {
     "type": "git",
