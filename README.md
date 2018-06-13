@@ -19,10 +19,9 @@ Also available on https://unpkg.com to play in JSFiddle etc.:
 
 ## Main idea
 
-The main idea is to take the most basic definition of Stream possible, and
-build functions to do generic operations with that streams.
-In basic-streams Stream is just a function that accepts subscriber and must
-return function to unsubscribe.
+The main idea is to take the most basic definition of Stream possible, and build
+functions to do generic operations with that streams. In basic-streams Stream is
+just a function that accepts subscriber and must return function to unsubscribe.
 
 Here is how Stream's type signature looks like:
 
@@ -30,32 +29,32 @@ Here is how Stream's type signature looks like:
 <T>( sink:( payload:T ) => void ) => () => void
 ```
 
-The library provides functions like `map`, `filter`, `chain`
-(aka `flatMap`) etc. to work with such simple streams.
-See [`src/index.js`](https://github.com/rpominov/basic-streams/blob/master/src/index.js)
+The library provides functions like `map`, `filter`, `chain` (aka `flatMap`)
+etc. to work with such simple streams. See
+[`src/index.js`](https://github.com/rpominov/basic-streams/blob/master/src/index.js)
 for docs in form of code comments, this is all docs we have for now.
 
 A quick example to get you started:
 
 ```js
-import { Stream } from "basic-streams";
+import {Stream} from "basic-streams"
 
 const myStream = sink => {
-  sink(1);
-  sink(2);
+  sink(1)
+  sink(2)
   // we don't have any allocated resources to dispose in this stream so just return a noop
-  return () => {};
-};
+  return () => {}
+}
 
-const myStream2 = Stream.map(x => x * 2, myStream);
+const myStream2 = Stream.map(x => x * 2, myStream)
 
 // subscribe
 const unsub = myStream2(x => {
   // do stuff with x ...
-});
+})
 
 // unsubscribe
-unsub();
+unsub()
 ```
 
 ## Basic-streams protocol
