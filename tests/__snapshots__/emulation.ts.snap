@@ -1,0 +1,64 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Schedule constructor fuses time spans 1`] = `
+Array [
+  "...after 15 ms",
+  1,
+]
+`;
+
+exports[`Schedule constructor removes 0s 1`] = `
+Array [
+  1,
+]
+`;
+
+exports[`Schedule constructor removes time tail 1`] = `
+Array [
+  1,
+]
+`;
+
+exports[`Schedule merge complex 1`] = `
+Array [
+  1,
+  "...after 5 ms",
+  2,
+  "...after 5 ms",
+  3,
+  4,
+]
+`;
+
+exports[`Schedule merge empty 1`] = `Array []`;
+
+exports[`Schedule merge two spans 1`] = `Array []`;
+
+exports[`Schedule merge two values 1`] = `
+Array [
+  1,
+  2,
+]
+`;
+
+exports[`emulate map 1`] = `
+Array [
+  "...after 10 ms",
+  2,
+]
+`;
+
+exports[`emulate order of simultaneous values 1`] = `
+Array [
+  "...after 10 ms",
+  1,
+  2,
+]
+`;
+
+exports[`emulate unsubscribe 1`] = `
+Array [
+  "...after 10 ms",
+  1,
+]
+`;
