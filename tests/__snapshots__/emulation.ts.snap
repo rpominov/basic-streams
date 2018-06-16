@@ -2,7 +2,7 @@
 
 exports[`Schedule constructor fuses time spans 1`] = `
 Array [
-  "...after 15 ms",
+  "after 15 ms...",
   1,
 ]
 `;
@@ -22,9 +22,9 @@ Array [
 exports[`Schedule merge complex 1`] = `
 Array [
   1,
-  "...after 5 ms",
+  "after 5 ms...",
   2,
-  "...after 5 ms",
+  "after 5 ms...",
   3,
   4,
 ]
@@ -41,16 +41,24 @@ Array [
 ]
 `;
 
+exports[`emulate filter 1`] = `
+Array [
+  1,
+  "after 20 ms...",
+  1,
+]
+`;
+
 exports[`emulate map 1`] = `
 Array [
-  "...after 10 ms",
+  "after 10 ms...",
   2,
 ]
 `;
 
 exports[`emulate order of simultaneous values 1`] = `
 Array [
-  "...after 10 ms",
+  "after 10 ms...",
   1,
   2,
 ]
@@ -58,7 +66,7 @@ Array [
 
 exports[`emulate unsubscribe 1`] = `
 Array [
-  "...after 10 ms",
+  "after 10 ms...",
   1,
 ]
 `;

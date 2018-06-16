@@ -1,3 +1,5 @@
+import {Stream} from "./index"
+
 export class Value<T> {
   constructor(
     public readonly value: T,
@@ -19,22 +21,22 @@ export class TimeSpan {
   constructor(public readonly ms: number) {}
 
   toJSON() {
-    return `...after ${this.ms} ms`
+    return `after ${this.ms} ms...`
   }
 }
 
-type ScheduleItem<T> = TimeSpan | Value<T>
+type TimelineItem<T> = TimeSpan | Value<T>
 
-export class Schedule<T> {
+export class Timeline<T> {
   constructor(
-    public readonly items: ReadonlyArray<ScheduleItem<T>>,
+    public readonly items: ReadonlyArray<TimelineItem<T>>,
     dontCompact?: boolean,
   ) {
     if (dontCompact) {
       return this
     }
 
-    const finalItems: Array<ScheduleItem<T>> = []
+    const finalItems: Array<TimelineItem<T>> = []
     for (const item of this.items) {
       if (item instanceof TimeSpan) {
         if (item.ms === 0) {
@@ -58,11 +60,11 @@ export class Schedule<T> {
       finalItems.pop()
     }
 
-    return new Schedule(finalItems, true)
+    return new Timeline(finalItems, true)
   }
 
-  withCb(cb: (value: T) => void): Schedule<T> {
-    return new Schedule(
+  withCb(cb: (value: T) => void): Timeline<T> {
+    return new Timeline(
       this.items.map(
         item => (item instanceof TimeSpan ? item : new Value(item.value, cb)),
       ),
@@ -70,30 +72,30 @@ export class Schedule<T> {
   }
 
   merge<U>(
-    another: Schedule<U>,
-    result: Schedule<T | U> = new Schedule([]),
-  ): Schedule<T | U> {
+    another: Timeline<U>,
+    result: Timeline<T | U> = new Timeline([]),
+  ): Timeline<T | U> {
     const a = this
     const b = another
     if (a.items.length === 0 && b.items.length === 0) {
       return result
     }
     if (a.items.length === 0) {
-      return new Schedule([
+      return new Timeline([
         ...result.items,
-        ...(b.items as Array<ScheduleItem<T | U>>),
+        ...(b.items as Array<TimelineItem<T | U>>),
       ])
     }
     if (b.items.length === 0) {
-      return new Schedule([
+      return new Timeline([
         ...result.items,
-        ...(a.items as Array<ScheduleItem<T | U>>),
+        ...(a.items as Array<TimelineItem<T | U>>),
       ])
     }
     const timeToValueA = a.timeToValue()
     const timeToValueB = b.timeToValue()
     if (timeToValueA === Infinity && timeToValueB === Infinity) {
-      return new Schedule([
+      return new Timeline([
         new TimeSpan(Math.max(a.timeToEnd(), b.timeToEnd())),
         ...result.items,
       ])
@@ -103,7 +105,7 @@ export class Schedule<T> {
     const subtractB = b.subtractTime(timeToValue)
     return subtractA.rest.merge(
       subtractB.rest,
-      new Schedule([
+      new Timeline([
         ...result.items,
         new TimeSpan(timeToValue),
         ...(subtractA.values as Array<Value<T | U>>),
@@ -116,15 +118,15 @@ export class Schedule<T> {
     return this.items.length === 0
   }
 
-  takeOne(): {item: ScheduleItem<T>; rest: Schedule<T>} {
+  takeOne(): {item: TimelineItem<T>; rest: Timeline<T>} {
     if (this.isEmpty()) {
       throw new Error("cannot takeOne() from an empty schedule")
     }
     const [top, ...rest] = this.items
-    return {item: top, rest: new Schedule(rest)}
+    return {item: top, rest: new Timeline(rest)}
   }
 
-  subtractTime(ms: number): {values: Value<T>[]; rest: Schedule<T>} {
+  subtractTime(ms: number): {values: Value<T>[]; rest: Timeline<T>} {
     if (this.isEmpty()) {
       return {rest: this, values: []}
     }
@@ -136,7 +138,7 @@ export class Schedule<T> {
     return item.ms <= ms
       ? rest.subtractTime(ms - item.ms)
       : {
-          rest: new Schedule([new TimeSpan(item.ms - ms), ...rest.items]),
+          rest: new Timeline([new TimeSpan(item.ms - ms), ...rest.items]),
           values: [],
         }
   }
@@ -161,10 +163,8 @@ export class Schedule<T> {
   }
 }
 
-type Stream<T> = (cb: (value: T) => void) => (() => void)
-
 type EmulationGenerator<T> = (
-  createStream: <U>(...scheduleItems: Array<ScheduleItem<U>>) => Stream<U>,
+  createStream: <U>(...scheduleItems: Array<TimelineItem<U>>) => Stream<U>,
 ) => Stream<T>
 
 export function t(ms: number): TimeSpan {
@@ -175,19 +175,19 @@ export function v<T>(x: T): Value<T> {
   return new Value(x)
 }
 
-export function emulate<T>(generator: EmulationGenerator<T>): Schedule<T> {
+export function emulate<T>(generator: EmulationGenerator<T>): Timeline<T> {
   const state = {
-    schedule: new Schedule([]),
-    result: [] as Array<ScheduleItem<T>>,
+    schedule: new Timeline([]),
+    result: [] as Array<TimelineItem<T>>,
   }
 
   const resultStream = generator((...scheduleItems) => {
     return cb => {
       state.schedule = state.schedule.merge(
-        new Schedule(scheduleItems).withCb(cb),
+        new Timeline(scheduleItems).withCb(cb),
       )
       return () => {
-        state.schedule = new Schedule(
+        state.schedule = new Timeline(
           state.schedule.items.filter(
             item => item instanceof TimeSpan || item.cb !== cb,
           ),
@@ -206,5 +206,5 @@ export function emulate<T>(generator: EmulationGenerator<T>): Schedule<T> {
     values.forEach(item => item.callCb())
   }
 
-  return new Schedule(state.result)
+  return new Timeline(state.result)
 }

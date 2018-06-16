@@ -61,6 +61,17 @@ describe("emulate", () => {
     ).toMatchSnapshot()
   })
 
+  test("filter", () => {
+    expect(
+      emulate(create => {
+        return sink =>
+          create(v(1), t(10), v(0), t(10), v(1))(x => {
+            if (x > 0) sink(x)
+          })
+      }),
+    ).toMatchSnapshot()
+  })
+
   test("order of simultaneous values", () => {
     expect(
       emulate(create => {
