@@ -1,25 +1,25 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Schedule constructor fuses time spans 1`] = `
+exports[`Timeline constructor fuses time spans 1`] = `
 Array [
   "after 15 ms...",
   1,
 ]
 `;
 
-exports[`Schedule constructor removes 0s 1`] = `
+exports[`Timeline constructor removes 0s 1`] = `
 Array [
   1,
 ]
 `;
 
-exports[`Schedule constructor removes time tail 1`] = `
+exports[`Timeline constructor removes time tail 1`] = `
 Array [
   1,
 ]
 `;
 
-exports[`Schedule merge complex 1`] = `
+exports[`Timeline merge complex 1`] = `
 Array [
   1,
   "after 5 ms...",
@@ -30,11 +30,11 @@ Array [
 ]
 `;
 
-exports[`Schedule merge empty 1`] = `Array []`;
+exports[`Timeline merge empty 1`] = `Array []`;
 
-exports[`Schedule merge two spans 1`] = `Array []`;
+exports[`Timeline merge two spans 1`] = `Array []`;
 
-exports[`Schedule merge two values 1`] = `
+exports[`Timeline merge two values 1`] = `
 Array [
   1,
   2,

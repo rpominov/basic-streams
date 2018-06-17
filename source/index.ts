@@ -1,5 +1,8 @@
-export type Stream<T> = (cb: (value: T) => void) => (() => void)
-export type StreamLoose<T> = (cb: (value: T, ...rest: any[]) => any) => any
+export type Stream<T> = (cb: (payload: T) => void) => (() => void)
+export type StreamLoose<T> = (
+  cb: (payload: T, ...rest: any[]) => any,
+  ...rest: any[]
+) => any
 
 type Maybe<T> = {tag: "nothing"} | {tag: "just"; value: T}
 
@@ -150,7 +153,10 @@ export function combineArray<T>(streams: Array<Stream<T>>): Stream<Array<T>> {
   return streams.reduce(liftedAppend, of([]))
 }
 function liftedAppend<T>(xs: Stream<T[]>, x: Stream<T>): Stream<T[]> {
-  return map2((r, i) => r.concat([i]), xs, x)
+  return map2<T[], T, T[]>(append, xs, x)
+}
+function append<T>(xs: T[], x: T): T[] {
+  return xs.concat([x])
 }
 
 export function merge<T>(streams: Array<Stream<T>>): Stream<T> {
@@ -339,3 +345,15 @@ export function multicast<T>(stream: Stream<T>): Stream<T> {
     }
   }
 }
+
+/*
+
+TODO:
+
+later
+interval
+delay
+throttle/debounce
+sequentially (maybe add optional argument to fromIterable)
+
+*/
