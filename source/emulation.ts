@@ -181,20 +181,24 @@ export function emulate<T>(generator: EmulationGenerator<T>): Timeline<T> {
     result: [] as Array<TimelineItem<T>>,
   }
 
-  const resultStream = generator((...scheduleItems) => {
-    return cb => {
-      state.schedule = state.schedule.merge(
-        new Timeline(scheduleItems).withCb(cb),
-      )
-      return () => {
-        state.schedule = new Timeline(
-          state.schedule.items.filter(
-            item => item instanceof TimeSpan || item.cb !== cb,
-          ),
+  const resultStream = generator(
+    <T>(...scheduleItems: Array<TimelineItem<T>>): Stream<T> => {
+      return cb => {
+        // wrap cb to make it a unique value that we will compare to in unsuscribe
+        const _cb = (x: T) => cb(x)
+        state.schedule = state.schedule.merge(
+          new Timeline(scheduleItems).withCb(_cb),
         )
+        return () => {
+          state.schedule = new Timeline(
+            state.schedule.items.filter(
+              item => item instanceof TimeSpan || item.cb !== _cb,
+            ),
+          )
+        }
       }
-    }
-  })
+    },
+  )
 
   resultStream(value => state.result.push(new Value(value)))
 

@@ -70,3 +70,13 @@ Array [
   1,
 ]
 `;
+
+exports[`emulate unsubscribe doesn't remove other values with same cb 1`] = `
+Array [
+  "after 10 ms...",
+  1,
+  1,
+  "after 10 ms...",
+  0,
+]
+`;
