@@ -1,7 +1,18 @@
 import {Stream} from "./index"
 
 export class Value<T> {
+  constructor(public readonly value: T) {}
+}
+
+export class TimeSpan {
+  constructor(public readonly ms: number) {}
+}
+
+export type Timeline<T> = Array<TimeSpan | Value<T>>
+
+export class Event<T> {
   constructor(
+    public readonly time: number,
     public readonly value: T,
     public readonly cb?: ((x: T) => void),
   ) {}
@@ -11,161 +22,109 @@ export class Value<T> {
       this.cb(this.value)
     }
   }
-
-  toJSON() {
-    return this.value
-  }
 }
 
-export class TimeSpan {
-  constructor(public readonly ms: number) {}
+export class EventsList<T> {
+  constructor(public readonly items: Array<Event<T>>) {}
 
-  toJSON() {
-    return `after ${this.ms} ms...`
-  }
-}
-
-type TimelineItem<T> = TimeSpan | Value<T>
-
-export class Timeline<T> {
-  constructor(
-    public readonly items: ReadonlyArray<TimelineItem<T>>,
-    dontCompact?: boolean,
-  ) {
-    if (dontCompact) {
-      return this
-    }
-
-    const finalItems: Array<TimelineItem<T>> = []
-    for (const item of this.items) {
+  static fromTimeline<T>(items: Timeline<T>, currentTime = 0): EventsList<T> {
+    const events: Array<Event<T>> = []
+    for (const item of items) {
       if (item instanceof TimeSpan) {
-        if (item.ms === 0) {
-          continue
-        }
-        if (finalItems.length > 0) {
-          const last = finalItems[finalItems.length - 1]
-          if (last instanceof TimeSpan) {
-            finalItems[finalItems.length - 1] = new TimeSpan(last.ms + item.ms)
-            continue
-          }
-        }
+        currentTime = currentTime + item.ms
+      } else {
+        events.push(new Event(currentTime, item.value))
       }
-      finalItems.push(item)
     }
-
-    if (
-      finalItems.length > 0 &&
-      finalItems[finalItems.length - 1] instanceof TimeSpan
-    ) {
-      finalItems.pop()
-    }
-
-    return new Timeline(finalItems, true)
+    return new EventsList(events)
   }
 
-  withCb(cb: (value: T) => void): Timeline<T> {
-    return new Timeline(
-      this.items.map(
-        item => (item instanceof TimeSpan ? item : new Value(item.value, cb)),
-      ),
+  withCb(cb: (value: T) => void): EventsList<T> {
+    return new EventsList(
+      this.items.map(item => new Event(item.time, item.value, cb)),
     )
   }
 
-  merge<U>(
-    another: Timeline<U>,
-    result: Timeline<T | U> = new Timeline([]),
-  ): Timeline<T | U> {
-    const a = this
-    const b = another
-    if (a.items.length === 0 && b.items.length === 0) {
-      return result
+  merge(another: EventsList<T>): EventsList<T> {
+    const events: Array<Event<T>> = []
+    let indexA = 0
+    let indexB = 0
+    const itemsA = this.items
+    const itemsB = another.items
+    while (itemsA.length > indexA || itemsB.length > indexB) {
+      if (
+        itemsA.length !== indexA &&
+        (itemsB.length === indexB || itemsA[indexA].time <= itemsB[indexB].time)
+      ) {
+        events.push(itemsA[indexA])
+        indexA++
+      } else {
+        events.push(itemsB[indexB])
+        indexB++
+      }
     }
-    if (a.items.length === 0) {
-      return new Timeline([
-        ...result.items,
-        ...(b.items as Array<TimelineItem<T | U>>),
-      ])
-    }
-    if (b.items.length === 0) {
-      return new Timeline([
-        ...result.items,
-        ...(a.items as Array<TimelineItem<T | U>>),
-      ])
-    }
-    const timeToValueA = a.timeToValue()
-    const timeToValueB = b.timeToValue()
-    if (timeToValueA === Infinity && timeToValueB === Infinity) {
-      return new Timeline([
-        new TimeSpan(Math.max(a.timeToEnd(), b.timeToEnd())),
-        ...result.items,
-      ])
-    }
-    const timeToValue = Math.min(timeToValueA, timeToValueB)
-    const subtractA = a.subtractTime(timeToValue)
-    const subtractB = b.subtractTime(timeToValue)
-    return subtractA.rest.merge(
-      subtractB.rest,
-      new Timeline([
-        ...result.items,
-        new TimeSpan(timeToValue),
-        ...(subtractA.values as Array<Value<T | U>>),
-        ...(subtractB.values as Array<Value<T | U>>),
-      ]),
-    )
+    return new EventsList(events)
   }
 
-  isEmpty(): boolean {
-    return this.items.length === 0
-  }
-
-  takeOne(): {item: TimelineItem<T>; rest: Timeline<T>} {
-    if (this.isEmpty()) {
-      throw new Error("cannot takeOne() from an empty schedule")
-    }
-    const [top, ...rest] = this.items
-    return {item: top, rest: new Timeline(rest)}
-  }
-
-  subtractTime(ms: number): {values: Value<T>[]; rest: Timeline<T>} {
-    if (this.isEmpty()) {
-      return {rest: this, values: []}
-    }
-    const {item, rest} = this.takeOne()
-    if (item instanceof Value) {
-      const r = rest.subtractTime(ms)
-      return {rest: r.rest, values: [item, ...r.values]}
-    }
-    return item.ms <= ms
-      ? rest.subtractTime(ms - item.ms)
-      : {
-          rest: new Timeline([new TimeSpan(item.ms - ms), ...rest.items]),
-          values: [],
-        }
-  }
-
-  timeToEnd(): number {
-    return this.items.reduce(
-      (result, x) => result + (x instanceof TimeSpan ? x.ms : 0),
-      0,
-    )
-  }
-
-  timeToValue(): number {
-    if (this.isEmpty()) {
-      return Infinity
-    }
-    const {item, rest} = this.takeOne()
-    return item instanceof Value ? 0 : item.ms + rest.timeToValue()
+  takeOne(): {event: Event<T> | void; rest: EventsList<T>} {
+    const [event, ...rest] = this.items
+    return {event, rest: new EventsList(rest)}
   }
 
   toJSON() {
-    return this.items
+    return this.items.map(item => ({time: item.time, value: item.value}))
+  }
+
+  static jestSerializer = {
+    test(x: any) {
+      return x instanceof EventsList
+    },
+
+    // for outdated TS typings
+    print(x: any): string {
+      return ""
+    },
+
+    serialize(
+      val: EventsList<any>,
+      config: any,
+      indentation: string,
+      depth: number,
+      refs: any,
+      printer: (
+        x: any,
+        config: any,
+        indentation: string,
+        depth: number,
+        refs: any,
+      ) => string,
+    ) {
+      const separator = "\n"
+      const itemsStr =
+        val.items.length === 0
+          ? ""
+          : separator +
+            val.items
+              .map(
+                item =>
+                  indentation +
+                  config.indent +
+                  item.time +
+                  ": " +
+                  printer(
+                    item.value,
+                    config,
+                    indentation + config.indent,
+                    depth + 1,
+                    refs,
+                  ),
+              )
+              .join(separator) +
+            separator
+      return `EventsList(${itemsStr})`
+    },
   }
 }
-
-type EmulationGenerator<T> = (
-  createStream: <U>(...scheduleItems: Array<TimelineItem<U>>) => Stream<U>,
-) => Stream<T>
 
 export function t(ms: number): TimeSpan {
   return new TimeSpan(ms)
@@ -175,40 +134,39 @@ export function v<T>(x: T): Value<T> {
   return new Value(x)
 }
 
-export function emulate<T>(generator: EmulationGenerator<T>): Timeline<T> {
-  const state = {
-    schedule: new Timeline([]),
-    result: [] as Array<TimelineItem<T>>,
-  }
-
-  const resultStream = generator(
-    <T>(...scheduleItems: Array<TimelineItem<T>>): Stream<T> => {
-      return cb => {
-        // wrap cb to make it a unique value that we will compare to in unsuscribe
-        const _cb = (x: T) => cb(x)
-        state.schedule = state.schedule.merge(
-          new Timeline(scheduleItems).withCb(_cb),
+export function emulate<T>(
+  generator: (
+    createStream: <U>(...timeline: Timeline<U>) => Stream<U>,
+  ) => Stream<T>,
+  maxTime = Infinity,
+): EventsList<T> {
+  let currentTime: number = 0
+  let eventsToProduce: EventsList<any> = new EventsList([])
+  const resultEvents: Array<Event<T>> = []
+  const resultStream = generator((...timeline) => {
+    return cb => {
+      // wrap cb to make it a unique value that we will compare to in unsuscribe
+      const _cb = (x: any) => cb(x)
+      eventsToProduce = eventsToProduce.merge(
+        EventsList.fromTimeline(timeline, currentTime).withCb(_cb),
+      )
+      return () => {
+        eventsToProduce = new EventsList(
+          eventsToProduce.items.filter(item => item.cb !== _cb),
         )
-        return () => {
-          state.schedule = new Timeline(
-            state.schedule.items.filter(
-              item => item instanceof TimeSpan || item.cb !== _cb,
-            ),
-          )
-        }
       }
-    },
-  )
-
-  resultStream(value => state.result.push(new Value(value)))
-
-  while (state.schedule.timeToValue() !== Infinity) {
-    const time = state.schedule.timeToValue()
-    const {rest, values} = state.schedule.subtractTime(time)
-    state.schedule = rest
-    state.result.push(new TimeSpan(time))
-    values.forEach(item => item.callCb())
+    }
+  })
+  resultStream(value => {
+    resultEvents.push(new Event(currentTime, value))
+  })
+  while (true) {
+    const {event, rest} = eventsToProduce.takeOne()
+    if (currentTime >= maxTime || !event) {
+      return new EventsList(resultEvents)
+    }
+    currentTime = event.time
+    eventsToProduce = rest
+    event.callCb()
   }
-
-  return new Timeline(state.result)
 }

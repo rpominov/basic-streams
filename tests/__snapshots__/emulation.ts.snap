@@ -1,82 +1,35 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Timeline constructor fuses time spans 1`] = `
-Array [
-  "after 15 ms...",
-  1,
-]
-`;
-
-exports[`Timeline constructor removes 0s 1`] = `
-Array [
-  1,
-]
-`;
-
-exports[`Timeline constructor removes time tail 1`] = `
-Array [
-  1,
-]
-`;
-
-exports[`Timeline merge complex 1`] = `
-Array [
-  1,
-  "after 5 ms...",
-  2,
-  "after 5 ms...",
-  3,
-  4,
-]
-`;
-
-exports[`Timeline merge empty 1`] = `Array []`;
-
-exports[`Timeline merge two spans 1`] = `Array []`;
-
-exports[`Timeline merge two values 1`] = `
-Array [
-  1,
-  2,
-]
-`;
-
 exports[`emulate filter 1`] = `
-Array [
-  1,
-  "after 20 ms...",
-  1,
-]
+EventsList(
+  0: 1
+  20: 1
+)
 `;
 
 exports[`emulate map 1`] = `
-Array [
-  "after 10 ms...",
-  2,
-]
+EventsList(
+  10: 2
+)
 `;
 
 exports[`emulate order of simultaneous values 1`] = `
-Array [
-  "after 10 ms...",
-  1,
-  2,
-]
+EventsList(
+  10: 1
+  10: 2
+)
 `;
 
 exports[`emulate unsubscribe 1`] = `
-Array [
-  "after 10 ms...",
-  1,
-]
+EventsList(
+  10: 1
+)
 `;
 
 exports[`emulate unsubscribe doesn't remove other values with same cb 1`] = `
-Array [
-  "after 10 ms...",
-  1,
-  1,
-  "after 10 ms...",
-  0,
-]
+EventsList(
+  10: 1
+  10: 1
+  20: 0
+)
 `;

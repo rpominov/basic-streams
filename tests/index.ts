@@ -1,4 +1,4 @@
-import {emulate, t, v} from "../source/emulation"
+import {EventsList, emulate, t, v} from "../source/emulation"
 import {
   Stream,
   empty,
@@ -24,6 +24,8 @@ import {
   startWith,
   multicast,
 } from "../source/index"
+
+expect.addSnapshotSerializer(EventsList.jestSerializer)
 
 function noop() {}
 
