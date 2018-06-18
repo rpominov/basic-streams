@@ -650,12 +650,7 @@ Array [
 ]
 `;
 
-exports[`takeUntil subscribes first to source and then to controller 1`] = `
-Array [
-  1,
-  2,
-]
-`;
+exports[`takeUntil subscribes first to controller and then to source 1`] = `Array []`;
 
 exports[`takeWhile calls disposer of source stream when we dispose result stream erlier 1`] = `
 Array [

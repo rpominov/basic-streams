@@ -574,17 +574,15 @@ describe("takeUntil", () => {
 
   test("doesn't contain values after sync value from controller", () => {
     const result = emulate(create => {
-      return takeUntil(of(1), create(t(10), v(1), t(10), v(2), t(10), v(3)))
+      return takeUntil(of(null), create(t(10), v(1), t(10), v(2), t(10), v(3)))
     })
     expect(result).toMatchSnapshot()
   })
 
-  test("subscribes first to source and then to controller", () => {
-    // TODO: change this
-    const result = emulate(create => {
-      return takeUntil(create(v(1)), create(v(1), v(2)))
-    })
-    expect(result).toMatchSnapshot()
+  test("subscribes first to controller and then to source", () => {
+    const cb = jest.fn()
+    takeUntil(of(null), of(1))
+    expect(cb.mock.calls).toMatchSnapshot()
   })
 })
 

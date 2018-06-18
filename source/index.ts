@@ -239,9 +239,14 @@ export function takeUntil<T>(
   stream: Stream<T>,
 ): Stream<T> {
   return cb => {
+    let disposed = false
     let mainDisposer: (() => void) | null = null
     let ctrlDisposer: (() => void) | null = null
     const dispose = () => {
+      if (disposed) {
+        return
+      }
+      disposed = true
       if (mainDisposer !== null) {
         mainDisposer()
         mainDisposer = null
@@ -252,12 +257,17 @@ export function takeUntil<T>(
       }
     }
 
-    mainDisposer = stream(cb)
     ctrlDisposer = controller(dispose)
 
-    // in case controller cb was called sync before we obtained ctrlDisposer
-    if (mainDisposer === null) {
-      dispose()
+    if (disposed && ctrlDisposer !== null) {
+      ctrlDisposer()
+    }
+
+    if (disposed) {
+      // subscribe anyway for consistency
+      stream(noop)()
+    } else {
+      mainDisposer = stream(cb)
     }
 
     return dispose
