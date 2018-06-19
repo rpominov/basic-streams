@@ -1,4 +1,5 @@
-export type Stream<T> = (cb: (payload: T) => void) => (() => void)
+import {Stream} from "@basic-streams/stream"
+
 export type StreamLoose<T> = (
   cb: (payload: T, ...rest: any[]) => any,
   ...rest: any[]

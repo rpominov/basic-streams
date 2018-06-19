@@ -1,4 +1,4 @@
-type Stream<T> = (cb: (payload: T) => void) => (() => void)
+import {Stream} from "@basic-streams/stream"
 
 export class Value<T> {
   constructor(public readonly value: T) {}

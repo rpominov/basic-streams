@@ -1,5 +1,5 @@
 import {EventsList, emulate, t, v} from "@basic-streams/emulation"
-import {map} from "./index"
+import map from "./index"
 
 expect.addSnapshotSerializer(EventsList.jestSerializer)
 

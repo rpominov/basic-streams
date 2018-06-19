@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`preserves disposers 1`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`preserves disposers 2`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`updates result when inputs update 1`] = `
+EventsList(
+  10: 11
+  12: 9
+  20: 4
+)
+`;

@@ -1,3 +1,3 @@
-# @basic-streams/map
+# @basic-streams/ap
 
 TODO: fill up README

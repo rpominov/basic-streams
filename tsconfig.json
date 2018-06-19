@@ -2,6 +2,7 @@
   "compilerOptions": {
     "target": "es5",
     "module": "umd",
+    "moduleResolution": "node",
     "declaration": false,
     "esModuleInterop": true,
     "noEmitOnError": true,

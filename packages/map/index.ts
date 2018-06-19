@@ -1,5 +1,8 @@
-type Stream<T> = (cb: (payload: T) => void) => (() => void)
+import {Stream} from "@basic-streams/stream"
 
-export function map<T, U>(fn: (x: T) => U, stream: Stream<T>): Stream<U> {
+export default function map<T, U>(
+  fn: (x: T) => U,
+  stream: Stream<T>,
+): Stream<U> {
   return cb => stream(payload => cb(fn(payload)))
 }

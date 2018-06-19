@@ -1,6 +1,6 @@
 import {EventsList, emulate, t, v} from "@basic-streams/emulation"
+import Stream from "./Stream"
 import {
-  Stream,
   empty,
   of,
   fromIterable,

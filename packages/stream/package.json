@@ -1,10 +1,10 @@
 {
-  "name": "@basic-streams/map",
-  "version": "0.0.2",
-  "description": "map operator for basic-streams",
+  "name": "@basic-streams/stream",
+  "version": "0.0.1",
+  "description": "Stream<T> type for basic-streams",
   "keywords": [
     "basic-streams",
-    "map"
+    "stream"
   ],
   "author": "Roman Pominov <rpominov@gmail.com>",
   "main": "./index.js",
@@ -17,8 +17,5 @@
   "bugs": {
     "url": "https://github.com/rpominov/basic-streams/issues"
   },
-  "homepage": "https://github.com/rpominov/basic-streams/packages/map",
-  "dependencies": {
-    "@basic-streams/stream": "0.0.1"
-  }
+  "homepage": "https://github.com/rpominov/basic-streams/packages/stream"
 }

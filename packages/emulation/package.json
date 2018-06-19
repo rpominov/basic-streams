@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/rpominov/basic-streams/issues"
   },
-  "homepage": "https://github.com/rpominov/basic-streams/packages/emulation"
+  "homepage": "https://github.com/rpominov/basic-streams/packages/emulation",
+  "dependencies": {
+    "@basic-streams/stream": "0.0.1"
+  }
 }

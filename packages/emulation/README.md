@@ -1,3 +1,3 @@
-# Emulation for basic-streams
+# @basic-streams/emulation
 
-TODO: docs
+TODO: fill up README
