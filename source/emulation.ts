@@ -85,43 +85,33 @@ export class EventsList<T> {
       return ""
     },
 
-    serialize(
-      val: EventsList<any>,
-      config: any,
+    serialize<Refs, Config extends {indent: string}, T>(
+      val: EventsList<T>,
+      config: Config,
       indentation: string,
       depth: number,
-      refs: any,
+      refs: Refs,
       printer: (
-        x: any,
-        config: any,
+        x: T,
+        config: Config,
         indentation: string,
         depth: number,
-        refs: any,
+        refs: Refs,
       ) => string,
     ) {
       const separator = "\n"
-      const itemsStr =
+
+      function printItem(item: Event<T>) {
+        const indentation1 = indentation + config.indent
+        const value = printer(item.value, config, indentation1, depth + 1, refs)
+        return indentation1 + item.time + ": " + value
+      }
+
+      return `EventsList(${
         val.items.length === 0
           ? ""
-          : separator +
-            val.items
-              .map(
-                item =>
-                  indentation +
-                  config.indent +
-                  item.time +
-                  ": " +
-                  printer(
-                    item.value,
-                    config,
-                    indentation + config.indent,
-                    depth + 1,
-                    refs,
-                  ),
-              )
-              .join(separator) +
-            separator
-      return `EventsList(${itemsStr})`
+          : separator + val.items.map(printItem).join(separator) + separator
+      })`
     },
   }
 }
@@ -140,33 +130,36 @@ export function emulate<T>(
   ) => Stream<T>,
   maxTime = Infinity,
 ): EventsList<T> {
-  let currentTime: number = 0
-  let eventsToProduce: EventsList<any> = new EventsList([])
-  const resultEvents: Array<Event<T>> = []
+  const state = {
+    time: 0,
+    toProduce: new EventsList([]) as EventsList<any>,
+    result: [] as Array<Event<T>>,
+  }
   const resultStream = generator((...timeline) => {
     return cb => {
-      // wrap cb to make it a unique value that we will compare to in unsuscribe
+      // wrapping cb to make it a unique value
+      // that we will compare to in unsuscribe
       const _cb = (x: any) => cb(x)
-      eventsToProduce = eventsToProduce.merge(
-        EventsList.fromTimeline(timeline, currentTime).withCb(_cb),
+      state.toProduce = state.toProduce.merge(
+        EventsList.fromTimeline(timeline, state.time).withCb(_cb),
       )
       return () => {
-        eventsToProduce = new EventsList(
-          eventsToProduce.items.filter(item => item.cb !== _cb),
+        state.toProduce = new EventsList(
+          state.toProduce.items.filter(item => item.cb !== _cb),
         )
       }
     }
   })
   resultStream(value => {
-    resultEvents.push(new Event(currentTime, value))
+    state.result.push(new Event(state.time, value))
   })
   while (true) {
-    const {event, rest} = eventsToProduce.takeOne()
-    if (currentTime >= maxTime || !event) {
-      return new EventsList(resultEvents)
+    const {event, rest} = state.toProduce.takeOne()
+    if (state.time >= maxTime || !event) {
+      return new EventsList(state.result)
     }
-    currentTime = event.time
-    eventsToProduce = rest
+    state.time = event.time
+    state.toProduce = rest
     event.callCb()
   }
 }
