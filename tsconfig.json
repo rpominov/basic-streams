@@ -2,8 +2,7 @@
   "compilerOptions": {
     "target": "es5",
     "module": "umd",
-    "outDir": "package",
-    "declaration": true,
+    "declaration": false,
     "esModuleInterop": true,
     "noEmitOnError": true,
     "strict": true,
@@ -18,6 +17,6 @@
       "es2015.symbol.wellknown"
     ]
   },
-  "include": ["source/**/*"],
+  "include": ["packages/**/index.ts"],
   "exclude": ["node_modules"]
 }

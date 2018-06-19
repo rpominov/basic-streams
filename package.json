@@ -2,15 +2,14 @@
   "private": true,
   "name": "basic-streams-dev",
   "scripts": {
-    "cleanup": "rm -f package/*.{js,md,ts} package/LICENSE",
+    "cleanup": "rm -f packages/*/index.js",
     "test": "tsc --noEmit && prettier --l $npm_package_prettierFiles && jest",
     "prettier": "prettier --write $npm_package_prettierFiles",
-    "compile": "tsc",
-    "prepare-release": "npm run cleanup && npm run test && npm run compile && npm run _copy",
-    "_copy": "cp {,package/}README.md && cp {,package/}LICENSE"
+    "compile": "tsc"
   },
   "prettierFiles": "**/*.{babelrc,js,json,md,ts}",
   "devDependencies": {
+    "@basic-streams/emulation": "0.0.1",
     "@types/jest": "^23.0.2",
     "jest": "^23.1.0",
     "prettier": "^1.13.5",
@@ -30,6 +29,6 @@
         "tsConfigFile": "tsconfig.json"
       }
     },
-    "testRegex": "/tests/[^/]+\\.(ts|js)$"
+    "testRegex": "/test.ts$"
   }
 }

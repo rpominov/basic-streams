@@ -1,4 +1,4 @@
-import {EventsList, emulate, t, v} from "../source/emulation"
+import {EventsList, emulate, t, v} from "./index"
 
 expect.addSnapshotSerializer(EventsList.jestSerializer)
 

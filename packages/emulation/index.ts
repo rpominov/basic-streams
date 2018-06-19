@@ -1,4 +1,4 @@
-import {Stream} from "./index"
+type Stream<T> = (cb: (payload: T) => void) => (() => void)
 
 export class Value<T> {
   constructor(public readonly value: T) {}

@@ -1,5 +1,3 @@
 node_modules
-package/*.js
-package/*.ts
-package/*.md
+packages/**/*.js
 package-lock.json

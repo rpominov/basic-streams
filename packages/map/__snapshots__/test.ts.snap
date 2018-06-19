@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`modifies values with provided fn 1`] = `
+EventsList(
+  10: 2
+  20: 3
+)
+`;
+
+exports[`preserves disposer 1`] = `
+Array [
+  Array [],
+]
+`;

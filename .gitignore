@@ -1,6 +1,3 @@
 node_modules
 npm-debug.log
-package/*.js
-package/*.md 
-package/*.ts 
-package/LICENSE
+packages/*/*.js

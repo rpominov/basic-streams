@@ -1,4 +1,4 @@
-import {EventsList, emulate, t, v} from "../source/emulation"
+import {EventsList, emulate, t, v} from "@basic-streams/emulation"
 import {
   Stream,
   empty,
@@ -23,7 +23,7 @@ import {
   skipDuplicates,
   startWith,
   multicast,
-} from "../source/index"
+} from "./index"
 
 expect.addSnapshotSerializer(EventsList.jestSerializer)
 
