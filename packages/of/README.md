@@ -1,10 +1,10 @@
-# @[basic-streams](https://github.com/rpominov/basic-streams)/of
+# [@basic-streams](https://github.com/rpominov/basic-streams)/of
 
 <!-- api-doc-start -->
 
 ### `of<T>(value: T): Stream<T>`
 
-Creates a stream that contains the given **value**.
+Creates a stream that contains the given `value`.
 
 ```js
 import of from "@basic-streams/of"
