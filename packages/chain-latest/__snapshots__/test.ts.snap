@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`doesn't contain values emited from old spawned streams 1`] = `
+EventsList(
+  16: 2
+  26: 4
+  32: 6
+)
+`;
+
+exports[`preserves disposer of main sream 1`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`preserves disposer of spawned streams 1`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`result stream contains values from spawned at correct time 1`] = `
+EventsList(
+  11: 2
+  12: 3
+  21: 4
+  22: 6
+)
+`;

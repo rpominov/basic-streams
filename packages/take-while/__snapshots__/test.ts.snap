@@ -1,0 +1,50 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`calls disposer of source stream when we dispose result stream erlier 1`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`contains correct values at correct time 1`] = `
+EventsList(
+  10: 1
+  20: 2
+)
+`;
+
+exports[`doesn't call disposer twice 1`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`return empty stream if predicate is () => false 1`] = `EventsList()`;
+
+exports[`takes values that satisfy predicate until first value that don't then calls disposer (async) 1`] = `
+Array [
+  Array [
+    1,
+  ],
+  Array [
+    2,
+  ],
+]
+`;
+
+exports[`takes values that satisfy predicate until first value that don't then calls disposer (sync) 1`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`takes values that satisfy predicate until first value that don't then calls disposer (sync) 2`] = `
+Array [
+  Array [
+    1,
+  ],
+  Array [
+    2,
+  ],
+]
+`;

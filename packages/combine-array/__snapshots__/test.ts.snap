@@ -1,0 +1,65 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`preserves disposers 1`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`preserves disposers 2`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`preserves disposers 3`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`result stream contains values from sources 1`] = `
+EventsList(
+  10: Array [
+    1,
+    3,
+    5,
+    7,
+  ]
+  12: Array [
+    1,
+    4,
+    5,
+    7,
+  ]
+  14: Array [
+    2,
+    4,
+    5,
+    7,
+  ]
+  20: Array [
+    2,
+    4,
+    6,
+    7,
+  ]
+)
+`;
+
+exports[`works with one stream 1`] = `
+EventsList(
+  7: Array [
+    1,
+  ]
+  14: Array [
+    2,
+  ]
+)
+`;
+
+exports[`works with zero streams 1`] = `
+EventsList(
+  0: Array []
+)
+`;

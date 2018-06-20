@@ -1,0 +1,57 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`calls disposer of source stream when we dispose result stream 1`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`contains correct values at correct time 1`] = `
+EventsList(
+  10: 1
+)
+`;
+
+exports[`doesn't call disposer twice 1`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`if n is 0 returns empty stream 1`] = `EventsList()`;
+
+exports[`subscribes to source even if n is 0 1`] = `
+Array [
+  Array [
+    [Function],
+  ],
+]
+`;
+
+exports[`takes first n and then calls disposer of source stream (async) 1`] = `
+Array [
+  Array [
+    1,
+  ],
+  Array [
+    2,
+  ],
+]
+`;
+
+exports[`takes first n and then calls disposer of source stream (sync) 1`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`takes first n and then calls disposer of source stream (sync) 2`] = `
+Array [
+  Array [
+    1,
+  ],
+  Array [
+    2,
+  ],
+]
+`;

@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`preserves disposer 1`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`returns empty stream if predicate is () => true 1`] = `EventsList()`;
+
+exports[`returns equivalent stream if predicate is () => false 1`] = `
+EventsList(
+  10: 1
+  20: 2
+  30: 3
+)
+`;
+
+exports[`skips first items that satisfy predicate 1`] = `
+EventsList(
+  30: 3
+)
+`;

@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`works with array 1`] = `
+Array [
+  Array [
+    1,
+  ],
+  Array [
+    2,
+  ],
+  Array [
+    3,
+  ],
+]
+`;
+
+exports[`works with generator 1`] = `
+Array [
+  Array [
+    1,
+  ],
+  Array [
+    2,
+  ],
+  Array [
+    3,
+  ],
+]
+`;

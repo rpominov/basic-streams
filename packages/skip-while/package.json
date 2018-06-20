@@ -1,0 +1,24 @@
+{
+  "name": "@basic-streams/skip-while",
+  "version": "0.0.1",
+  "description": "skipWhile operator for basic-streams",
+  "keywords": [
+    "basic-streams",
+    "skipWhile"
+  ],
+  "author": "Roman Pominov <rpominov@gmail.com>",
+  "main": "./index.js",
+  "types": "./index.ts",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rpominov/basic-streams.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rpominov/basic-streams/issues"
+  },
+  "homepage": "https://github.com/rpominov/basic-streams/packages/skip-while",
+  "dependencies": {
+    "@basic-streams/stream": "0.0.1"
+  }
+}

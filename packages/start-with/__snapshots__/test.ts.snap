@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`adds a value 1`] = `
+EventsList(
+  0: 0
+  10: 1
+  20: 2
+)
+`;
+
+exports[`preserves disposer 1`] = `
+Array [
+  Array [],
+]
+`;

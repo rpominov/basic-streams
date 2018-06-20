@@ -1,0 +1,64 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`first and second sunscribers get same async events 1`] = `
+Array [
+  Array [
+    1,
+  ],
+  Array [
+    2,
+  ],
+]
+`;
+
+exports[`first and second sunscribers get same async events 2`] = `
+Array [
+  Array [
+    1,
+  ],
+  Array [
+    2,
+  ],
+]
+`;
+
+exports[`first subscribers gets sync events 1`] = `
+Array [
+  Array [
+    1,
+  ],
+  Array [
+    2,
+  ],
+]
+`;
+
+exports[`preserves disposer (single subscriber) 1`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`preserves disposer (two subscribers) 1`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`second subscriber doesn't get sync events 1`] = `Array []`;
+
+exports[`subscriber doesn't get event after unsub() in response to that event 1`] = `
+Array [
+  Array [
+    1,
+  ],
+]
+`;
+
+exports[`unsub doesn't remove another version of same subscriber 1`] = `
+Array [
+  Array [
+    1,
+  ],
+]
+`;

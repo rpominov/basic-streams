@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`contains correct values 1`] = `
+EventsList(
+  0: Array []
+  10: Array [
+    1,
+  ]
+  20: Array [
+    1,
+    2,
+  ]
+)
+`;
+
+exports[`preserves disposer 1`] = `
+Array [
+  Array [],
+]
+`;

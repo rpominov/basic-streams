@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`doesn't apply comparator to the first element 1`] = `Array []`;
+
+exports[`preserves disposer 1`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`removes duplicates 1`] = `
+EventsList(
+  10: 1
+  30: 3
+)
+`;

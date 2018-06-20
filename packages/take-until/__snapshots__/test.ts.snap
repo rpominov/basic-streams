@@ -1,0 +1,48 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`calls disposers after first value in controller 1`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`calls disposers after first value in controller 2`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`calls disposers properly (async value in controller) 1`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`calls disposers properly (async value in controller) 2`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`calls disposers when we dispose result stream erlier 1`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`calls disposers when we dispose result stream erlier 2`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`doesn't contain values after sync value from controller 1`] = `EventsList()`;
+
+exports[`doesn't contain values after value from controller 1`] = `
+EventsList(
+  10: 1
+  20: 2
+)
+`;
+
+exports[`subscribes first to controller and then to source 1`] = `Array []`;
