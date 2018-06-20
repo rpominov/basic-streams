@@ -2,7 +2,7 @@
   "private": true,
   "name": "basic-streams-dev",
   "scripts": {
-    "cleanup": "rm -f packages/*/index.js",
+    "cleanup": "rm -rf packages/*/index.js packages/*/node_modules",
     "test": "tsc --noEmit && prettier --l $npm_package_prettierFiles && jest",
     "prettier": "prettier --write $npm_package_prettierFiles",
     "compile": "tsc"
