@@ -1,3 +1,3 @@
-# [@basic-streams](https://github.com/rpominov/basic-streams)map
+# [@basic-streams](https://github.com/rpominov/basic-streams)/map
 
 TODO: fill up README

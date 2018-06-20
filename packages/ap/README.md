@@ -1,4 +1,4 @@
-# [@basic-streams](https://github.com/rpominov/basic-streams)ap
+# [@basic-streams](https://github.com/rpominov/basic-streams)/ap
 
 <!-- api-doc-start -->
 
