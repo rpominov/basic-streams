@@ -2,23 +2,36 @@
 
 <!-- api-doc-start -->
 
-### `ap<T, U>(streamf: Stream<(x: T) => U>, stream: Stream<T>): Stream<U>`
+### `ap<T, U>(streamf: Stream<(x: T) => U>, streamv: Stream<T>): Stream<U>`
 
 Given a stream of functions `streamf` and a stream of values `streamv` returns a
 stream that will contain values created by applying the latest function from
 `streamf` to the latest value from `streamv` every time one of them updates.
 
 ```js
-import of from "@basic-streams/of"
+import fromIterable from "@basic-streams/from-iterable"
 import ap from "@basic-streams/ap"
 
-const stream = ap(of(x => x * 2), of(10))
+const streamf = fromIterable([x => x + 2, x => x - 2], 10)
+const streamv = fromIterable([1, 2, 3], 8)
 
-stream(x => {
+const result = ap(streamf, streamv)
+
+result(x => {
   console.log(x)
 })
 
-// > 20
+// > 3
+// > 4
+// > 0
+// > 1
+```
+
+```
+          x => x + 2     x => x - 2
+streamf: _________._________.
+streamv: _______1_______2_______3
+result:  _________3_____4___0___1
 ```
 
 <!-- api-doc-end -->
