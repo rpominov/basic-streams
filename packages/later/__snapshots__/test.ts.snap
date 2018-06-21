@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`calls cb after the given time 1`] = `Array []`;
+
+exports[`calls cb after the given time 2`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`doesn't call cb after unsusbcribe 1`] = `Array []`;
+
+exports[`if value provided passes it to the cb 1`] = `
+Array [
+  Array [
+    5,
+  ],
+]
+`;
