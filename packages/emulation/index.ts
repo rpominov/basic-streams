@@ -163,3 +163,11 @@ export function emulate<T>(
     event.callCb()
   }
 }
+
+export function laterMock(
+  createStream: <U>(...timeline: Timeline<U>) => Stream<U>,
+) {
+  return function later<T>(time: number, value?: T): Stream<T> {
+    return createStream(t(time), v(value as any))
+  }
+}
