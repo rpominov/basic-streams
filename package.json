@@ -8,7 +8,6 @@
   },
   "prettierFiles": "**/*.{babelrc,js,json,md,ts}",
   "devDependencies": {
-    "basic-streams": "latest",
     "@basic-streams/ap": "latest",
     "@basic-streams/chain": "latest",
     "@basic-streams/chain-latest": "latest",
@@ -18,6 +17,7 @@
     "@basic-streams/filter": "latest",
     "@basic-streams/from-iterable": "latest",
     "@basic-streams/from-loose": "latest",
+    "@basic-streams/later": "latest",
     "@basic-streams/map": "latest",
     "@basic-streams/map2": "latest",
     "@basic-streams/map3": "latest",
@@ -34,6 +34,7 @@
     "@basic-streams/take-until": "latest",
     "@basic-streams/take-while": "latest",
     "@types/jest": "^23.0.2",
+    "basic-streams": "latest",
     "jest": "^23.1.0",
     "prettier": "^1.13.5",
     "ts-jest": "^22.4.6",
