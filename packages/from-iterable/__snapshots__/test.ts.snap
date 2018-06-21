@@ -1,5 +1,32 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`correctly handles disposers when scheduler runs synchronously only first time 1`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`doesn't blow up call stack when scheduler is synchronous 1`] = `
+Object {
+  "count": 1000001,
+  "latestValue": 1000000,
+}
+`;
+
+exports[`when interval provided disposer works 1`] = `
+EventsList(
+  10: 1
+)
+`;
+
+exports[`when interval provided spreads values in time 1`] = `
+EventsList(
+  10: 1
+  20: 2
+  30: 3
+)
+`;
+
 exports[`works with array 1`] = `
 Array [
   Array [
