@@ -1,4 +1,4 @@
-import {EventsList, emulate, t, v} from "@basic-streams/emulation"
+import {EventsList, emulate, t, v} from "../emulation"
 import map3 from "./index"
 
 expect.addSnapshotSerializer(EventsList.jestSerializer)

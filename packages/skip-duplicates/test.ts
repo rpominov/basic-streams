@@ -1,4 +1,4 @@
-import {EventsList, emulate, t, v} from "@basic-streams/emulation"
+import {EventsList, emulate, t, v} from "../emulation"
 import skipDuplicates from "./index"
 import of from "../of/index"
 
