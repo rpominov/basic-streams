@@ -33,7 +33,7 @@ function getIterator<T>(iterable: Iterable<T>): IteratorLike<T> {
 export default function fromIterable<T>(
   xs: Iterable<T>,
   interval?: number,
-  scheduler = later,
+  scheduler: (time: number) => Stream<void> = later,
 ): Stream<T> {
   return cb => {
     // without interval
