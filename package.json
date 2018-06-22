@@ -4,7 +4,8 @@
     "cleanup": "rm -rf packages/*/index.js packages/*/node_modules",
     "test": "tsc --noEmit && prettier --l $npm_package_prettierFiles && jest",
     "prettier": "prettier --write $npm_package_prettierFiles",
-    "compile": "tsc"
+    "compile": "tsc",
+    "update-readme": "node ./scripts/combine-api-docs.js && markdown-toc -i README.md && prettier --write README.md"
   },
   "prettierFiles": "**/*.{babelrc,js,json,md,ts}",
   "devDependencies": {
@@ -34,8 +35,10 @@
     "@basic-streams/take-until": "latest",
     "@basic-streams/take-while": "latest",
     "@types/jest": "^23.0.2",
+    "@types/node": "^10.3.4",
     "basic-streams": "latest",
     "jest": "^23.1.0",
+    "markdown-toc": "^1.2.0",
     "prettier": "^1.13.5",
     "ts-jest": "^22.4.6",
     "typescript": "^2.9.1"
