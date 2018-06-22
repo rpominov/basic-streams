@@ -1,8 +1,8 @@
 # [@basic-streams](https://github.com/rpominov/basic-streams)/of
 
-<!-- api-doc-start -->
+<!-- doc -->
 
-### `of<T>(value: T): Stream<T>`
+`of<T>(value: T): Stream<T>`
 
 Creates a stream that contains the given `value`.
 
@@ -18,4 +18,4 @@ stream(x => {
 // > 1
 ```
 
-<!-- api-doc-end -->
+<!-- docstop -->

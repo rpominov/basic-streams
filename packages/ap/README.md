@@ -1,8 +1,8 @@
 # [@basic-streams](https://github.com/rpominov/basic-streams)/ap
 
-<!-- api-doc-start -->
+<!-- doc -->
 
-### `ap<T, U>(streamf: Stream<(x: T) => U>, streamv: Stream<T>): Stream<U>`
+`ap<T, U>(streamf: Stream<(x: T) => U>, streamv: Stream<T>): Stream<U>`
 
 Given a stream of functions `streamf` and a stream of values `streamv` returns a
 stream that will contain values created by applying the latest function from
@@ -25,13 +25,11 @@ result(x => {
 // > 4
 // > 0
 // > 1
+
+//               x => x + 2   x => x - 2
+// streamf: _________._________.
+// streamv: _______1_______2_______3
+// result:  _________3_____4___0___1
 ```
 
-```
-          x => x + 2     x => x - 2
-streamf: _________._________.
-streamv: _______1_______2_______3
-result:  _________3_____4___0___1
-```
-
-<!-- api-doc-end -->
+<!-- docstop -->
