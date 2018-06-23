@@ -6,7 +6,7 @@
     "prettier": "prettier --write $npm_package_prettierFiles",
     "compile": "tsc",
     "update-readme": "node ./scripts/combine-api-docs.js && markdown-toc -i README.md && prettier --write README.md",
-    "fepkg": "node ./scripts/for-each-package.js"
+    "eachpkg": "node ./scripts/for-each-package.js"
   },
   "prettierFiles": "**/*.{babelrc,js,json,md,ts}",
   "devDependencies": {
