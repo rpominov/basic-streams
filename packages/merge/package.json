@@ -1,6 +1,6 @@
 {
   "name": "@basic-streams/merge",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "merge operator for basic-streams",
   "keywords": [
     "basic-streams",

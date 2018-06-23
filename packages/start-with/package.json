@@ -1,6 +1,6 @@
 {
   "name": "@basic-streams/start-with",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "startWith operator for basic-streams",
   "keywords": [
     "basic-streams",
