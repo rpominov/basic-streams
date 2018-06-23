@@ -1,6 +1,6 @@
 {
   "name": "@basic-streams/chain-latest",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "description": "chainLatest operator for basic-streams",
   "keywords": [
     "basic-streams",

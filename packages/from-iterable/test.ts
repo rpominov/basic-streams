@@ -50,9 +50,9 @@ test("when interval provided disposer works", () => {
 })
 
 test("doesn't blow up call stack when scheduler is synchronous", () => {
-  function scheduler(time, value) {
+  function scheduler(time) {
     return cb => {
-      cb(value)
+      cb()
       return () => {}
     }
   }
@@ -75,11 +75,11 @@ test("doesn't blow up call stack when scheduler is synchronous", () => {
 test("correctly handles disposers when scheduler runs synchronously only first time", () => {
   const disposer = jest.fn()
   let runned = false
-  function scheduler(time, value) {
+  function scheduler(time) {
     return cb => {
       if (!runned) {
         runned = true
-        cb(value)
+        cb()
         return () => {}
       }
       return disposer

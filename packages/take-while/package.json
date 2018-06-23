@@ -1,6 +1,6 @@
 {
   "name": "@basic-streams/take-while",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "description": "takeWhile operator for basic-streams",
   "keywords": [
     "basic-streams",

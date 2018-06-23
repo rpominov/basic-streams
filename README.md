@@ -21,8 +21,6 @@
   - [scan](#scan)
   - [ap](#ap)
   - [map2](#map2)
-  - [map3](#map3)
-  - [combine-array](#combine-array)
   - [merge](#merge)
   - [skip](#skip)
   - [skip-while](#skip-while)
@@ -95,7 +93,7 @@ When you use a stream you must follow this rulles:
 1.  `disposer` must be called at most once.
 
 We don't give any guarantees about the library behavior if these rules are
-violated. But you can use [`fromLoose`](#from-loose) to create a well-behaving
+violated. But you can use [`fromLoose`](#from-loose) to create a well-behaved
 stream from a loose one, and [`protect`](#protect) if you want to use a stream
 more freely.
 
@@ -273,6 +271,39 @@ fromIterable([1, 2, 3], 10, scheduler)(x => {
 
 ### chain
 
+`chain<T, U>(fn: (x: T) => Stream<U>, stream: Stream<T>): Stream<U>`
+
+The given function `fn` will be applied to each value in the given `stream` to
+create an intermediate stream. The resulting stream will contain all values from
+all intermediate streams.
+
+```js
+import fromIterable from "@basic-streams/from-iterable"
+import chain from "@basic-streams/chain"
+
+const stream = fromIterable([1, 2], 10)
+const fn = x => fromIterable([x, x, x], 7)
+
+const result = chain(fn, stream)
+
+result(x => {
+  console.log(x)
+})
+
+// > 1
+// > 1
+// > 2
+// > 1
+// > 2
+// > 2
+
+//
+// stream: _________1_________2
+// fn(1):            ______1______1______1
+// fn(2):                      ______2______2______2
+// result: ________________1______1__2___1__2______2
+```
+
 <!-- docstop chain -->
 
 <!-- doc chain-latest -->
@@ -328,18 +359,6 @@ result(x => {
 ### map2
 
 <!-- docstop map2 -->
-
-<!-- doc map3 -->
-
-### map3
-
-<!-- docstop map3 -->
-
-<!-- doc combine-array -->
-
-### combine-array
-
-<!-- docstop combine-array -->
 
 <!-- doc merge -->
 

@@ -1,6 +1,6 @@
 {
   "name": "@basic-streams/map2",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "description": "map2 operator for basic-streams",
   "keywords": [
     "basic-streams",

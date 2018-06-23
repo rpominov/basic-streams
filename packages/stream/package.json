@@ -1,6 +1,6 @@
 {
   "name": "@basic-streams/stream",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "description": "Stream<T> type for basic-streams",
   "keywords": [
     "basic-streams",

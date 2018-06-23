@@ -1,6 +1,6 @@
 {
   "name": "@basic-streams/combine-array",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "description": "combineArray operator for basic-streams",
   "keywords": [
     "basic-streams",

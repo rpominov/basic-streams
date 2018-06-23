@@ -1,6 +1,6 @@
 {
   "name": "@basic-streams/of",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "description": "of operator for basic-streams",
   "keywords": [
     "basic-streams",
