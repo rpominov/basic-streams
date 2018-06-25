@@ -4,7 +4,8 @@
 
 - [Introduction](#introduction)
 - [Protocol](#protocol)
-- [Use-cases and limitations](#use-cases-and-limitations)
+- [Use-cases](#use-cases)
+- [Limitations and alternatives](#limitations-and-alternatives)
 - [Installation](#installation)
 - [Flow and TypeScript](#flow-and-typescript)
 - [API reference](#api-reference)
@@ -99,9 +100,103 @@ violated. But you can use [`fromLoose`](#from-loose) to create a well-behaved
 stream from a loose one, and [`protect`](#protect) if you want to use a stream
 more freely.
 
-## Use-cases and limitations
+## Use-cases
 
-TODO
+#### Reactive programming without big dependency
+
+This library can be useful when you want to introduce just a bit of reactive
+programming to a project without bringing a big dependency. Sometimes bundle
+size is very important and every byte counts, so you may hesitate to add a
+library like RxJS as even though streams seem like a perfect solution to a
+problem. And here basic-streams come in, it's size almost non-existent, each
+function is a separate NPM module, and usually only several lines of code, so it
+should never be a problem to add a couple of basic-streams modules as
+dependencies.
+
+#### Learning
+
+Another use-case is learning. If you want to learn how reactive programming
+libraries work, code of basic-streams should be easier to understand compared to
+more serious projects. At the same time, it shares many concepts with them:
+you'll find many similar operators, and they work similarly under the hood. But
+because streams here is so basic, the code is very simple and there is very
+little of it.
+
+#### Why not?
+
+If [limitations](#limitations-and-alternatives) are not important to you why not
+use it? It's just another event streams implementation as good as any. The
+library is small, fast, well tested and documented, supports Flow and
+TypeScript, what else do you need?
+
+## Limitations and alternatives
+
+#### No completion
+
+A stream in basic-streams can't tell its subscriber that it's done producing
+events. This makes streams less expressive: if the process behind your stream
+has a notion of completion, you can't signal it to the subscriber using
+basic-streams. Also, we can't implement certain operators, like
+[concat](http://reactivex.io/documentation/operators/concat.html).
+
+In some cases, this can be mitigated by sending a special event at the end, but
+because there is no standard way to do it, the library can't offer a good
+support for it. For example, you'll still get that special event in `map` and
+will have to handle it manually.
+
+We could introduce a standard way to signal completion, but this would make the
+library more complex. Simplicity is the main trait of this project, and we have
+to pay in expressiveness for it.
+
+#### No errors handling
+
+Similarly to completion, there is no standard way to signal an error using a
+stream. This also makes library less expressive and some operators impossible to
+implement.
+
+#### No way to unsubscribe from a synchronous stream
+
+If a stream produces several events synchronously you can't unsubscribe after
+the first event, because you don't have access to the `unsubscribe` function
+yet. For example:
+
+```js
+const stream = cb => {
+  cb(1)
+  cb(2)
+  cb(3)
+  return () => {}
+}
+
+const unsubscribe = stream(x => {
+  console.log("first event", x)
+
+  // ReferenceError: can't access lexical declaration `unsubscribe' before initialization
+  unsubscribe()
+})
+```
+
+You can always just ignore events, that is what the [take](#take) operator does.
+But this is still a limitation because, for example, we can't implement an
+infinite synchronous stream, and then take a finite amount of events from it.
+
+Although in most cases this shouldn't be a problem because streams are supposed
+to be asynchronous. If you want to work with synchronous collections you can use
+something like Lodash or Ramda.
+
+Note that this issue may exist in the alternatives listed below as well, for
+example in Kefir.
+
+#### Alternatives
+
+If basic-streams don't meet your needs, try these more serious projects (in no
+particular order):
+
+1.  [Most](https://github.com/cujojs/most)
+1.  [Xstream](https://github.com/staltz/xstream)
+1.  [RxJS](https://github.com/ReactiveX/rxjs)
+1.  [Bacon](https://github.com/baconjs/bacon.js/)
+1.  [Kefir](https://github.com/kefirjs/kefir)
 
 ## Installation
 
