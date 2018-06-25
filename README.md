@@ -241,17 +241,29 @@ stream(x => {
 // > 1
 ```
 
+```sh
+npm install @basci-streams/of --save
+```
+
 <!-- docstop of -->
 
 <!-- doc empty -->
 
 ### empty
 
+```sh
+npm install @basci-streams/empty --save
+```
+
 <!-- docstop empty -->
 
 <!-- doc later -->
 
 ### later
+
+```sh
+npm install @basci-streams/later --save
+```
 
 <!-- docstop later -->
 
@@ -338,11 +350,19 @@ fromIterable([1, 2, 3], 10, scheduler)(x => {
 // ____1____2____3
 ```
 
+```sh
+npm install @basci-streams/from-iterable --save
+```
+
 <!-- docstop from-iterable -->
 
 <!-- doc from-loose -->
 
 ### from-loose
+
+```sh
+npm install @basci-streams/from-loose --save
+```
 
 <!-- docstop from-loose -->
 
@@ -350,17 +370,29 @@ fromIterable([1, 2, 3], 10, scheduler)(x => {
 
 ### start-with
 
+```sh
+npm install @basci-streams/start-with --save
+```
+
 <!-- docstop start-with -->
 
 <!-- doc map -->
 
 ### map
 
+```sh
+npm install @basci-streams/map --save
+```
+
 <!-- docstop map -->
 
 <!-- doc filter -->
 
 ### filter
+
+```sh
+npm install @basci-streams/filter --save
+```
 
 <!-- docstop filter -->
 
@@ -401,17 +433,29 @@ result(x => {
 // result: ________________1______1__2___1__2______2
 ```
 
+```sh
+npm install @basci-streams/chain --save
+```
+
 <!-- docstop chain -->
 
 <!-- doc chain-latest -->
 
 ### chain-latest
 
+```sh
+npm install @basci-streams/chain-latest --save
+```
+
 <!-- docstop chain-latest -->
 
 <!-- doc scan -->
 
 ### scan
+
+```sh
+npm install @basci-streams/scan --save
+```
 
 <!-- docstop scan -->
 
@@ -449,11 +493,19 @@ result(x => {
 // result:  _________3_____4___0___1
 ```
 
+```sh
+npm install @basci-streams/ap --save
+```
+
 <!-- docstop ap -->
 
 <!-- doc map2 -->
 
 ### map2
+
+```sh
+npm install @basci-streams/map2 --save
+```
 
 <!-- docstop map2 -->
 
@@ -461,11 +513,19 @@ result(x => {
 
 ### map3
 
+```sh
+npm install @basci-streams/map3 --save
+```
+
 <!-- docstop map3 -->
 
 <!-- doc combine-array -->
 
 ### combine-array
+
+```sh
+npm install @basci-streams/combine-array --save
+```
 
 <!-- docstop combine-array -->
 
@@ -473,11 +533,19 @@ result(x => {
 
 ### merge
 
+```sh
+npm install @basci-streams/merge --save
+```
+
 <!-- docstop merge -->
 
 <!-- doc skip -->
 
 ### skip
+
+```sh
+npm install @basci-streams/skip --save
+```
 
 <!-- docstop skip -->
 
@@ -485,11 +553,19 @@ result(x => {
 
 ### skip-while
 
+```sh
+npm install @basci-streams/skip-while --save
+```
+
 <!-- docstop skip-while -->
 
 <!-- doc skip-duplicates -->
 
 ### skip-duplicates
+
+```sh
+npm install @basci-streams/skip-duplicates --save
+```
 
 <!-- docstop skip-duplicates -->
 
@@ -497,11 +573,19 @@ result(x => {
 
 ### take
 
+```sh
+npm install @basci-streams/take --save
+```
+
 <!-- docstop take -->
 
 <!-- doc take-until -->
 
 ### take-until
+
+```sh
+npm install @basci-streams/take-until --save
+```
 
 <!-- docstop take-until -->
 
@@ -509,11 +593,19 @@ result(x => {
 
 ### take-while
 
+```sh
+npm install @basci-streams/take-while --save
+```
+
 <!-- docstop take-while -->
 
 <!-- doc multicast -->
 
 ### multicast
+
+```sh
+npm install @basci-streams/multicast --save
+```
 
 <!-- docstop multicast -->
 
