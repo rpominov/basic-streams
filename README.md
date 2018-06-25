@@ -39,10 +39,8 @@
 
 The idea is to take the most basic definition of event stream and build
 functions to do generic operations with that streams. In basic-streams a stream
-is just a function that accepts subscriber and must return a function to
-unsubscribe.
-
-Here is the type signature of a stream:
+is just a function that takes a subscriber and returns a function to
+unsubscribe. Here is the type signature of a stream:
 
 ```js
 <T>(cb: (payload: T) => void) => () => void
@@ -162,10 +160,18 @@ yet. For example:
 
 ```js
 const stream = cb => {
-  cb(1)
-  cb(2)
-  cb(3)
-  return () => {}
+  const items = [1, 2, 3]
+  let unsubscribed = false
+
+  // This code doesn't make sense because `unsubscribed`
+  // can't be updated until we return the unsubscribe function
+  for (let i = 0; i < items.length && !unsubscribed; i++) {
+    cb(items[i])
+  }
+
+  return () => {
+    unsubscribed = true
+  }
 }
 
 const unsubscribe = stream(x => {
