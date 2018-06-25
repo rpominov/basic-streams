@@ -7,10 +7,6 @@
 Same as [`chain`][chain], but when we create a new intermediate stream, we
 unsubscribe from the previous one.
 
-The given function `fn` will be applied to each value in the given `stream` to
-create an intermediate stream. The resulting stream will contain values from
-each of these streams produced before the next one is created.
-
 ```js
 import fromIterable from "@basic-streams/from-iterable"
 import chainLatest from "@basic-streams/chain-latest"

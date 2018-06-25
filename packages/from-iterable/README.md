@@ -10,22 +10,11 @@ fromIterable<T>(
 ): Stream<T>
 ```
 
-Given an `iterable`, returns a stream that produces items from that iterable. If
-an `interval` is provided the items will be spread in time. Interval is a number
-of milliseconds by which items should be spread. The first item also will be
-delayed by that interval. If the interval is `0` the items will be produced as
-soon as possible but still asynchronously.
-
-Also, you can provide a custom `scheduler`, a function that creates a stream
-that produces an event after a given ammount of milliseconds. By default
-[`later`][later] is used as a scheduler.
+Transforms an `iterable` into a stream.
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"
-import later from "@basic-streams/later"
 
-//
-// simplest case
 fromIterable([1, 2, 3])(x => {
   console.log(x)
 })
@@ -33,9 +22,15 @@ fromIterable([1, 2, 3])(x => {
 // > 1
 // > 2
 // > 3
+```
 
-//
-// with an interval
+If an `interval` is provided the items will be spread in time by that ammount of
+milliseconds, with the first one delayed. If the interval is `0` the items will
+be produced as soon as possible but still asynchronously.
+
+```js
+import fromIterable from "@basic-streams/from-iterable"
+
 fromIterable([1, 2, 3], 5000)(x => {
   console.log(x)
 })
@@ -45,9 +40,14 @@ fromIterable([1, 2, 3], 5000)(x => {
 // > 3
 
 // ____1____2____3
+```
 
-//
-// with a generator function
+Note that iterable is consumed lazily, meaning that `next()` is called only when
+value is needed.
+
+```js
+import fromIterable from "@basic-streams/from-iterable"
+
 function* generator() {
   const startTime = Date.now()
   yield Date.now() - startTime
@@ -64,9 +64,15 @@ fromIterable(generator(), 5000)(x => {
 
 //     0   5000  10000
 // ____.____.____.
+```
 
-//
-// with a custom scheduler
+You can provide a custom `scheduler`, a function that creates a stream producing
+an event after a given time. By default [`later`][later] is used as a scheduler.
+
+```js
+import fromIterable from "@basic-streams/from-iterable"
+import later from "@basic-streams/later"
+
 function scheduler(time) {
   return later(time / 2)
 }

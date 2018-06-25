@@ -231,7 +231,7 @@ TODO
 In the examples below, you'll see time diagrams like this `___1___2`. They
 should be pretty self-explanatory but there are couple notes to make:
 
-The underscore `_` usually represents 1 second.
+The underscore `_` usually represents one second.
 
 An event takes space of one underscore, so for example, if an event happens
 after 5 seconds, we add only 4 underscores before it.
@@ -316,6 +316,28 @@ npm install @basic-streams/empty --save
 
 ### later
 
+`later<T>(time: number, value?: T): Stream<T>`
+
+TODO: description
+
+```js
+import fromIterable from "@basic-streams/from-iterable"
+import later from "@basic-streams/later"
+
+const stream = fromIterable([1, 2, 3], 5000)
+
+// TODO: example
+const result = stream
+
+result(x => {
+  console.log(x)
+})
+
+// > TODO: output
+
+// stream: ____1____2____3
+```
+
 ```sh
 npm install @basic-streams/later --save
 ```
@@ -334,22 +356,11 @@ fromIterable<T>(
 ): Stream<T>
 ```
 
-Given an `iterable`, returns a stream that produces items from that iterable. If
-an `interval` is provided the items will be spread in time. Interval is a number
-of milliseconds by which items should be spread. The first item also will be
-delayed by that interval. If the interval is `0` the items will be produced as
-soon as possible but still asynchronously.
-
-Also, you can provide a custom `scheduler`, a function that creates a stream
-that produces an event after a given ammount of milliseconds. By default
-[`later`][later] is used as a scheduler.
+Transforms an `iterable` into a stream.
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"
-import later from "@basic-streams/later"
 
-//
-// simplest case
 fromIterable([1, 2, 3])(x => {
   console.log(x)
 })
@@ -357,9 +368,15 @@ fromIterable([1, 2, 3])(x => {
 // > 1
 // > 2
 // > 3
+```
 
-//
-// with an interval
+If an `interval` is provided the items will be spread in time by that ammount of
+milliseconds, with the first one delayed. If the interval is `0` the items will
+be produced as soon as possible but still asynchronously.
+
+```js
+import fromIterable from "@basic-streams/from-iterable"
+
 fromIterable([1, 2, 3], 5000)(x => {
   console.log(x)
 })
@@ -369,9 +386,14 @@ fromIterable([1, 2, 3], 5000)(x => {
 // > 3
 
 // ____1____2____3
+```
 
-//
-// with a generator function
+Note that iterable is consumed lazily, meaning that `next()` is called only when
+value is needed.
+
+```js
+import fromIterable from "@basic-streams/from-iterable"
+
 function* generator() {
   const startTime = Date.now()
   yield Date.now() - startTime
@@ -388,9 +410,15 @@ fromIterable(generator(), 5000)(x => {
 
 //     0   5000  10000
 // ____.____.____.
+```
 
-//
-// with a custom scheduler
+You can provide a custom `scheduler`, a function that creates a stream producing
+an event after a given time. By default [`later`][later] is used as a scheduler.
+
+```js
+import fromIterable from "@basic-streams/from-iterable"
+import later from "@basic-streams/later"
+
 function scheduler(time) {
   return later(time / 2)
 }
@@ -415,6 +443,35 @@ npm install @basic-streams/from-iterable --save
 
 ### from-loose
 
+```
+fromLoose<T>(
+  looseStream: (
+    cb: (payload: T, ...rest: any[]) => any,
+    ...rest: any[]
+  ) => any
+): Stream<T>
+```
+
+TODO: description
+
+```js
+import fromIterable from "@basic-streams/from-iterable"
+import fromLoose from "@basic-streams/from-loose"
+
+const stream = fromIterable([1, 2, 3], 5000)
+
+// TODO: example
+const result = stream
+
+result(x => {
+  console.log(x)
+})
+
+// > TODO: output
+
+// stream: ____1____2____3
+```
+
 ```sh
 npm install @basic-streams/from-loose --save
 ```
@@ -424,6 +481,28 @@ npm install @basic-streams/from-loose --save
 <!-- doc start-with -->
 
 ### start-with
+
+`startWith<T, U>(x: T, stream: Stream<U>): Stream<T | U>`
+
+TODO: description
+
+```js
+import fromIterable from "@basic-streams/from-iterable"
+import startWith from "@basic-streams/start-with"
+
+const stream = fromIterable([1, 2, 3], 5000)
+
+// TODO: example
+const result = stream
+
+result(x => {
+  console.log(x)
+})
+
+// > TODO: output
+
+// stream: ____1____2____3
+```
 
 ```sh
 npm install @basic-streams/start-with --save
@@ -547,10 +626,6 @@ npm install @basic-streams/chain --save
 Same as [`chain`][chain], but when we create a new intermediate stream, we
 unsubscribe from the previous one.
 
-The given function `fn` will be applied to each value in the given `stream` to
-create an intermediate stream. The resulting stream will contain values from
-each of these streams produced before the next one is created.
-
 ```js
 import fromIterable from "@basic-streams/from-iterable"
 import chainLatest from "@basic-streams/chain-latest"
@@ -584,6 +659,28 @@ npm install @basic-streams/chain-latest --save
 <!-- doc scan -->
 
 ### scan
+
+`scan<N, A>(reducer: (acc: A, next: N) => A, seed: A, stream: Stream<N>): Stream<A>`
+
+TODO: description
+
+```js
+import fromIterable from "@basic-streams/from-iterable"
+import scan from "@basic-streams/scan"
+
+const stream = fromIterable([1, 2, 3], 5000)
+
+// TODO: example
+const result = stream
+
+result(x => {
+  console.log(x)
+})
+
+// > TODO: output
+
+// stream: ____1____2____3
+```
 
 ```sh
 npm install @basic-streams/scan --save
@@ -724,10 +821,9 @@ TODO: description
 import fromIterable from "@basic-streams/from-iterable"
 import merge from "@basic-streams/merge"
 
-const stream1 = fromIterable([1, 2, 3], 10000)
-const stream2 = fromIterable([4, 5, 6], 8000)
-const stream3 = fromIterable([7, 8, 9], 6000)
-const result = merge([stream1, stream2, stream3])
+const stream1 = fromIterable([2, 4, 6], 10000)
+const stream2 = fromIterable([1, 3, 5], 8000)
+const result = merge([stream1, stream2])
 
 result(x => {
   console.log(x)
@@ -739,14 +835,10 @@ result(x => {
 // > 4
 // > 5
 // > 6
-// > 7
-// > 8
-// > 9
 
-// stream1: _________3_________7_________9
-// stream2: _______2_______5_______8
-// stream3: _____1_____4_____6
-// result:  _____1_2_3_4___5_6_7___8_____9
+// stream1: _________2_________4_________6
+// stream2: _______1_______3_______5
+// result:  _______1_2_____3___4___5_____6
 ```
 
 ```sh
@@ -759,6 +851,28 @@ npm install @basic-streams/merge --save
 
 ### skip
 
+`skip<T>(n: number, stream: Stream<T>): Stream<T>`
+
+TODO: description
+
+```js
+import fromIterable from "@basic-streams/from-iterable"
+import skip from "@basic-streams/skip"
+
+const stream = fromIterable([1, 2, 3], 5000)
+
+// TODO: example
+const result = stream
+
+result(x => {
+  console.log(x)
+})
+
+// > TODO: output
+
+// stream: ____1____2____3
+```
+
 ```sh
 npm install @basic-streams/skip --save
 ```
@@ -769,6 +883,28 @@ npm install @basic-streams/skip --save
 
 ### skip-while
 
+`skipWhile<T>(predicate: (x: T) => boolean, stream: Stream<T>): Stream<T>`
+
+TODO: description
+
+```js
+import fromIterable from "@basic-streams/from-iterable"
+import skipWhile from "@basic-streams/skip-while"
+
+const stream = fromIterable([1, 2, 3], 5000)
+
+// TODO: example
+const result = stream
+
+result(x => {
+  console.log(x)
+})
+
+// > TODO: output
+
+// stream: ____1____2____3
+```
+
 ```sh
 npm install @basic-streams/skip-while --save
 ```
@@ -778,6 +914,28 @@ npm install @basic-streams/skip-while --save
 <!-- doc skip-duplicates -->
 
 ### skip-duplicates
+
+`skipDuplicates<T>(comparator: (prev: T, next: T) => boolean, stream: Stream<T>): Stream<T>`
+
+TODO: description
+
+```js
+import fromIterable from "@basic-streams/from-iterable"
+import skipDuplicates from "@basic-streams/skip-duplicates"
+
+const stream = fromIterable([1, 2, 3], 5000)
+
+// TODO: example
+const result = stream
+
+result(x => {
+  console.log(x)
+})
+
+// > TODO: output
+
+// stream: ____1____2____3
+```
 
 ```sh
 npm install @basic-streams/skip-duplicates --save
@@ -821,6 +979,28 @@ npm install @basic-streams/take --save
 
 ### take-until
 
+`takeUntil<T>(controller: Stream<any>, stream: Stream<T>): Stream<T>`
+
+TODO: description
+
+```js
+import fromIterable from "@basic-streams/from-iterable"
+import takeUntil from "@basic-streams/take-until"
+
+const stream = fromIterable([1, 2, 3], 5000)
+
+// TODO: example
+const result = stream
+
+result(x => {
+  console.log(x)
+})
+
+// > TODO: output
+
+// stream: ____1____2____3
+```
+
 ```sh
 npm install @basic-streams/take-until --save
 ```
@@ -831,6 +1011,28 @@ npm install @basic-streams/take-until --save
 
 ### take-while
 
+`takeWhile<T>(predicate: (x: T) => boolean, stream: Stream<T>): Stream<T>`
+
+TODO: description
+
+```js
+import fromIterable from "@basic-streams/from-iterable"
+import takeWhile from "@basic-streams/take-while"
+
+const stream = fromIterable([1, 2, 3], 5000)
+
+// TODO: example
+const result = stream
+
+result(x => {
+  console.log(x)
+})
+
+// > TODO: output
+
+// stream: ____1____2____3
+```
+
 ```sh
 npm install @basic-streams/take-while --save
 ```
@@ -840,6 +1042,28 @@ npm install @basic-streams/take-while --save
 <!-- doc multicast -->
 
 ### multicast
+
+`multicast<T>(stream: Stream<T>): Stream<T>`
+
+TODO: description
+
+```js
+import fromIterable from "@basic-streams/from-iterable"
+import multicast from "@basic-streams/multicast"
+
+const stream = fromIterable([1, 2, 3], 5000)
+
+// TODO: example
+const result = stream
+
+result(x => {
+  console.log(x)
+})
+
+// > TODO: output
+
+// stream: ____1____2____3
+```
 
 ```sh
 npm install @basic-streams/multicast --save
