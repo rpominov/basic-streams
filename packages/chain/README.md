@@ -12,8 +12,8 @@ all intermediate streams.
 import fromIterable from "@basic-streams/from-iterable"
 import chain from "@basic-streams/chain"
 
-const stream = fromIterable([1, 2], 10)
-const fn = x => fromIterable([x, x, x], 7)
+const stream = fromIterable([1, 2], 10000)
+const fn = x => fromIterable([x, x, x], 7000)
 
 const result = chain(fn, stream)
 
@@ -28,7 +28,6 @@ result(x => {
 // > 2
 // > 2
 
-//
 // stream: _________1_________2
 // fn(1):            ______1______1______1
 // fn(2):                      ______2______2______2

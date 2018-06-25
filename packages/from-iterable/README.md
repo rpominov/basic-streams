@@ -36,7 +36,7 @@ fromIterable([1, 2, 3])(x => {
 
 //
 // with an interval
-fromIterable([1, 2, 3], 10)(x => {
+fromIterable([1, 2, 3], 5000)(x => {
   console.log(x)
 })
 
@@ -44,7 +44,7 @@ fromIterable([1, 2, 3], 10)(x => {
 // > 2
 // > 3
 
-// _________1_________2_________3
+// ____1____2____3
 
 //
 // with a generator function
@@ -54,23 +54,23 @@ function* generator() {
   yield Date.now() - startTime
   yield Date.now() - startTime
 }
-fromIterable(generator(), 10)(x => {
+fromIterable(generator(), 5000)(x => {
   console.log(x)
 })
 
 // > 0
-// > 10
-// > 20
+// > 5000
+// > 10000
 
-//          0         10        20
-// _________._________._________.
+//     0   5000  10000
+// ____.____.____.
 
 //
 // with a custom scheduler
 function scheduler(time) {
   return later(time / 2)
 }
-fromIterable([1, 2, 3], 10, scheduler)(x => {
+fromIterable([1, 2, 3], 6000, scheduler)(x => {
   console.log(x)
 })
 
@@ -78,7 +78,7 @@ fromIterable([1, 2, 3], 10, scheduler)(x => {
 // > 2
 // > 3
 
-// ____1____2____3
+// __1__2__3
 ```
 
 <!-- docstop -->

@@ -8,6 +8,7 @@
 - [Limitations and alternatives](#limitations-and-alternatives)
 - [Installation](#installation)
 - [Flow and TypeScript](#flow-and-typescript)
+- [How to read time diagrams](#how-to-read-time-diagrams)
 - [API reference](#api-reference)
   - [of](#of)
   - [empty](#empty)
@@ -225,6 +226,38 @@ const map = require("@basic-streams/map").default
 
 TODO
 
+## How to read time diagrams
+
+In the examples below, you'll see time diagrams like this `___1___2`. They
+should be pretty self-explanatory but there are couple notes to make:
+
+The underscore `_` usually represents 1 second.
+
+An event takes space of one underscore, so for example, if an event happens
+after 5 seconds, we add only 4 underscores before it.
+
+When values are more than one character long, we use dots like so:
+
+```js
+const stream = fromIterable([100, 200], 5000)
+
+//            100  200
+// stream: ____.____.
+```
+
+The exclamation mark `!` means that the consumer unsubscribed from the stream.
+For example:
+
+```js
+const stream = fromIterable([1, 2], 5000)
+
+const unsubscribe = stream(x => {
+  unsubscribe()
+})
+
+// stream: ____1!
+```
+
 ## API reference
 
 <!-- doc of -->
@@ -311,7 +344,7 @@ fromIterable([1, 2, 3])(x => {
 
 //
 // with an interval
-fromIterable([1, 2, 3], 10)(x => {
+fromIterable([1, 2, 3], 5000)(x => {
   console.log(x)
 })
 
@@ -319,7 +352,7 @@ fromIterable([1, 2, 3], 10)(x => {
 // > 2
 // > 3
 
-// _________1_________2_________3
+// ____1____2____3
 
 //
 // with a generator function
@@ -329,23 +362,23 @@ function* generator() {
   yield Date.now() - startTime
   yield Date.now() - startTime
 }
-fromIterable(generator(), 10)(x => {
+fromIterable(generator(), 5000)(x => {
   console.log(x)
 })
 
 // > 0
-// > 10
-// > 20
+// > 5000
+// > 10000
 
-//          0         10        20
-// _________._________._________.
+//     0   5000  10000
+// ____.____.____.
 
 //
 // with a custom scheduler
 function scheduler(time) {
   return later(time / 2)
 }
-fromIterable([1, 2, 3], 10, scheduler)(x => {
+fromIterable([1, 2, 3], 6000, scheduler)(x => {
   console.log(x)
 })
 
@@ -353,7 +386,7 @@ fromIterable([1, 2, 3], 10, scheduler)(x => {
 // > 2
 // > 3
 
-// ____1____2____3
+// __1__2__3
 ```
 
 ```sh
@@ -416,8 +449,8 @@ all intermediate streams.
 import fromIterable from "@basic-streams/from-iterable"
 import chain from "@basic-streams/chain"
 
-const stream = fromIterable([1, 2], 10)
-const fn = x => fromIterable([x, x, x], 7)
+const stream = fromIterable([1, 2], 10000)
+const fn = x => fromIterable([x, x, x], 7000)
 
 const result = chain(fn, stream)
 
@@ -432,7 +465,6 @@ result(x => {
 // > 2
 // > 2
 
-//
 // stream: _________1_________2
 // fn(1):            ______1______1______1
 // fn(2):                      ______2______2______2
@@ -479,8 +511,8 @@ stream that will contain values created by applying the latest function from
 import fromIterable from "@basic-streams/from-iterable"
 import ap from "@basic-streams/ap"
 
-const streamf = fromIterable([x => x + 2, x => x - 2], 10)
-const streamv = fromIterable([1, 2, 3], 8)
+const streamf = fromIterable([x => x + 2, x => x - 2], 10000)
+const streamv = fromIterable([1, 2, 3], 8000)
 
 const result = ap(streamf, streamv)
 

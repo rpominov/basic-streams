@@ -12,8 +12,8 @@ stream that will contain values created by applying the latest function from
 import fromIterable from "@basic-streams/from-iterable"
 import ap from "@basic-streams/ap"
 
-const streamf = fromIterable([x => x + 2, x => x - 2], 10)
-const streamv = fromIterable([1, 2, 3], 8)
+const streamf = fromIterable([x => x + 2, x => x - 2], 10000)
+const streamv = fromIterable([1, 2, 3], 8000)
 
 const result = ap(streamf, streamv)
 
