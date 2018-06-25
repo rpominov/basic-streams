@@ -21,6 +21,8 @@
   - [scan](#scan)
   - [ap](#ap)
   - [map2](#map2)
+  - [map3](#map3)
+  - [combine-array](#combine-array)
   - [merge](#merge)
   - [skip](#skip)
   - [skip-while](#skip-while)
@@ -359,6 +361,18 @@ result(x => {
 ### map2
 
 <!-- docstop map2 -->
+
+<!-- doc map3 -->
+
+### map3
+
+<!-- docstop map3 -->
+
+<!-- doc combine-array -->
+
+### combine-array
+
+<!-- docstop combine-array -->
 
 <!-- doc merge -->
 

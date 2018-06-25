@@ -5,7 +5,7 @@
     "test": "tsc --noEmit && prettier --l $npm_package_prettierFiles && jest",
     "prettier": "prettier --write $npm_package_prettierFiles",
     "compile": "tsc",
-    "update-readme": "node ./scripts/combine-api-docs.js && markdown-toc -i README.md && prettier --write README.md",
+    "update-readme": "node ./scripts/combine-api-docs.js && markdown-toc --maxdepth 3 -i README.md && prettier --write README.md",
     "eachpkg": "node ./scripts/for-each-package.js"
   },
   "prettierFiles": "**/*.{babelrc,js,json,md,ts}",

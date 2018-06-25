@@ -18,7 +18,7 @@ fs.writeFileSync(
     .readFileSync("./README.md")
     .toString()
     .replace(
-      /<!-- doc ([0-9a-z-]+) -->[\s\S]*?<!-- docstop[a-z -]+-->/gm,
+      /<!-- doc ([0-9a-z-]+) -->[\s\S]*?<!-- docstop[0-9a-z -]+-->/gm,
       (_, name) => {
         try {
           return printItem(
