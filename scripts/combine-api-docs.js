@@ -9,7 +9,7 @@ function printItem(name, documentation) {
 ${documentation}
 
 \`\`\`sh
-npm install @basci-streams/${name} --save
+npm install @basic-streams/${name} --save
 \`\`\`
 
 <!-- docstop ${name} -->

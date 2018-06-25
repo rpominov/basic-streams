@@ -242,7 +242,7 @@ stream(x => {
 ```
 
 ```sh
-npm install @basci-streams/of --save
+npm install @basic-streams/of --save
 ```
 
 <!-- docstop of -->
@@ -252,7 +252,7 @@ npm install @basci-streams/of --save
 ### empty
 
 ```sh
-npm install @basci-streams/empty --save
+npm install @basic-streams/empty --save
 ```
 
 <!-- docstop empty -->
@@ -262,7 +262,7 @@ npm install @basci-streams/empty --save
 ### later
 
 ```sh
-npm install @basci-streams/later --save
+npm install @basic-streams/later --save
 ```
 
 <!-- docstop later -->
@@ -351,7 +351,7 @@ fromIterable([1, 2, 3], 10, scheduler)(x => {
 ```
 
 ```sh
-npm install @basci-streams/from-iterable --save
+npm install @basic-streams/from-iterable --save
 ```
 
 <!-- docstop from-iterable -->
@@ -361,7 +361,7 @@ npm install @basci-streams/from-iterable --save
 ### from-loose
 
 ```sh
-npm install @basci-streams/from-loose --save
+npm install @basic-streams/from-loose --save
 ```
 
 <!-- docstop from-loose -->
@@ -371,7 +371,7 @@ npm install @basci-streams/from-loose --save
 ### start-with
 
 ```sh
-npm install @basci-streams/start-with --save
+npm install @basic-streams/start-with --save
 ```
 
 <!-- docstop start-with -->
@@ -381,7 +381,7 @@ npm install @basci-streams/start-with --save
 ### map
 
 ```sh
-npm install @basci-streams/map --save
+npm install @basic-streams/map --save
 ```
 
 <!-- docstop map -->
@@ -391,7 +391,7 @@ npm install @basci-streams/map --save
 ### filter
 
 ```sh
-npm install @basci-streams/filter --save
+npm install @basic-streams/filter --save
 ```
 
 <!-- docstop filter -->
@@ -434,7 +434,7 @@ result(x => {
 ```
 
 ```sh
-npm install @basci-streams/chain --save
+npm install @basic-streams/chain --save
 ```
 
 <!-- docstop chain -->
@@ -444,7 +444,7 @@ npm install @basci-streams/chain --save
 ### chain-latest
 
 ```sh
-npm install @basci-streams/chain-latest --save
+npm install @basic-streams/chain-latest --save
 ```
 
 <!-- docstop chain-latest -->
@@ -454,7 +454,7 @@ npm install @basci-streams/chain-latest --save
 ### scan
 
 ```sh
-npm install @basci-streams/scan --save
+npm install @basic-streams/scan --save
 ```
 
 <!-- docstop scan -->
@@ -494,7 +494,7 @@ result(x => {
 ```
 
 ```sh
-npm install @basci-streams/ap --save
+npm install @basic-streams/ap --save
 ```
 
 <!-- docstop ap -->
@@ -504,7 +504,7 @@ npm install @basci-streams/ap --save
 ### map2
 
 ```sh
-npm install @basci-streams/map2 --save
+npm install @basic-streams/map2 --save
 ```
 
 <!-- docstop map2 -->
@@ -514,7 +514,7 @@ npm install @basci-streams/map2 --save
 ### map3
 
 ```sh
-npm install @basci-streams/map3 --save
+npm install @basic-streams/map3 --save
 ```
 
 <!-- docstop map3 -->
@@ -524,7 +524,7 @@ npm install @basci-streams/map3 --save
 ### combine-array
 
 ```sh
-npm install @basci-streams/combine-array --save
+npm install @basic-streams/combine-array --save
 ```
 
 <!-- docstop combine-array -->
@@ -534,7 +534,7 @@ npm install @basci-streams/combine-array --save
 ### merge
 
 ```sh
-npm install @basci-streams/merge --save
+npm install @basic-streams/merge --save
 ```
 
 <!-- docstop merge -->
@@ -544,7 +544,7 @@ npm install @basci-streams/merge --save
 ### skip
 
 ```sh
-npm install @basci-streams/skip --save
+npm install @basic-streams/skip --save
 ```
 
 <!-- docstop skip -->
@@ -554,7 +554,7 @@ npm install @basci-streams/skip --save
 ### skip-while
 
 ```sh
-npm install @basci-streams/skip-while --save
+npm install @basic-streams/skip-while --save
 ```
 
 <!-- docstop skip-while -->
@@ -564,7 +564,7 @@ npm install @basci-streams/skip-while --save
 ### skip-duplicates
 
 ```sh
-npm install @basci-streams/skip-duplicates --save
+npm install @basic-streams/skip-duplicates --save
 ```
 
 <!-- docstop skip-duplicates -->
@@ -574,7 +574,7 @@ npm install @basci-streams/skip-duplicates --save
 ### take
 
 ```sh
-npm install @basci-streams/take --save
+npm install @basic-streams/take --save
 ```
 
 <!-- docstop take -->
@@ -584,7 +584,7 @@ npm install @basci-streams/take --save
 ### take-until
 
 ```sh
-npm install @basci-streams/take-until --save
+npm install @basic-streams/take-until --save
 ```
 
 <!-- docstop take-until -->
@@ -594,7 +594,7 @@ npm install @basci-streams/take-until --save
 ### take-while
 
 ```sh
-npm install @basci-streams/take-while --save
+npm install @basic-streams/take-while --save
 ```
 
 <!-- docstop take-while -->
@@ -604,7 +604,7 @@ npm install @basci-streams/take-while --save
 ### multicast
 
 ```sh
-npm install @basci-streams/multicast --save
+npm install @basic-streams/multicast --save
 ```
 
 <!-- docstop multicast -->
