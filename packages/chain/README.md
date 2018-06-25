@@ -4,9 +4,8 @@
 
 `chain<T, U>(fn: (x: T) => Stream<U>, stream: Stream<T>): Stream<U>`
 
-The given function `fn` will be applied to each value in the given `stream` to
-create an intermediate stream. The resulting stream will contain all values from
-all intermediate streams.
+Creates a stream containing all values from all streams created by applying the
+given function `fn` to each value in the given `stream`.
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"

@@ -4,9 +4,9 @@
 
 `ap<T, U>(streamf: Stream<(x: T) => U>, streamv: Stream<T>): Stream<U>`
 
-Given a stream of functions `streamf` and a stream of values `streamv` returns a
-stream that will contain values created by applying the latest function from
-`streamf` to the latest value from `streamv` every time one of them updates.
+Creates a stream that will contain values created by applying the latest
+function from `streamf` to the latest value from `streamv` every time one of
+them updates.
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"

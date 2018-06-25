@@ -290,6 +290,22 @@ npm install @basic-streams/of --save
 
 ### empty
 
+`empty(): Stream<never>`
+
+Creates a stream that will never produce events.
+
+```js
+import empty from "@basic-streams/empty"
+
+const stream = empty()
+
+stream(x => {
+  console.log(x)
+})
+
+// no output
+```
+
 ```sh
 npm install @basic-streams/empty --save
 ```
@@ -419,6 +435,29 @@ npm install @basic-streams/start-with --save
 
 ### map
 
+`map<T, U>(fn: (x: T) => U, stream: Stream<T>): Stream<U>`
+
+Creates a stream containing `fn(x)` for each value `x` from the source `stream`.
+
+```js
+import fromIterable from "@basic-streams/from-iterable"
+import map from "@basic-streams/map"
+
+const stream = fromIterable([1, 2, 3], 5000)
+const result = map(x => x * 2, stream)
+
+result(x => {
+  console.log(x)
+})
+
+// > 2
+// > 4
+// > 6
+
+// stream: ____1____2____3
+// result: ____2____4____6
+```
+
 ```sh
 npm install @basic-streams/map --save
 ```
@@ -428,6 +467,29 @@ npm install @basic-streams/map --save
 <!-- doc filter -->
 
 ### filter
+
+`filter<T>(predicate: (x: T) => boolean, stream: Stream<T>): Stream<T>`
+
+Creates a stream containing values from the source `stream` that satisfy the
+given `predicate`
+
+```js
+import fromIterable from "@basic-streams/from-iterable"
+import filter from "@basic-streams/filter"
+
+const stream = fromIterable([1, 2, 3], 5000)
+const result = filter(x => x !== 2, stream)
+
+result(x => {
+  console.log(x)
+})
+
+// > 1
+// > 3
+
+// stream: ____1____2____3
+// result: ____1_________3
+```
 
 ```sh
 npm install @basic-streams/filter --save
@@ -441,9 +503,8 @@ npm install @basic-streams/filter --save
 
 `chain<T, U>(fn: (x: T) => Stream<U>, stream: Stream<T>): Stream<U>`
 
-The given function `fn` will be applied to each value in the given `stream` to
-create an intermediate stream. The resulting stream will contain all values from
-all intermediate streams.
+Creates a stream containing all values from all streams created by applying the
+given function `fn` to each value in the given `stream`.
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"
@@ -481,6 +542,39 @@ npm install @basic-streams/chain --save
 
 ### chain-latest
 
+`chainLatest<T, U>(fn: (x: T) => Stream<U>, stream: Stream<T>): Stream<U>`
+
+Same as [`chain`][chain], but when we create a new intermediate stream, we
+unsubscribe from the previous one.
+
+The given function `fn` will be applied to each value in the given `stream` to
+create an intermediate stream. The resulting stream will contain values from
+each of these streams produced before the next one is created.
+
+```js
+import fromIterable from "@basic-streams/from-iterable"
+import chainLatest from "@basic-streams/chain-latest"
+
+const stream = fromIterable([1, 2], 10000)
+const fn = x => fromIterable([x, x, x], 7000)
+
+const result = chainLatest(fn, stream)
+
+result(x => {
+  console.log(x)
+})
+
+// > 1
+// > 2
+// > 2
+// > 2
+
+// stream: _________1_________2
+// fn(1):            ______1__!
+// fn(2):                      ______2______2______2
+// result: ________________1_________2______2______2
+```
+
 ```sh
 npm install @basic-streams/chain-latest --save
 ```
@@ -503,9 +597,9 @@ npm install @basic-streams/scan --save
 
 `ap<T, U>(streamf: Stream<(x: T) => U>, streamv: Stream<T>): Stream<U>`
 
-Given a stream of functions `streamf` and a stream of values `streamv` returns a
-stream that will contain values created by applying the latest function from
-`streamf` to the latest value from `streamv` every time one of them updates.
+Creates a stream that will contain values created by applying the latest
+function from `streamf` to the latest value from `streamv` every time one of
+them updates.
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"
@@ -541,6 +635,31 @@ npm install @basic-streams/ap --save
 
 ### map2
 
+`map2<A, B, C>(fn: (a: A, b: B) => C, streamA: Stream<A>, streamB: Stream<B>): Stream<C>`
+
+TODO: description
+
+```js
+import fromIterable from "@basic-streams/from-iterable"
+import map2 from "@basic-streams/map2"
+
+const streamA = fromIterable([2, 4], 10000)
+const streamB = fromIterable([1, 3], 8000)
+const result = map2((a, b) => a + b, streamA, streamB)
+
+result(x => {
+  console.log(x)
+})
+
+// > 3
+// > 5
+// > 7
+
+// streamA: _________2_________4
+// streamB: _______1_______3
+// result:  _________3_____5___7
+```
+
 ```sh
 npm install @basic-streams/map2 --save
 ```
@@ -561,6 +680,32 @@ npm install @basic-streams/map3 --save
 
 ### combine-array
 
+`combineArray<T>(streams: Array<Stream<T>>): Stream<Array<T>>`
+
+TODO: description
+
+```js
+import fromIterable from "@basic-streams/from-iterable"
+import combineArray from "@basic-streams/combine-array"
+
+const stream1 = fromIterable([2, 4], 10000)
+const stream2 = fromIterable([1, 3], 8000)
+const result = combineArray([stream1, stream2])
+
+result(x => {
+  console.log(x)
+})
+
+// > [2, 1]
+// > [2, 3]
+// > [4, 3]
+
+// stream1: _________2_________4
+// stream2: _______1_______3
+// result:  _________._____.___.
+//              [2, 1] [2, 3] [4, 3]
+```
+
 ```sh
 npm install @basic-streams/combine-array --save
 ```
@@ -570,6 +715,39 @@ npm install @basic-streams/combine-array --save
 <!-- doc merge -->
 
 ### merge
+
+`merge<T>(streams: Array<Stream<T>>): Stream<T>`
+
+TODO: description
+
+```js
+import fromIterable from "@basic-streams/from-iterable"
+import merge from "@basic-streams/merge"
+
+const stream1 = fromIterable([1, 2, 3], 10000)
+const stream2 = fromIterable([4, 5, 6], 8000)
+const stream3 = fromIterable([7, 8, 9], 6000)
+const result = merge([stream1, stream2, stream3])
+
+result(x => {
+  console.log(x)
+})
+
+// > 1
+// > 2
+// > 3
+// > 4
+// > 5
+// > 6
+// > 7
+// > 8
+// > 9
+
+// stream1: _________3_________7_________9
+// stream2: _______2_______5_______8
+// stream3: _____1_____4_____6
+// result:  _____1_2_3_4___5_6_7___8_____9
+```
 
 ```sh
 npm install @basic-streams/merge --save
@@ -611,6 +789,28 @@ npm install @basic-streams/skip-duplicates --save
 
 ### take
 
+`take<T>(n: number, stream: Stream<T>): Stream<T>`
+
+Creates a stream containing only first `n` events from the source `stream`.
+
+```js
+import fromIterable from "@basic-streams/from-iterable"
+import take from "@basic-streams/take"
+
+const stream = fromIterable([1, 2, 3], 5000)
+const result = take(2, stream)
+
+result(x => {
+  console.log(x)
+})
+
+// > 1
+// > 2
+
+// stream: ____1____2!
+// result: ____1____2
+```
+
 ```sh
 npm install @basic-streams/take --save
 ```
@@ -647,4 +847,30 @@ npm install @basic-streams/multicast --save
 
 <!-- docstop multicast -->
 
+<!-- links -->
+
+[of]: #of
+[empty]: #empty
 [later]: #later
+[from-iterable]: #from-iterable
+[from-loose]: #from-loose
+[start-with]: #start-with
+[map]: #map
+[filter]: #filter
+[chain]: #chain
+[chain-latest]: #chain-latest
+[scan]: #scan
+[ap]: #ap
+[map2]: #map2
+[map3]: #map3
+[combine-array]: #combine-array
+[merge]: #merge
+[skip]: #skip
+[skip-while]: #skip-while
+[skip-duplicates]: #skip-duplicates
+[take]: #take
+[take-until]: #take-until
+[take-while]: #take-while
+[multicast]: #multicast
+
+<!-- linksstop -->
