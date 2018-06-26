@@ -1,6 +1,6 @@
 {
   "name": "@basic-streams/skip-duplicates",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "skipDuplicates operator for basic-streams",
   "keywords": [
     "basic-streams",

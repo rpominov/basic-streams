@@ -1,6 +1,6 @@
 {
   "name": "@basic-streams/filter",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "filter operator for basic-streams",
   "keywords": [
     "basic-streams",
