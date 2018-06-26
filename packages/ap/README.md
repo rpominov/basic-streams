@@ -10,8 +10,6 @@ Creates a stream that will contain values created by applying the latest
 function from `streamf` to the latest value from `streamv` every time one of
 them updates.
 
-<details><summary>Example</summary>
-
 ```js
 import fromIterable from "@basic-streams/from-iterable"
 import ap from "@basic-streams/ap"
@@ -35,7 +33,5 @@ result(x => {
 // streamv: _______1_______2_______3
 // result:  _________3_____4___0___1
 ```
-
-</details><br/>
 
 <!-- docstop -->
