@@ -8,15 +8,17 @@ function getDoc(name) {
       .match(/<!-- doc -->([\s\S]*)<!-- docstop -->/m)[1]
       .trim()
 
-    return content.replace(/```js(.*\n){3,}?```/gm, block => {
-      return `
-<details><summary>Example</summary>
+    //     return content.replace(/```js(.*\n){3,}?```/gm, block => {
+    //       return `
+    // <details><summary>Example</summary>
 
-${block}
+    // ${block}
 
-</details><br/>
-      `
-    })
+    // </details><br/>
+    //       `
+    //     })
+
+    return content
   } catch (e) {
     return ""
   }

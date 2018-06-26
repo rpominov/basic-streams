@@ -271,8 +271,6 @@ of<T>(value: T): Stream<T>
 
 Creates a stream that contains the given `value`.
 
-<details><summary>Example</summary>
-
 ```js
 import of from "@basic-streams/of"
 
@@ -284,9 +282,6 @@ stream(x => {
 
 // > 1
 ```
-
-</details><br/>
-
 
 ```sh
 npm install @basic-streams/of --save
@@ -304,8 +299,6 @@ empty(): Stream<never>
 
 Creates a stream that will never produce events.
 
-<details><summary>Example</summary>
-
 ```js
 import empty from "@basic-streams/empty"
 
@@ -317,9 +310,6 @@ stream(x => {
 
 // no output
 ```
-
-</details><br/>
-
 
 ```sh
 npm install @basic-streams/empty --save
@@ -340,8 +330,6 @@ Creates a stream that will produce a value after the given `time` (in
 milliseconds). By default produces `undefined`, but you can pass the `value` in
 the second argument.
 
-<details><summary>Example</summary>
-
 ```js
 import fromIterable from "@basic-streams/from-iterable"
 import later from "@basic-streams/later"
@@ -356,9 +344,6 @@ stream(x => {
 
 // stream: ____1
 ```
-
-</details><br/>
-
 
 ```sh
 npm install @basic-streams/later --save
@@ -380,8 +365,6 @@ fromIterable<T>(
 
 Transforms an `iterable` into a stream.
 
-<details><summary>Example</summary>
-
 ```js
 import fromIterable from "@basic-streams/from-iterable"
 
@@ -394,14 +377,9 @@ fromIterable([1, 2, 3])(x => {
 // > 3
 ```
 
-</details><br/>
-
-
 If an `interval` is provided the events will be spread in time by that ammount
 of milliseconds, with the first one delayed. If the interval is `0` the events
 will be produced as soon as possible but still asynchronously.
-
-<details><summary>Example</summary>
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"
@@ -417,13 +395,8 @@ fromIterable([1, 2, 3], 5000)(x => {
 // ____1____2____3
 ```
 
-</details><br/>
-
-
 Note that the iterable is consumed lazily, meaning that `next()` is called only
 when value is needed.
-
-<details><summary>Example</summary>
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"
@@ -446,14 +419,9 @@ fromIterable(generator(), 5000)(x => {
 // ____.____.____.
 ```
 
-</details><br/>
-
-
 You can provide a custom `scheduler`, a function that creates a stream producing
 an event after the given time. By default [`later`][later] is used as a
 scheduler.
-
-<details><summary>Example</summary>
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"
@@ -472,9 +440,6 @@ fromIterable([1, 2, 3], 6000, scheduler)(x => {
 
 // __1__2__3
 ```
-
-</details><br/>
-
 
 ```sh
 npm install @basic-streams/from-iterable --save
@@ -502,8 +467,6 @@ the [protocol](#protocol). The loose stream is allowed to:
 1.  **Call the callback after disposer was called.** The resulting stream will
     ignore these calls.
 
-<details><summary>Example</summary>
-
 ```js
 import fromLoose from "@basic-streams/from-loose"
 
@@ -523,9 +486,6 @@ unsubscribe()
 
 // > 1
 ```
-
-</details><br/>
-
 
 The type `StreamLoose` defined as follows, and you can import it from
 `@basic-streams/from-loose`.
@@ -552,8 +512,6 @@ startWith<T, U>(x: T, stream: Stream<U>): Stream<T | U>
 
 TODO: description
 
-<details><summary>Example</summary>
-
 ```js
 import fromIterable from "@basic-streams/from-iterable"
 import startWith from "@basic-streams/start-with"
@@ -572,9 +530,6 @@ result(x => {
 // stream: ____1____2____3
 ```
 
-</details><br/>
-
-
 ```sh
 npm install @basic-streams/start-with --save
 ```
@@ -590,8 +545,6 @@ map<T, U>(fn: (x: T) => U, stream: Stream<T>): Stream<U>
 ```
 
 Creates a stream containing `fn(x)` for each value `x` from the source `stream`.
-
-<details><summary>Example</summary>
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"
@@ -612,9 +565,6 @@ result(x => {
 // result: ____2____4____6
 ```
 
-</details><br/>
-
-
 ```sh
 npm install @basic-streams/map --save
 ```
@@ -631,8 +581,6 @@ filter<T>(predicate: (x: T) => boolean, stream: Stream<T>): Stream<T>
 
 Creates a stream containing values from the source `stream` that satisfy the
 given `predicate`.
-
-<details><summary>Example</summary>
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"
@@ -652,9 +600,6 @@ result(x => {
 // result: ____1_________3
 ```
 
-</details><br/>
-
-
 ```sh
 npm install @basic-streams/filter --save
 ```
@@ -671,8 +616,6 @@ chain<T, U>(fn: (x: T) => Stream<U>, stream: Stream<T>): Stream<U>
 
 Creates a stream containing all values from all streams created by applying the
 given function `fn` to each value in the given `stream`.
-
-<details><summary>Example</summary>
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"
@@ -700,9 +643,6 @@ result(x => {
 // result: ________________1______1__2___1__2______2
 ```
 
-</details><br/>
-
-
 ```sh
 npm install @basic-streams/chain --save
 ```
@@ -719,8 +659,6 @@ chainLatest<T, U>(fn: (x: T) => Stream<U>, stream: Stream<T>): Stream<U>
 
 Same as [`chain`][chain], but when we create a new intermediate stream, we
 unsubscribe from the previous one.
-
-<details><summary>Example</summary>
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"
@@ -746,9 +684,6 @@ result(x => {
 // result: ________________1_________2______2______2
 ```
 
-</details><br/>
-
-
 ```sh
 npm install @basic-streams/chain-latest --save
 ```
@@ -769,8 +704,6 @@ scan<N, A>(
 
 TODO: description
 
-<details><summary>Example</summary>
-
 ```js
 import fromIterable from "@basic-streams/from-iterable"
 import scan from "@basic-streams/scan"
@@ -789,9 +722,6 @@ result(x => {
 // stream: ____1____2____3
 ```
 
-</details><br/>
-
-
 ```sh
 npm install @basic-streams/scan --save
 ```
@@ -809,8 +739,6 @@ ap<T, U>(streamf: Stream<(x: T) => U>, streamv: Stream<T>): Stream<U>
 Creates a stream that will contain values created by applying the latest
 function from `streamf` to the latest value from `streamv` every time one of
 them updates.
-
-<details><summary>Example</summary>
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"
@@ -836,9 +764,6 @@ result(x => {
 // result:  _________3_____4___0___1
 ```
 
-</details><br/>
-
-
 ```sh
 npm install @basic-streams/ap --save
 ```
@@ -861,8 +786,6 @@ Creates a stream containing results of applying `fn` to the latest values from
 `streamA` and `streamB`. The resulting stream updates when any of source stream
 update.
 
-<details><summary>Example</summary>
-
 ```js
 import fromIterable from "@basic-streams/from-iterable"
 import map2 from "@basic-streams/map2"
@@ -883,9 +806,6 @@ result(x => {
 // streamB: _______1_______3
 // result:  _________3_____5___7
 ```
-
-</details><br/>
-
 
 ```sh
 npm install @basic-streams/map2 --save
@@ -910,8 +830,6 @@ Creates a stream containing results of applying `fn` to the latest values from
 `streamA`, `streamB` and `streamC`. The resulting stream updates when any of
 source stream update.
 
-<details><summary>Example</summary>
-
 ```js
 import fromIterable from "@basic-streams/from-iterable"
 import map3 from "@basic-streams/map3"
@@ -935,9 +853,6 @@ result(x => {
 // result:  _________3_____5___7
 ```
 
-</details><br/>
-
-
 ```sh
 npm install @basic-streams/map3 --save
 ```
@@ -954,8 +869,6 @@ combineArray<T>(streams: Array<Stream<T>>): Stream<Array<T>>
 
 Creates a stream containing arrays of the latest values from given `streams`.
 The result stream updates when any of source stream updates.
-
-<details><summary>Example</summary>
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"
@@ -979,9 +892,6 @@ result(x => {
 //              [2, 1] [2, 3] [4, 3]
 ```
 
-</details><br/>
-
-
 ```sh
 npm install @basic-streams/combine-array --save
 ```
@@ -997,8 +907,6 @@ merge<T>(streams: Array<Stream<T>>): Stream<T>
 ```
 
 Creates a stream containing values from all given `streams`.
-
-<details><summary>Example</summary>
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"
@@ -1024,9 +932,6 @@ result(x => {
 // result:  _______1_2_____3___4___5_____6
 ```
 
-</details><br/>
-
-
 ```sh
 npm install @basic-streams/merge --save
 ```
@@ -1043,8 +948,6 @@ skip<T>(n: number, stream: Stream<T>): Stream<T>
 
 Creates a stream containing values from the given `stream` except for the first
 `n` values.
-
-<details><summary>Example</summary>
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"
@@ -1064,9 +967,6 @@ result(x => {
 // result: ______________3
 ```
 
-</details><br/>
-
-
 ```sh
 npm install @basic-streams/skip --save
 ```
@@ -1082,8 +982,6 @@ skipWhile<T>(predicate: (x: T) => boolean, stream: Stream<T>): Stream<T>
 ```
 
 TODO: description
-
-<details><summary>Example</summary>
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"
@@ -1102,9 +1000,6 @@ result(x => {
 
 // stream: ____1____2____3
 ```
-
-</details><br/>
-
 
 ```sh
 npm install @basic-streams/skip-while --save
@@ -1125,8 +1020,6 @@ skipDuplicates<T>(
 
 TODO: description
 
-<details><summary>Example</summary>
-
 ```js
 import fromIterable from "@basic-streams/from-iterable"
 import skipDuplicates from "@basic-streams/skip-duplicates"
@@ -1145,9 +1038,6 @@ result(x => {
 // stream: ____1____2____3
 ```
 
-</details><br/>
-
-
 ```sh
 npm install @basic-streams/skip-duplicates --save
 ```
@@ -1163,8 +1053,6 @@ take<T>(n: number, stream: Stream<T>): Stream<T>
 ```
 
 Creates a stream containing only first `n` events from the source `stream`.
-
-<details><summary>Example</summary>
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"
@@ -1184,9 +1072,6 @@ result(x => {
 // result: ____1____2
 ```
 
-</details><br/>
-
-
 ```sh
 npm install @basic-streams/take --save
 ```
@@ -1202,8 +1087,6 @@ takeUntil<T>(controller: Stream<any>, stream: Stream<T>): Stream<T>
 ```
 
 TODO: description
-
-<details><summary>Example</summary>
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"
@@ -1223,9 +1106,6 @@ result(x => {
 // stream: ____1____2____3
 ```
 
-</details><br/>
-
-
 ```sh
 npm install @basic-streams/take-until --save
 ```
@@ -1241,8 +1121,6 @@ takeWhile<T>(predicate: (x: T) => boolean, stream: Stream<T>): Stream<T>
 ```
 
 TODO: description
-
-<details><summary>Example</summary>
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"
@@ -1261,9 +1139,6 @@ result(x => {
 
 // stream: ____1____2____3
 ```
-
-</details><br/>
-
 
 ```sh
 npm install @basic-streams/take-while --save
@@ -1284,8 +1159,6 @@ have at most one subscription at any given time to the original stream. This
 allows you to connect several consumers to a stream.
 
 Each consumer only gets events produced after it was added.
-
-<details><summary>Example</summary>
 
 ```js
 import multicast from "@basic-streams/multicast"
@@ -1330,9 +1203,6 @@ unsubscribe2()
 // > "stop"
 ```
 
-</details><br/>
-
-
 ```sh
 npm install @basic-streams/multicast --save
 ```
@@ -1348,8 +1218,6 @@ protect<T>(stream: Stream<T>): StreamProtected<T>
 ```
 
 TODO: description
-
-<details><summary>Example</summary>
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"
@@ -1368,9 +1236,6 @@ result(x => {
 
 // stream: ____1____2____3
 ```
-
-</details><br/>
-
 
 The type `StreamProtected` defined as follows, and you can import it from
 `@basic-streams/protect`.
