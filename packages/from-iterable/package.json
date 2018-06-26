@@ -1,6 +1,6 @@
 {
   "name": "@basic-streams/from-iterable",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "fromIterable operator for basic-streams",
   "keywords": [
     "basic-streams",
