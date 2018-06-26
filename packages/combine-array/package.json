@@ -21,6 +21,6 @@
   "dependencies": {
     "@basic-streams/map2": "0.0.1",
     "@basic-streams/of": "0.0.1",
-    "@basic-streams/stream": "0.0.1"
+    "@basic-streams/stream": "0.0.5"
   }
 }

@@ -20,6 +20,6 @@
   "homepage": "https://github.com/rpominov/basic-streams/packages/from-iterable",
   "dependencies": {
     "@basic-streams/later": "0.0.1",
-    "@basic-streams/stream": "0.0.1"
+    "@basic-streams/stream": "0.0.5"
   }
 }

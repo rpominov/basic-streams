@@ -19,6 +19,6 @@
   },
   "homepage": "https://github.com/rpominov/basic-streams/packages/ap",
   "dependencies": {
-    "@basic-streams/stream": "0.0.1"
+    "@basic-streams/stream": "0.0.5"
   }
 }
