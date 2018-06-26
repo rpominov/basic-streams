@@ -768,6 +768,7 @@ result(x => {
 
 </details><br/>
 
+
 ```sh
 npm install @basic-streams/ap --save
 ```
