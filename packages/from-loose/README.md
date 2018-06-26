@@ -41,7 +41,7 @@ unsubscribe()
 The type `StreamLoose` defined as follows, and you can import it from
 `@basic-streams/from-loose`.
 
-```js
+```typescript
 type StreamLoose<T> = (cb: (payload: T, ...rest: any[]) => void) => any
 
 import {StreamLoose} from "@basic-streams/from-loose"

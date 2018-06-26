@@ -530,16 +530,11 @@ unsubscribe()
 The type `StreamLoose` defined as follows, and you can import it from
 `@basic-streams/from-loose`.
 
-<details><summary>Example</summary>
-
-```js
+```typescript
 type StreamLoose<T> = (cb: (payload: T, ...rest: any[]) => void) => any
 
 import {StreamLoose} from "@basic-streams/from-loose"
 ```
-
-</details><br/>
-
 
 ```sh
 npm install @basic-streams/from-loose --save
@@ -1380,9 +1375,7 @@ result(x => {
 The type `StreamProtected` defined as follows, and you can import it from
 `@basic-streams/protect`.
 
-<details><summary>Example</summary>
-
-```js
+```typescript
 type StreamProtected<T> = (
   cb: (payload: T, ...rest: any[]) => void,
   ...rest: any[]
@@ -1390,9 +1383,6 @@ type StreamProtected<T> = (
 
 import {StreamProtected} from "@basic-streams/protect"
 ```
-
-</details><br/>
-
 
 ```sh
 npm install @basic-streams/protect --save
