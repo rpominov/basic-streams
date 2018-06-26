@@ -484,7 +484,7 @@ const unsubscribe = stream((...args) => {
 
 unsubscribe()
 
-// > TODO: 1
+// > 1
 ```
 
 The type `StreamLoose` defined as follows, and you can import it from
