@@ -4,7 +4,7 @@
 
 `merge<T>(streams: Array<Stream<T>>): Stream<T>`
 
-TODO: description
+Creates a stream containing values from all given `streams`.
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"

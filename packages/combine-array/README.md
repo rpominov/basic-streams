@@ -4,7 +4,8 @@
 
 `combineArray<T>(streams: Array<Stream<T>>): Stream<Array<T>>`
 
-TODO: description
+Creates a stream containing arrays of the latest values from given `streams`.
+The result stream updates when any of source stream updates.
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"

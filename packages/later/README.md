@@ -2,26 +2,28 @@
 
 <!-- doc -->
 
-`later<T>(time: number, value?: T): Stream<T>`
+```
+later(time: number): Stream<undefined>
+later<T>(time: number, value: T): Stream<T>
+```
 
-TODO: description
+Creates a stream that will produce a value after the given `time` (in
+milliseconds). By default produces `undefined`, but you can pass the value in
+the second argument.
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"
 import later from "@basic-streams/later"
 
-const stream = fromIterable([1, 2, 3], 5000)
+const stream = later(5000, 1)
 
-// TODO: example
-const result = stream
-
-result(x => {
+stream(x => {
   console.log(x)
 })
 
 // > TODO: output
 
-// stream: ____1____2____3
+// stream: ____1
 ```
 
 <!-- docstop -->

@@ -2,7 +2,7 @@
 
 <!-- doc -->
 
-```
+```typescript
 fromIterable<T>(
   iterable: Iterable<T>,
   interval?: number,
@@ -42,8 +42,8 @@ fromIterable([1, 2, 3], 5000)(x => {
 // ____1____2____3
 ```
 
-Note that iterable is consumed lazily, meaning that `next()` is called only when
-value is needed.
+Note that the iterable is consumed lazily, meaning that `next()` is called only
+when value is needed.
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"

@@ -11,7 +11,9 @@ map3<A, B, C, D>(
 ): Stream<D>
 ```
 
-TODO: description
+Creates a stream containing results of applying `fn` to the latest values from
+`streamA`, `streamB` and `streamC`. The resulting stream updates when any of
+source stream update.
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"

@@ -317,26 +317,28 @@ npm install @basic-streams/empty --save
 
 ### later
 
-`later<T>(time: number, value?: T): Stream<T>`
+```
+later(time: number): Stream<undefined>
+later<T>(time: number, value: T): Stream<T>
+```
 
-TODO: description
+Creates a stream that will produce a value after the given `time` (in
+milliseconds). By default produces `undefined`, but you can pass the value in
+the second argument.
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"
 import later from "@basic-streams/later"
 
-const stream = fromIterable([1, 2, 3], 5000)
+const stream = later(5000, 1)
 
-// TODO: example
-const result = stream
-
-result(x => {
+stream(x => {
   console.log(x)
 })
 
 // > TODO: output
 
-// stream: ____1____2____3
+// stream: ____1
 ```
 
 ```sh
@@ -349,7 +351,7 @@ npm install @basic-streams/later --save
 
 ### from-iterable
 
-```
+```typescript
 fromIterable<T>(
   iterable: Iterable<T>,
   interval?: number,
@@ -389,8 +391,8 @@ fromIterable([1, 2, 3], 5000)(x => {
 // ____1____2____3
 ```
 
-Note that iterable is consumed lazily, meaning that `next()` is called only when
-value is needed.
+Note that the iterable is consumed lazily, meaning that `next()` is called only
+when value is needed.
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"
@@ -448,24 +450,36 @@ npm install @basic-streams/from-iterable --save
 fromLoose<T>(streamLoose: StreamLoose<T>): Stream<T>
 ```
 
-TODO: description
+Creates a stream from a loose stream that may not follow all the requirements of
+the [protocol](#protocol). The loose stream is allowed to:
+
+1.  **Return not a function.** If the return value is not a function, it will be
+    ignored.
+1.  **Pass more than one argument to the callback.** The resulting stream will
+    pass only the first argument to its callback.
+1.  **Disposer may return value of any type.** The resulting stream's disposer
+    will always return `undefined`.
+1.  **Call the callback after disposer was called.** The resulting stream will
+    ignore these calls.
 
 ```js
-import fromIterable from "@basic-streams/from-iterable"
 import fromLoose from "@basic-streams/from-loose"
 
-const stream = fromIterable([1, 2, 3], 5000)
+const stream = fromLoose(cb => {
+  // extra arguments will be ignored
+  cb(1, "extra")
 
-// TODO: example
-const result = stream
-
-result(x => {
-  console.log(x)
+  // we don't have to return a function
+  return null
 })
 
-// > TODO: output
+const unsubscribe = stream((...args) => {
+  console.log(...args)
+})
 
-// stream: ____1____2____3
+unsubscribe()
+
+// > TODO: 1
 ```
 
 The type `StreamLoose` defined as follows, and you can import it from
@@ -739,7 +753,9 @@ npm install @basic-streams/ap --save
 
 `map2<A, B, C>(fn: (a: A, b: B) => C, streamA: Stream<A>, streamB: Stream<B>): Stream<C>`
 
-TODO: description
+Creates a stream containing results of applying `fn` to the latest values from
+`streamA` and `streamB`. The resulting stream updates when any of source stream
+update.
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"
@@ -781,7 +797,9 @@ map3<A, B, C, D>(
 ): Stream<D>
 ```
 
-TODO: description
+Creates a stream containing results of applying `fn` to the latest values from
+`streamA`, `streamB` and `streamC`. The resulting stream updates when any of
+source stream update.
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"
@@ -818,7 +836,8 @@ npm install @basic-streams/map3 --save
 
 `combineArray<T>(streams: Array<Stream<T>>): Stream<Array<T>>`
 
-TODO: description
+Creates a stream containing arrays of the latest values from given `streams`.
+The result stream updates when any of source stream updates.
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"
@@ -854,7 +873,7 @@ npm install @basic-streams/combine-array --save
 
 `merge<T>(streams: Array<Stream<T>>): Stream<T>`
 
-TODO: description
+Creates a stream containing values from all given `streams`.
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"
@@ -892,7 +911,8 @@ npm install @basic-streams/merge --save
 
 `skip<T>(n: number, stream: Stream<T>): Stream<T>`
 
-TODO: description
+Creates a stream containing values from the given `stream` except for the first
+`n` values.
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"
@@ -900,16 +920,16 @@ import skip from "@basic-streams/skip"
 
 const stream = fromIterable([1, 2, 3], 5000)
 
-// TODO: example
-const result = stream
+const result = skip(2, stream)
 
 result(x => {
   console.log(x)
 })
 
-// > TODO: output
+// > 3
 
 // stream: ____1____2____3
+// result: ______________3
 ```
 
 ```sh
@@ -1084,24 +1104,53 @@ npm install @basic-streams/take-while --save
 
 `multicast<T>(stream: Stream<T>): Stream<T>`
 
-TODO: description
+Creates a stream with the same events as the given `stream`. The new stream will
+have at most one subscription at any given time to the original stream. This
+allows you to connect several consumers to a stream.
+
+Each consumer only gets events produced after it was added.
 
 ```js
-import fromIterable from "@basic-streams/from-iterable"
 import multicast from "@basic-streams/multicast"
 
-const stream = fromIterable([1, 2, 3], 5000)
+let cb
 
-// TODO: example
-const result = stream
+const stream = _cb => {
+  console.log("start")
+  cb = _cb
+  return () => {
+    console.log("stop")
+  }
+}
 
-result(x => {
-  console.log(x)
+const result = multicast(stream)
+
+const unsubscribe1 = result(x => {
+  console.log("consumer 1", x)
 })
 
-// > TODO: output
+// > "start"
 
-// stream: ____1____2____3
+const unsubscribe2 = result(x => {
+  console.log("consumer 2", x)
+})
+
+// No output this time, because we reuse the previous connection,
+// and don't call `stream()` again.
+
+cb(1)
+
+// > "consumer 1" 1
+// > "consumer 2" 1
+
+unsubscribe1()
+
+// No output. The connection is still active because
+// one consumer is still subscribed.
+
+unsubscribe2()
+
+// > "stop"
 ```
 
 ```sh

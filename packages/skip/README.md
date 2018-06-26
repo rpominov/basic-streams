@@ -4,7 +4,8 @@
 
 `skip<T>(n: number, stream: Stream<T>): Stream<T>`
 
-TODO: description
+Creates a stream containing values from the given `stream` except for the first
+`n` values.
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"
@@ -12,16 +13,16 @@ import skip from "@basic-streams/skip"
 
 const stream = fromIterable([1, 2, 3], 5000)
 
-// TODO: example
-const result = stream
+const result = skip(2, stream)
 
 result(x => {
   console.log(x)
 })
 
-// > TODO: output
+// > 3
 
 // stream: ____1____2____3
+// result: ______________3
 ```
 
 <!-- docstop -->

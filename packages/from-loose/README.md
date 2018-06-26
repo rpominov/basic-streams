@@ -6,24 +6,36 @@
 fromLoose<T>(streamLoose: StreamLoose<T>): Stream<T>
 ```
 
-TODO: description
+Creates a stream from a loose stream that may not follow all the requirements of
+the [protocol](#protocol). The loose stream is allowed to:
+
+1.  **Return not a function.** If the return value is not a function, it will be
+    ignored.
+1.  **Pass more than one argument to the callback.** The resulting stream will
+    pass only the first argument to its callback.
+1.  **Disposer may return value of any type.** The resulting stream's disposer
+    will always return `undefined`.
+1.  **Call the callback after disposer was called.** The resulting stream will
+    ignore these calls.
 
 ```js
-import fromIterable from "@basic-streams/from-iterable"
 import fromLoose from "@basic-streams/from-loose"
 
-const stream = fromIterable([1, 2, 3], 5000)
+const stream = fromLoose(cb => {
+  // extra arguments will be ignored
+  cb(1, "extra")
 
-// TODO: example
-const result = stream
-
-result(x => {
-  console.log(x)
+  // we don't have to return a function
+  return null
 })
 
-// > TODO: output
+const unsubscribe = stream((...args) => {
+  console.log(...args)
+})
 
-// stream: ____1____2____3
+unsubscribe()
+
+// > TODO: 1
 ```
 
 The type `StreamLoose` defined as follows, and you can import it from

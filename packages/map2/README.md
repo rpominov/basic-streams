@@ -4,7 +4,9 @@
 
 `map2<A, B, C>(fn: (a: A, b: B) => C, streamA: Stream<A>, streamB: Stream<B>): Stream<C>`
 
-TODO: description
+Creates a stream containing results of applying `fn` to the latest values from
+`streamA` and `streamB`. The resulting stream updates when any of source stream
+update.
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"
