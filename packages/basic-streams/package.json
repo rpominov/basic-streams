@@ -26,7 +26,5 @@
     "url": "https://github.com/rpominov/basic-streams/issues"
   },
   "homepage": "https://github.com/rpominov/basic-streams",
-  "dependencies": {
-    "@basic-streams/stream": "0.0.1"
-  }
+  "dependencies": {}
 }

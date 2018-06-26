@@ -19,8 +19,8 @@
   },
   "homepage": "https://github.com/rpominov/basic-streams/packages/map2",
   "dependencies": {
-    "@basic-streams/ap": "0.0.2",
-    "@basic-streams/map": "0.0.2",
-    "@basic-streams/stream": "0.0.5"
+    "@basic-streams/ap": "^0.0.7",
+    "@basic-streams/map": "^0.0.7",
+    "@basic-streams/stream": "^0.0.5"
   }
 }

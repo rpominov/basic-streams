@@ -19,6 +19,6 @@
   },
   "homepage": "https://github.com/rpominov/basic-streams/packages/take-until",
   "dependencies": {
-    "@basic-streams/stream": "0.0.5"
+    "@basic-streams/stream": "^0.0.5"
   }
 }
