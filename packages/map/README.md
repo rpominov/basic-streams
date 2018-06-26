@@ -2,7 +2,9 @@
 
 <!-- doc -->
 
-`map<T, U>(fn: (x: T) => U, stream: Stream<T>): Stream<U>`
+```typescript
+map<T, U>(fn: (x: T) => U, stream: Stream<T>): Stream<U>
+```
 
 Creates a stream containing `fn(x)` for each value `x` from the source `stream`.
 

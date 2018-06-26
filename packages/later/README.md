@@ -2,13 +2,13 @@
 
 <!-- doc -->
 
-```
+```typescript
 later(time: number): Stream<undefined>
 later<T>(time: number, value: T): Stream<T>
 ```
 
 Creates a stream that will produce a value after the given `time` (in
-milliseconds). By default produces `undefined`, but you can pass the value in
+milliseconds). By default produces `undefined`, but you can pass the `value` in
 the second argument.
 
 ```js

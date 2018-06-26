@@ -24,9 +24,9 @@ fromIterable([1, 2, 3])(x => {
 // > 3
 ```
 
-If an `interval` is provided the items will be spread in time by that ammount of
-milliseconds, with the first one delayed. If the interval is `0` the items will
-be produced as soon as possible but still asynchronously.
+If an `interval` is provided the events will be spread in time by that ammount
+of milliseconds, with the first one delayed. If the interval is `0` the events
+will be produced as soon as possible but still asynchronously.
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"
@@ -67,7 +67,8 @@ fromIterable(generator(), 5000)(x => {
 ```
 
 You can provide a custom `scheduler`, a function that creates a stream producing
-an event after a given time. By default [`later`][later] is used as a scheduler.
+an event after the given time. By default [`later`][later] is used as a
+scheduler.
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"

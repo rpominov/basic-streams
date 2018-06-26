@@ -2,7 +2,12 @@
 
 <!-- doc -->
 
-`skipDuplicates<T>(comparator: (prev: T, next: T) => boolean, stream: Stream<T>): Stream<T>`
+```typescript
+skipDuplicates<T>(
+  comparator: (previous: T, next: T) => boolean,
+  stream: Stream<T>,
+): Stream<T>
+```
 
 TODO: description
 

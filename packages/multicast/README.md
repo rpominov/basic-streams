@@ -2,7 +2,9 @@
 
 <!-- doc -->
 
-`multicast<T>(stream: Stream<T>): Stream<T>`
+```typescript
+multicast<T>(stream: Stream<T>): Stream<T>
+```
 
 Creates a stream with the same events as the given `stream`. The new stream will
 have at most one subscription at any given time to the original stream. This

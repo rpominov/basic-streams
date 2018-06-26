@@ -2,7 +2,13 @@
 
 <!-- doc -->
 
-`map2<A, B, C>(fn: (a: A, b: B) => C, streamA: Stream<A>, streamB: Stream<B>): Stream<C>`
+```typescript
+map2<A, B, C>(
+  fn: (a: A, b: B) => C,
+  streamA: Stream<A>,
+  streamB: Stream<B>,
+): Stream<C>
+```
 
 Creates a stream containing results of applying `fn` to the latest values from
 `streamA` and `streamB`. The resulting stream updates when any of source stream

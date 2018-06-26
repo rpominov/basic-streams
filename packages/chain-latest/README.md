@@ -2,7 +2,9 @@
 
 <!-- doc -->
 
-`chainLatest<T, U>(fn: (x: T) => Stream<U>, stream: Stream<T>): Stream<U>`
+```typescript
+chainLatest<T, U>(fn: (x: T) => Stream<U>, stream: Stream<T>): Stream<U>
+```
 
 Same as [`chain`][chain], but when we create a new intermediate stream, we
 unsubscribe from the previous one.

@@ -2,7 +2,9 @@
 
 <!-- doc -->
 
-`startWith<T, U>(x: T, stream: Stream<U>): Stream<T | U>`
+```typescript
+startWith<T, U>(x: T, stream: Stream<U>): Stream<T | U>
+```
 
 TODO: description
 

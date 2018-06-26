@@ -2,7 +2,9 @@
 
 <!-- doc -->
 
-`combineArray<T>(streams: Array<Stream<T>>): Stream<Array<T>>`
+```typescript
+combineArray<T>(streams: Array<Stream<T>>): Stream<Array<T>>
+```
 
 Creates a stream containing arrays of the latest values from given `streams`.
 The result stream updates when any of source stream updates.

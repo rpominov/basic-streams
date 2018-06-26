@@ -2,7 +2,9 @@
 
 <!-- doc -->
 
-`exportName(): TODO`
+```typescript
+exportName(): TODO
+```
 
 TODO: description
 

@@ -2,7 +2,9 @@
 
 <!-- doc -->
 
-`chain<T, U>(fn: (x: T) => Stream<U>, stream: Stream<T>): Stream<U>`
+```typescript
+chain<T, U>(fn: (x: T) => Stream<U>, stream: Stream<T>): Stream<U>
+```
 
 Creates a stream containing all values from all streams created by applying the
 given function `fn` to each value in the given `stream`.

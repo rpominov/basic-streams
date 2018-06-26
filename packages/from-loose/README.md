@@ -2,7 +2,7 @@
 
 <!-- doc -->
 
-```
+```typescript
 fromLoose<T>(streamLoose: StreamLoose<T>): Stream<T>
 ```
 

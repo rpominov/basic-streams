@@ -2,7 +2,9 @@
 
 <!-- doc -->
 
-`take<T>(n: number, stream: Stream<T>): Stream<T>`
+```typescript
+take<T>(n: number, stream: Stream<T>): Stream<T>
+```
 
 Creates a stream containing only first `n` events from the source `stream`.
 

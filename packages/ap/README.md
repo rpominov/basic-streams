@@ -2,7 +2,9 @@
 
 <!-- doc -->
 
-`ap<T, U>(streamf: Stream<(x: T) => U>, streamv: Stream<T>): Stream<U>`
+```typescript
+ap<T, U>(streamf: Stream<(x: T) => U>, streamv: Stream<T>): Stream<U>
+```
 
 Creates a stream that will contain values created by applying the latest
 function from `streamf` to the latest value from `streamv` every time one of

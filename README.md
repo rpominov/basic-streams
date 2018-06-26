@@ -265,7 +265,9 @@ const unsubscribe = stream(x => {
 
 ### of
 
-`of<T>(value: T): Stream<T>`
+```typescript
+of<T>(value: T): Stream<T>
+```
 
 Creates a stream that contains the given `value`.
 
@@ -291,7 +293,9 @@ npm install @basic-streams/of --save
 
 ### empty
 
-`empty(): Stream<never>`
+```typescript
+empty(): Stream<never>
+```
 
 Creates a stream that will never produce events.
 
@@ -317,13 +321,13 @@ npm install @basic-streams/empty --save
 
 ### later
 
-```
+```typescript
 later(time: number): Stream<undefined>
 later<T>(time: number, value: T): Stream<T>
 ```
 
 Creates a stream that will produce a value after the given `time` (in
-milliseconds). By default produces `undefined`, but you can pass the value in
+milliseconds). By default produces `undefined`, but you can pass the `value` in
 the second argument.
 
 ```js
@@ -373,9 +377,9 @@ fromIterable([1, 2, 3])(x => {
 // > 3
 ```
 
-If an `interval` is provided the items will be spread in time by that ammount of
-milliseconds, with the first one delayed. If the interval is `0` the items will
-be produced as soon as possible but still asynchronously.
+If an `interval` is provided the events will be spread in time by that ammount
+of milliseconds, with the first one delayed. If the interval is `0` the events
+will be produced as soon as possible but still asynchronously.
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"
@@ -416,7 +420,8 @@ fromIterable(generator(), 5000)(x => {
 ```
 
 You can provide a custom `scheduler`, a function that creates a stream producing
-an event after a given time. By default [`later`][later] is used as a scheduler.
+an event after the given time. By default [`later`][later] is used as a
+scheduler.
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"
@@ -446,7 +451,7 @@ npm install @basic-streams/from-iterable --save
 
 ### from-loose
 
-```
+```typescript
 fromLoose<T>(streamLoose: StreamLoose<T>): Stream<T>
 ```
 
@@ -501,7 +506,9 @@ npm install @basic-streams/from-loose --save
 
 ### start-with
 
-`startWith<T, U>(x: T, stream: Stream<U>): Stream<T | U>`
+```typescript
+startWith<T, U>(x: T, stream: Stream<U>): Stream<T | U>
+```
 
 TODO: description
 
@@ -533,7 +540,9 @@ npm install @basic-streams/start-with --save
 
 ### map
 
-`map<T, U>(fn: (x: T) => U, stream: Stream<T>): Stream<U>`
+```typescript
+map<T, U>(fn: (x: T) => U, stream: Stream<T>): Stream<U>
+```
 
 Creates a stream containing `fn(x)` for each value `x` from the source `stream`.
 
@@ -566,7 +575,9 @@ npm install @basic-streams/map --save
 
 ### filter
 
-`filter<T>(predicate: (x: T) => boolean, stream: Stream<T>): Stream<T>`
+```typescript
+filter<T>(predicate: (x: T) => boolean, stream: Stream<T>): Stream<T>
+```
 
 Creates a stream containing values from the source `stream` that satisfy the
 given `predicate`.
@@ -599,7 +610,9 @@ npm install @basic-streams/filter --save
 
 ### chain
 
-`chain<T, U>(fn: (x: T) => Stream<U>, stream: Stream<T>): Stream<U>`
+```typescript
+chain<T, U>(fn: (x: T) => Stream<U>, stream: Stream<T>): Stream<U>
+```
 
 Creates a stream containing all values from all streams created by applying the
 given function `fn` to each value in the given `stream`.
@@ -640,7 +653,9 @@ npm install @basic-streams/chain --save
 
 ### chain-latest
 
-`chainLatest<T, U>(fn: (x: T) => Stream<U>, stream: Stream<T>): Stream<U>`
+```typescript
+chainLatest<T, U>(fn: (x: T) => Stream<U>, stream: Stream<T>): Stream<U>
+```
 
 Same as [`chain`][chain], but when we create a new intermediate stream, we
 unsubscribe from the previous one.
@@ -679,7 +694,13 @@ npm install @basic-streams/chain-latest --save
 
 ### scan
 
-`scan<N, A>(reducer: (acc: A, next: N) => A, seed: A, stream: Stream<N>): Stream<A>`
+```typescript
+scan<N, A>(
+  reducer: (accumulated: A, next: N) => A,
+  seed: A,
+  stream: Stream<N>,
+): Stream<A>
+```
 
 TODO: description
 
@@ -711,7 +732,9 @@ npm install @basic-streams/scan --save
 
 ### ap
 
-`ap<T, U>(streamf: Stream<(x: T) => U>, streamv: Stream<T>): Stream<U>`
+```typescript
+ap<T, U>(streamf: Stream<(x: T) => U>, streamv: Stream<T>): Stream<U>
+```
 
 Creates a stream that will contain values created by applying the latest
 function from `streamf` to the latest value from `streamv` every time one of
@@ -751,7 +774,13 @@ npm install @basic-streams/ap --save
 
 ### map2
 
-`map2<A, B, C>(fn: (a: A, b: B) => C, streamA: Stream<A>, streamB: Stream<B>): Stream<C>`
+```typescript
+map2<A, B, C>(
+  fn: (a: A, b: B) => C,
+  streamA: Stream<A>,
+  streamB: Stream<B>,
+): Stream<C>
+```
 
 Creates a stream containing results of applying `fn` to the latest values from
 `streamA` and `streamB`. The resulting stream updates when any of source stream
@@ -788,7 +817,7 @@ npm install @basic-streams/map2 --save
 
 ### map3
 
-```
+```typescript
 map3<A, B, C, D>(
   fn: (a: A, b: B, c: C) => D,
   streamA: Stream<A>,
@@ -834,7 +863,9 @@ npm install @basic-streams/map3 --save
 
 ### combine-array
 
-`combineArray<T>(streams: Array<Stream<T>>): Stream<Array<T>>`
+```typescript
+combineArray<T>(streams: Array<Stream<T>>): Stream<Array<T>>
+```
 
 Creates a stream containing arrays of the latest values from given `streams`.
 The result stream updates when any of source stream updates.
@@ -871,7 +902,9 @@ npm install @basic-streams/combine-array --save
 
 ### merge
 
-`merge<T>(streams: Array<Stream<T>>): Stream<T>`
+```typescript
+merge<T>(streams: Array<Stream<T>>): Stream<T>
+```
 
 Creates a stream containing values from all given `streams`.
 
@@ -909,7 +942,9 @@ npm install @basic-streams/merge --save
 
 ### skip
 
-`skip<T>(n: number, stream: Stream<T>): Stream<T>`
+```typescript
+skip<T>(n: number, stream: Stream<T>): Stream<T>
+```
 
 Creates a stream containing values from the given `stream` except for the first
 `n` values.
@@ -942,7 +977,9 @@ npm install @basic-streams/skip --save
 
 ### skip-while
 
-`skipWhile<T>(predicate: (x: T) => boolean, stream: Stream<T>): Stream<T>`
+```typescript
+skipWhile<T>(predicate: (x: T) => boolean, stream: Stream<T>): Stream<T>
+```
 
 TODO: description
 
@@ -974,7 +1011,12 @@ npm install @basic-streams/skip-while --save
 
 ### skip-duplicates
 
-`skipDuplicates<T>(comparator: (prev: T, next: T) => boolean, stream: Stream<T>): Stream<T>`
+```typescript
+skipDuplicates<T>(
+  comparator: (previous: T, next: T) => boolean,
+  stream: Stream<T>,
+): Stream<T>
+```
 
 TODO: description
 
@@ -1006,7 +1048,9 @@ npm install @basic-streams/skip-duplicates --save
 
 ### take
 
-`take<T>(n: number, stream: Stream<T>): Stream<T>`
+```typescript
+take<T>(n: number, stream: Stream<T>): Stream<T>
+```
 
 Creates a stream containing only first `n` events from the source `stream`.
 
@@ -1038,7 +1082,9 @@ npm install @basic-streams/take --save
 
 ### take-until
 
-`takeUntil<T>(controller: Stream<any>, stream: Stream<T>): Stream<T>`
+```typescript
+takeUntil<T>(controller: Stream<any>, stream: Stream<T>): Stream<T>
+```
 
 TODO: description
 
@@ -1070,7 +1116,9 @@ npm install @basic-streams/take-until --save
 
 ### take-while
 
-`takeWhile<T>(predicate: (x: T) => boolean, stream: Stream<T>): Stream<T>`
+```typescript
+takeWhile<T>(predicate: (x: T) => boolean, stream: Stream<T>): Stream<T>
+```
 
 TODO: description
 
@@ -1102,7 +1150,9 @@ npm install @basic-streams/take-while --save
 
 ### multicast
 
-`multicast<T>(stream: Stream<T>): Stream<T>`
+```typescript
+multicast<T>(stream: Stream<T>): Stream<T>
+```
 
 Creates a stream with the same events as the given `stream`. The new stream will
 have at most one subscription at any given time to the original stream. This
@@ -1163,7 +1213,9 @@ npm install @basic-streams/multicast --save
 
 ### protect
 
-`protect<T>(stream: Stream<T>): StreamProtected<T>`
+```typescript
+protect<T>(stream: Stream<T>): StreamProtected<T>
+```
 
 TODO: description
 

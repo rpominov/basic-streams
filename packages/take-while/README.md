@@ -2,7 +2,9 @@
 
 <!-- doc -->
 
-`takeWhile<T>(predicate: (x: T) => boolean, stream: Stream<T>): Stream<T>`
+```typescript
+takeWhile<T>(predicate: (x: T) => boolean, stream: Stream<T>): Stream<T>
+```
 
 TODO: description
 

@@ -2,7 +2,9 @@
 
 <!-- doc -->
 
-`takeUntil<T>(controller: Stream<any>, stream: Stream<T>): Stream<T>`
+```typescript
+takeUntil<T>(controller: Stream<any>, stream: Stream<T>): Stream<T>
+```
 
 TODO: description
 

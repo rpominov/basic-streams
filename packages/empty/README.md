@@ -2,7 +2,9 @@
 
 <!-- doc -->
 
-`empty(): Stream<never>`
+```typescript
+empty(): Stream<never>
+```
 
 Creates a stream that will never produce events.
 

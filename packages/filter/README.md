@@ -2,7 +2,9 @@
 
 <!-- doc -->
 
-`filter<T>(predicate: (x: T) => boolean, stream: Stream<T>): Stream<T>`
+```typescript
+filter<T>(predicate: (x: T) => boolean, stream: Stream<T>): Stream<T>
+```
 
 Creates a stream containing values from the source `stream` that satisfy the
 given `predicate`.

@@ -2,7 +2,9 @@
 
 <!-- doc -->
 
-`of<T>(value: T): Stream<T>`
+```typescript
+of<T>(value: T): Stream<T>
+```
 
 Creates a stream that contains the given `value`.
 

@@ -2,7 +2,9 @@
 
 <!-- doc -->
 
-`protect<T>(stream: Stream<T>): StreamProtected<T>`
+```typescript
+protect<T>(stream: Stream<T>): StreamProtected<T>
+```
 
 TODO: description
 

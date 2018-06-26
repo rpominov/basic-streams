@@ -2,7 +2,9 @@
 
 <!-- doc -->
 
-`skip<T>(n: number, stream: Stream<T>): Stream<T>`
+```typescript
+skip<T>(n: number, stream: Stream<T>): Stream<T>
+```
 
 Creates a stream containing values from the given `stream` except for the first
 `n` values.

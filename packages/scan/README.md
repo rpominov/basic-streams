@@ -2,7 +2,13 @@
 
 <!-- doc -->
 
-`scan<N, A>(reducer: (acc: A, next: N) => A, seed: A, stream: Stream<N>): Stream<A>`
+```typescript
+scan<N, A>(
+  reducer: (accumulated: A, next: N) => A,
+  seed: A,
+  stream: Stream<N>,
+): Stream<A>
+```
 
 TODO: description
 

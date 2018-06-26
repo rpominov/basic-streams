@@ -2,7 +2,9 @@
 
 <!-- doc -->
 
-`skipWhile<T>(predicate: (x: T) => boolean, stream: Stream<T>): Stream<T>`
+```typescript
+skipWhile<T>(predicate: (x: T) => boolean, stream: Stream<T>): Stream<T>
+```
 
 TODO: description
 

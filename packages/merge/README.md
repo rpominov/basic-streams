@@ -2,7 +2,9 @@
 
 <!-- doc -->
 
-`merge<T>(streams: Array<Stream<T>>): Stream<T>`
+```typescript
+merge<T>(streams: Array<Stream<T>>): Stream<T>
+```
 
 Creates a stream containing values from all given `streams`.
 
