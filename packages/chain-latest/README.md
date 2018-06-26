@@ -33,4 +33,4 @@ result(x => {
 
 <!-- docstop -->
 
-[chain]: ../chain
+[chain]: https://github.com/rpominov/basic-streams/tree/master/packages/chain

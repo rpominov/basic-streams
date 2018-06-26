@@ -89,4 +89,4 @@ fromIterable([1, 2, 3], 6000, scheduler)(x => {
 
 <!-- docstop -->
 
-[later]: ../later
+[later]: https://github.com/rpominov/basic-streams/tree/master/packages/later

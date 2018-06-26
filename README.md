@@ -471,7 +471,7 @@ result(x => {
 The type `StreamLoose` defined as follows, and you can import it from
 `@basic-streams/from-loose`.
 
-```
+```js
 type StreamLoose<T> = (cb: (payload: T, ...rest: any[]) => void) => any
 
 import {StreamLoose} from "@basic-streams/from-loose"
@@ -1139,11 +1139,11 @@ result(x => {
 The type `StreamProtected` defined as follows, and you can import it from
 `@basic-streams/protect`.
 
-```
+```js
 type StreamProtected<T> = (
   cb: (payload: T, ...rest: any[]) => void,
   ...rest: any[]
-) => ((...rest: any[]) => void)
+) => (...rest: any[]) => void
 
 import {StreamProtected} from "@basic-streams/protect"
 ```

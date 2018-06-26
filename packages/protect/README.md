@@ -27,11 +27,11 @@ result(x => {
 The type `StreamProtected` defined as follows, and you can import it from
 `@basic-streams/protect`.
 
-```
+```js
 type StreamProtected<T> = (
   cb: (payload: T, ...rest: any[]) => void,
   ...rest: any[]
-) => ((...rest: any[]) => void)
+) => (...rest: any[]) => void
 
 import {StreamProtected} from "@basic-streams/protect"
 ```
