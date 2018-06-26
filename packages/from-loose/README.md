@@ -3,12 +3,7 @@
 <!-- doc -->
 
 ```
-fromLoose<T>(
-  looseStream: (
-    cb: (payload: T, ...rest: any[]) => any,
-    ...rest: any[]
-  ) => any
-): Stream<T>
+fromLoose<T>(streamLoose: StreamLoose<T>): Stream<T>
 ```
 
 TODO: description
@@ -29,6 +24,15 @@ result(x => {
 // > TODO: output
 
 // stream: ____1____2____3
+```
+
+The type `StreamLoose` defined as follows, and you can import it from
+`@basic-streams/from-loose`.
+
+```
+type StreamLoose<T> = (cb: (payload: T, ...rest: any[]) => void) => any
+
+import {StreamLoose} from "@basic-streams/from-loose"
 ```
 
 <!-- docstop -->

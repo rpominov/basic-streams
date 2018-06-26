@@ -33,6 +33,7 @@
   - [take-until](#take-until)
   - [take-while](#take-while)
   - [multicast](#multicast)
+  - [protect](#protect)
 
 <!-- tocstop -->
 
@@ -444,12 +445,7 @@ npm install @basic-streams/from-iterable --save
 ### from-loose
 
 ```
-fromLoose<T>(
-  looseStream: (
-    cb: (payload: T, ...rest: any[]) => any,
-    ...rest: any[]
-  ) => any
-): Stream<T>
+fromLoose<T>(streamLoose: StreamLoose<T>): Stream<T>
 ```
 
 TODO: description
@@ -470,6 +466,15 @@ result(x => {
 // > TODO: output
 
 // stream: ____1____2____3
+```
+
+The type `StreamLoose` defined as follows, and you can import it from
+`@basic-streams/from-loose`.
+
+```
+type StreamLoose<T> = (cb: (payload: T, ...rest: any[]) => void) => any
+
+import {StreamLoose} from "@basic-streams/from-loose"
 ```
 
 ```sh
@@ -550,7 +555,7 @@ npm install @basic-streams/map --save
 `filter<T>(predicate: (x: T) => boolean, stream: Stream<T>): Stream<T>`
 
 Creates a stream containing values from the source `stream` that satisfy the
-given `predicate`
+given `predicate`.
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"
@@ -766,6 +771,40 @@ npm install @basic-streams/map2 --save
 <!-- doc map3 -->
 
 ### map3
+
+```
+map3<A, B, C, D>(
+  fn: (a: A, b: B, c: C) => D,
+  streamA: Stream<A>,
+  streamB: Stream<B>,
+  streamC: Stream<C>,
+): Stream<D>
+```
+
+TODO: description
+
+```js
+import fromIterable from "@basic-streams/from-iterable"
+import map3 from "@basic-streams/map3"
+
+const streamA = fromIterable([2, 4], 10000)
+const streamB = fromIterable([1, 3], 8000)
+const streamC = fromIterable([0], 3000)
+const result = map3((a, b, c) => a + b + c, streamA, streamB, streamC)
+
+result(x => {
+  console.log(x)
+})
+
+// > 3
+// > 5
+// > 7
+
+// streamA: _________2_________4
+// streamB: _______1_______3
+// streamC: __0
+// result:  _________3_____5___7
+```
 
 ```sh
 npm install @basic-streams/map3 --save
@@ -1071,6 +1110,50 @@ npm install @basic-streams/multicast --save
 
 <!-- docstop multicast -->
 
+<!-- doc protect -->
+
+### protect
+
+`protect<T>(stream: Stream<T>): StreamProtected<T>`
+
+TODO: description
+
+```js
+import fromIterable from "@basic-streams/from-iterable"
+import protect from "@basic-streams/protect"
+
+const stream = fromIterable([1, 2, 3], 5000)
+
+// TODO: example
+const result = stream
+
+result(x => {
+  console.log(x)
+})
+
+// > TODO: output
+
+// stream: ____1____2____3
+```
+
+The type `StreamProtected` defined as follows, and you can import it from
+`@basic-streams/protect`.
+
+```
+type StreamProtected<T> = (
+  cb: (payload: T, ...rest: any[]) => void,
+  ...rest: any[]
+) => ((...rest: any[]) => void)
+
+import {StreamProtected} from "@basic-streams/protect"
+```
+
+```sh
+npm install @basic-streams/protect --save
+```
+
+<!-- docstop protect -->
+
 <!-- links -->
 
 [of]: #of
@@ -1096,5 +1179,6 @@ npm install @basic-streams/multicast --save
 [take-until]: #take-until
 [take-while]: #take-while
 [multicast]: #multicast
+[protect]: #protect
 
 <!-- linksstop -->

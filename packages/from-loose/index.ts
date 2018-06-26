@@ -1,27 +1,17 @@
 import {Stream} from "@basic-streams/stream"
 
-export type StreamLoose<T> = (
-  cb: (payload: T, ...rest: any[]) => any,
-  ...rest: any[]
-) => any
+export type StreamLoose<T> = (cb: (payload: T, ...rest: any[]) => void) => any
+
+function noop() {}
 
 export default function fromLoose<T>(looseStream: StreamLoose<T>): Stream<T> {
-  return _cb => {
-    let cb: null | ((x: T) => any) = _cb
-    let disposer = looseStream(x => {
-      if (cb !== null) {
-        cb(x)
-      }
-    })
+  return cb => {
+    let disposer = looseStream(x => cb(x))
     return () => {
-      if (cb === null) {
-        return
-      }
-      cb = null
+      cb = noop
       if (typeof disposer === "function") {
         disposer()
       }
-      disposer = null
     }
   }
 }

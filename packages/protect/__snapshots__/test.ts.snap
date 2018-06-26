@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`fixes usage #1: \`stream\` must be called with one argument, \`cb\` 1`] = `
+Array [
+  Array [
+    [Function],
+  ],
+]
+`;
+
+exports[`fixes usage #4: \`disposer\` must be called with no arguments 1`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`fixes usage #5: \`disposer\` must be called at most once 1`] = `
+Array [
+  Array [],
+]
+`;
