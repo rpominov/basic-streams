@@ -766,7 +766,7 @@ result(x => {
 // result:  _________3_____4___0___1
 ```
 
-</details>
+</details><br/>
 
 ```sh
 npm install @basic-streams/ap --save
