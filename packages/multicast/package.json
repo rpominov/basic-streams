@@ -1,6 +1,6 @@
 {
   "name": "@basic-streams/multicast",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "multicast operator for basic-streams",
   "keywords": [
     "basic-streams",

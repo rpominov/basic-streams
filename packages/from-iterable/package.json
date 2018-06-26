@@ -1,6 +1,6 @@
 {
   "name": "@basic-streams/from-iterable",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "fromIterable operator for basic-streams",
   "keywords": [
     "basic-streams",
@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/rpominov/basic-streams/packages/from-iterable",
   "dependencies": {
-    "@basic-streams/later": "^0.0.7",
+    "@basic-streams/later": "^0.0.8",
     "@basic-streams/stream": "^0.0.5"
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@basic-streams/merge",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "merge operator for basic-streams",
   "keywords": [
     "basic-streams",
@@ -19,8 +19,8 @@
   },
   "homepage": "https://github.com/rpominov/basic-streams/packages/merge",
   "dependencies": {
-    "@basic-streams/chain": "^0.0.1",
-    "@basic-streams/from-iterable": "^0.0.1",
+    "@basic-streams/chain": "^0.0.8",
+    "@basic-streams/from-iterable": "^0.0.9",
     "@basic-streams/stream": "^0.0.5"
   }
 }

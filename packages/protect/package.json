@@ -1,6 +1,6 @@
 {
   "name": "@basic-streams/protect",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "protect operator for basic-streams",
   "keywords": [
     "basic-streams",
