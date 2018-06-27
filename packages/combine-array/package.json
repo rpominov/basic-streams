@@ -1,6 +1,6 @@
 {
   "name": "@basic-streams/combine-array",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "combineArray operator for basic-streams",
   "keywords": [
     "basic-streams",
@@ -19,8 +19,8 @@
   },
   "homepage": "https://github.com/rpominov/basic-streams/packages/combine-array",
   "dependencies": {
-    "@basic-streams/map2": "^0.0.9",
-    "@basic-streams/of": "^0.0.8",
-    "@basic-streams/stream": "^0.0.5"
+    "@basic-streams/map2": "^0.0.10",
+    "@basic-streams/of": "^0.0.9",
+    "@basic-streams/stream": "^0.0.6"
   }
 }

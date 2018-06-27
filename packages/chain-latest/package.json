@@ -1,6 +1,6 @@
 {
   "name": "@basic-streams/chain-latest",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "chainLatest operator for basic-streams",
   "keywords": [
     "basic-streams",
@@ -19,6 +19,6 @@
   },
   "homepage": "https://github.com/rpominov/basic-streams/packages/chain-latest",
   "dependencies": {
-    "@basic-streams/stream": "^0.0.5"
+    "@basic-streams/stream": "^0.0.6"
   }
 }

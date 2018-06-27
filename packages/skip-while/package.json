@@ -1,6 +1,6 @@
 {
   "name": "@basic-streams/skip-while",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "skipWhile operator for basic-streams",
   "keywords": [
     "basic-streams",
@@ -19,6 +19,6 @@
   },
   "homepage": "https://github.com/rpominov/basic-streams/packages/skip-while",
   "dependencies": {
-    "@basic-streams/stream": "^0.0.5"
+    "@basic-streams/stream": "^0.0.6"
   }
 }

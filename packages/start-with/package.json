@@ -1,6 +1,6 @@
 {
   "name": "@basic-streams/start-with",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "startWith operator for basic-streams",
   "keywords": [
     "basic-streams",
@@ -19,6 +19,6 @@
   },
   "homepage": "https://github.com/rpominov/basic-streams/packages/start-with",
   "dependencies": {
-    "@basic-streams/stream": "^0.0.5"
+    "@basic-streams/stream": "^0.0.6"
   }
 }
