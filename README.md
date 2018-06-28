@@ -225,7 +225,29 @@ const map = require("@basic-streams/map").default
 
 ## Flow and TypeScript
 
-TODO
+The library comes with built-in Flow and TypeScript typings. You don't need to
+set up anything it should just work.
+
+If you want to use the `Stream<T>` type in your code, you can import it from
+`@basic-streams/stream`:
+
+```js
+// TypeScript
+
+import {Stream} from "@basic-streams/stream"
+import of from "@basic-streams/of"
+
+const myStream: Stream<number> = of(1)
+```
+
+```js
+// @flow
+
+import type {Stream} from "@basic-streams/stream"
+import of from "@basic-streams/of"
+
+const myStream: Stream<number> = of(1)
+```
 
 ## How to read time diagrams
 
