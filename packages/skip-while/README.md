@@ -6,24 +6,26 @@
 skipWhile<T>(predicate: (x: T) => boolean, stream: Stream<T>): Stream<T>
 ```
 
-TODO: description
+Creates a stream containing each value from the given `stream` starting from the
+first value `x` for which `predicate(x)` returns false.
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"
 import skipWhile from "@basic-streams/skip-while"
 
-const stream = fromIterable([1, 2, 3], 5000)
+const stream = fromIterable([0, 1, 2, 1], 5000)
 
-// TODO: example
-const result = stream
+const result = skipWhile(x => x < 2, stream)
 
 result(x => {
   console.log(x)
 })
 
-// > TODO: output
+// > 2
+// > 1
 
-// stream: ____1____2____3
+// stream: ____0____1____2____1
+// result: ______________2____1
 ```
 
 <!-- docstop -->

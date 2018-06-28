@@ -532,7 +532,8 @@ npm install @basic-streams/from-loose --save
 startWith<T, U>(x: T, stream: Stream<U>): Stream<T | U>
 ```
 
-TODO: description
+Creates a stream containing values from the given `stream` and `x` as the first
+values.
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"
@@ -540,16 +541,19 @@ import startWith from "@basic-streams/start-with"
 
 const stream = fromIterable([1, 2, 3], 5000)
 
-// TODO: example
-const result = stream
+const result = startWith(0, stream)
 
 result(x => {
   console.log(x)
 })
 
-// > TODO: output
+// > 0
+// > 1
+// > 2
+// > 3
 
 // stream: ____1____2____3
+// result: 0___1____2____3
 ```
 
 ```sh
@@ -724,7 +728,9 @@ scan<N, A>(
 ): Stream<A>
 ```
 
-TODO: description
+Creates a stream containing `reducer(a, x)` for each value `x` from the source
+`stream`, and the latest value `a` produced from by the resulting stream. The
+resulting stream will also have given `seed` as the first event.
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"
@@ -732,16 +738,19 @@ import scan from "@basic-streams/scan"
 
 const stream = fromIterable([1, 2, 3], 5000)
 
-// TODO: example
-const result = stream
+const result = scan((acc, next) => acc + next, 0, stream)
 
 result(x => {
   console.log(x)
 })
 
-// > TODO: output
+// > 0
+// > 1
+// > 3
+// > 6
 
 // stream: ____1____2____3
+// result: 0___1____3____6
 ```
 
 ```sh
@@ -1003,24 +1012,26 @@ npm install @basic-streams/skip --save
 skipWhile<T>(predicate: (x: T) => boolean, stream: Stream<T>): Stream<T>
 ```
 
-TODO: description
+Creates a stream containing each value from the given `stream` starting from the
+first value `x` for which `predicate(x)` returns false.
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"
 import skipWhile from "@basic-streams/skip-while"
 
-const stream = fromIterable([1, 2, 3], 5000)
+const stream = fromIterable([0, 1, 2, 1], 5000)
 
-// TODO: example
-const result = stream
+const result = skipWhile(x => x < 2, stream)
 
 result(x => {
   console.log(x)
 })
 
-// > TODO: output
+// > 2
+// > 1
 
-// stream: ____1____2____3
+// stream: ____0____1____2____1
+// result: ______________2____1
 ```
 
 ```sh
@@ -1040,24 +1051,29 @@ skipDuplicates<T>(
 ): Stream<T>
 ```
 
-TODO: description
+Creates a stream containing each value `x` from the source `stream` if
+`comparator(p, x)` returns `false`, where `p` is the latest value produced from
+the resulting stream. The first event from source stream isn't tested and always
+comes through.
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"
 import skipDuplicates from "@basic-streams/skip-duplicates"
 
-const stream = fromIterable([1, 2, 3], 5000)
+const stream = fromIterable([1, 2, 2, 3], 5000)
 
-// TODO: example
-const result = stream
+const result = skipDuplicates((a, b) => a === b, stream)
 
 result(x => {
   console.log(x)
 })
 
-// > TODO: output
+// > 1
+// > 2
+// > 3
 
-// stream: ____1____2____3
+// stream: ____1____2____2____3
+// result: ____1____2_________3
 ```
 
 ```sh
@@ -1108,24 +1124,29 @@ npm install @basic-streams/take --save
 takeUntil<T>(controller: Stream<any>, stream: Stream<T>): Stream<T>
 ```
 
-TODO: description
+Creates a stream containing values from the given `stream` that are produced
+before the first event in the `controller` stream.
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"
+import later from "@basic-streams/later"
 import takeUntil from "@basic-streams/take-until"
 
 const stream = fromIterable([1, 2, 3], 5000)
+const controller = later(12000, 0)
 
-// TODO: example
-const result = stream
+const result = takeUntil(controller, stream)
 
 result(x => {
   console.log(x)
 })
 
-// > TODO: output
+// > 1
+// > 2
 
-// stream: ____1____2____3
+// stream:     ____1____2_!
+// controller: ___________0!
+// result:     ____1____2
 ```
 
 ```sh
@@ -1142,24 +1163,26 @@ npm install @basic-streams/take-until --save
 takeWhile<T>(predicate: (x: T) => boolean, stream: Stream<T>): Stream<T>
 ```
 
-TODO: description
+Creates a stream containing each value from the given `stream` up until the
+first value `x` for which `predicate(x)` returns false.
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"
 import takeWhile from "@basic-streams/take-while"
 
-const stream = fromIterable([1, 2, 3], 5000)
+const stream = fromIterable([0, 1, 2, 1], 5000)
 
-// TODO: example
-const result = stream
+const result = takeWhile(x => x < 2, stream)
 
 result(x => {
   console.log(x)
 })
 
-// > TODO: output
+// > 0
+// > 1
 
-// stream: ____1____2____3
+// stream: ____0____1____2!
+// result: ____0____1
 ```
 
 ```sh

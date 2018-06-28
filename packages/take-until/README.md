@@ -6,24 +6,29 @@
 takeUntil<T>(controller: Stream<any>, stream: Stream<T>): Stream<T>
 ```
 
-TODO: description
+Creates a stream containing values from the given `stream` that are produced
+before the first event in the `controller` stream.
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"
+import later from "@basic-streams/later"
 import takeUntil from "@basic-streams/take-until"
 
 const stream = fromIterable([1, 2, 3], 5000)
+const controller = later(12000, 0)
 
-// TODO: example
-const result = stream
+const result = takeUntil(controller, stream)
 
 result(x => {
   console.log(x)
 })
 
-// > TODO: output
+// > 1
+// > 2
 
-// stream: ____1____2____3
+// stream:     ____1____2_!
+// controller: ___________0!
+// result:     ____1____2
 ```
 
 <!-- docstop -->

@@ -9,24 +9,29 @@ skipDuplicates<T>(
 ): Stream<T>
 ```
 
-TODO: description
+Creates a stream containing each value `x` from the source `stream` if
+`comparator(p, x)` returns `false`, where `p` is the latest value produced from
+the resulting stream. The first event from source stream isn't tested and always
+comes through.
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"
 import skipDuplicates from "@basic-streams/skip-duplicates"
 
-const stream = fromIterable([1, 2, 3], 5000)
+const stream = fromIterable([1, 2, 2, 3], 5000)
 
-// TODO: example
-const result = stream
+const result = skipDuplicates((a, b) => a === b, stream)
 
 result(x => {
   console.log(x)
 })
 
-// > TODO: output
+// > 1
+// > 2
+// > 3
 
-// stream: ____1____2____3
+// stream: ____1____2____2____3
+// result: ____1____2_________3
 ```
 
 <!-- docstop -->

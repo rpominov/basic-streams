@@ -6,24 +6,26 @@
 takeWhile<T>(predicate: (x: T) => boolean, stream: Stream<T>): Stream<T>
 ```
 
-TODO: description
+Creates a stream containing each value from the given `stream` up until the
+first value `x` for which `predicate(x)` returns false.
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"
 import takeWhile from "@basic-streams/take-while"
 
-const stream = fromIterable([1, 2, 3], 5000)
+const stream = fromIterable([0, 1, 2, 1], 5000)
 
-// TODO: example
-const result = stream
+const result = takeWhile(x => x < 2, stream)
 
 result(x => {
   console.log(x)
 })
 
-// > TODO: output
+// > 0
+// > 1
 
-// stream: ____1____2____3
+// stream: ____0____1____2!
+// result: ____0____1
 ```
 
 <!-- docstop -->
