@@ -287,6 +287,8 @@ const unsubscribe = stream(x => {
 
 ### of
 
+`npm install @basic-streams/of --save`
+
 ```typescript
 of<T>(value: T): Stream<T>
 ```
@@ -305,15 +307,13 @@ stream(x => {
 // > 1
 ```
 
-```sh
-npm install @basic-streams/of --save
-```
-
 <!-- docstop of -->
 
 <!-- doc empty -->
 
 ### empty
+
+`npm install @basic-streams/empty --save`
 
 ```typescript
 empty(): Stream<never>
@@ -333,15 +333,13 @@ stream(x => {
 // no output
 ```
 
-```sh
-npm install @basic-streams/empty --save
-```
-
 <!-- docstop empty -->
 
 <!-- doc later -->
 
 ### later
+
+`npm install @basic-streams/later --save`
 
 ```typescript
 later(time: number): Stream<undefined>
@@ -367,15 +365,13 @@ stream(x => {
 // stream: ____1
 ```
 
-```sh
-npm install @basic-streams/later --save
-```
-
 <!-- docstop later -->
 
 <!-- doc from-iterable -->
 
 ### from-iterable
+
+`npm install @basic-streams/from-iterable --save`
 
 ```typescript
 fromIterable<T>(
@@ -463,15 +459,13 @@ fromIterable([1, 2, 3], 6000, scheduler)(x => {
 // __1__2__3
 ```
 
-```sh
-npm install @basic-streams/from-iterable --save
-```
-
 <!-- docstop from-iterable -->
 
 <!-- doc from-loose -->
 
 ### from-loose
+
+`npm install @basic-streams/from-loose --save`
 
 ```typescript
 fromLoose<T>(streamLoose: StreamLoose<T>): Stream<T>
@@ -518,15 +512,13 @@ type StreamLoose<T> = (cb: (payload: T, ...rest: any[]) => void) => any
 import {StreamLoose} from "@basic-streams/from-loose"
 ```
 
-```sh
-npm install @basic-streams/from-loose --save
-```
-
 <!-- docstop from-loose -->
 
 <!-- doc start-with -->
 
 ### start-with
+
+`npm install @basic-streams/start-with --save`
 
 ```typescript
 startWith<T, U>(x: T, stream: Stream<U>): Stream<T | U>
@@ -556,15 +548,13 @@ result(x => {
 // result: 0___1____2____3
 ```
 
-```sh
-npm install @basic-streams/start-with --save
-```
-
 <!-- docstop start-with -->
 
 <!-- doc map -->
 
 ### map
+
+`npm install @basic-streams/map --save`
 
 ```typescript
 map<T, U>(fn: (x: T) => U, stream: Stream<T>): Stream<U>
@@ -591,15 +581,13 @@ result(x => {
 // result: ____2____4____6
 ```
 
-```sh
-npm install @basic-streams/map --save
-```
-
 <!-- docstop map -->
 
 <!-- doc filter -->
 
 ### filter
+
+`npm install @basic-streams/filter --save`
 
 ```typescript
 filter<T>(predicate: (x: T) => boolean, stream: Stream<T>): Stream<T>
@@ -626,15 +614,13 @@ result(x => {
 // result: ____1_________3
 ```
 
-```sh
-npm install @basic-streams/filter --save
-```
-
 <!-- docstop filter -->
 
 <!-- doc chain -->
 
 ### chain
+
+`npm install @basic-streams/chain --save`
 
 ```typescript
 chain<T, U>(fn: (x: T) => Stream<U>, stream: Stream<T>): Stream<U>
@@ -669,15 +655,13 @@ result(x => {
 // result: ________________1______1__2___1__2______2
 ```
 
-```sh
-npm install @basic-streams/chain --save
-```
-
 <!-- docstop chain -->
 
 <!-- doc chain-latest -->
 
 ### chain-latest
+
+`npm install @basic-streams/chain-latest --save`
 
 ```typescript
 chainLatest<T, U>(fn: (x: T) => Stream<U>, stream: Stream<T>): Stream<U>
@@ -710,15 +694,13 @@ result(x => {
 // result: ________________1_________2______2______2
 ```
 
-```sh
-npm install @basic-streams/chain-latest --save
-```
-
 <!-- docstop chain-latest -->
 
 <!-- doc scan -->
 
 ### scan
+
+`npm install @basic-streams/scan --save`
 
 ```typescript
 scan<N, A>(
@@ -753,15 +735,13 @@ result(x => {
 // result: 0___1____3____6
 ```
 
-```sh
-npm install @basic-streams/scan --save
-```
-
 <!-- docstop scan -->
 
 <!-- doc ap -->
 
 ### ap
+
+`npm install @basic-streams/ap --save`
 
 ```typescript
 ap<T, U>(streamf: Stream<(x: T) => U>, streamv: Stream<T>): Stream<U>
@@ -795,15 +775,13 @@ result(x => {
 // result:  _________3_____4___0___1
 ```
 
-```sh
-npm install @basic-streams/ap --save
-```
-
 <!-- docstop ap -->
 
 <!-- doc map2 -->
 
 ### map2
+
+`npm install @basic-streams/map2 --save`
 
 ```typescript
 map2<A, B, C>(
@@ -838,15 +816,13 @@ result(x => {
 // result:  _________3_____5___7
 ```
 
-```sh
-npm install @basic-streams/map2 --save
-```
-
 <!-- docstop map2 -->
 
 <!-- doc map3 -->
 
 ### map3
+
+`npm install @basic-streams/map3 --save`
 
 ```typescript
 map3<A, B, C, D>(
@@ -884,15 +860,13 @@ result(x => {
 // result:  _________3_____5___7
 ```
 
-```sh
-npm install @basic-streams/map3 --save
-```
-
 <!-- docstop map3 -->
 
 <!-- doc combine-array -->
 
 ### combine-array
+
+`npm install @basic-streams/combine-array --save`
 
 ```typescript
 combineArray<T>(streams: Array<Stream<T>>): Stream<Array<T>>
@@ -923,15 +897,13 @@ result(x => {
 //              [2, 1] [2, 3] [4, 3]
 ```
 
-```sh
-npm install @basic-streams/combine-array --save
-```
-
 <!-- docstop combine-array -->
 
 <!-- doc merge -->
 
 ### merge
+
+`npm install @basic-streams/merge --save`
 
 ```typescript
 merge<T>(streams: Array<Stream<T>>): Stream<T>
@@ -963,15 +935,13 @@ result(x => {
 // result:  _______1_2_____3___4___5_____6
 ```
 
-```sh
-npm install @basic-streams/merge --save
-```
-
 <!-- docstop merge -->
 
 <!-- doc skip -->
 
 ### skip
+
+`npm install @basic-streams/skip --save`
 
 ```typescript
 skip<T>(n: number, stream: Stream<T>): Stream<T>
@@ -998,15 +968,13 @@ result(x => {
 // result: ______________3
 ```
 
-```sh
-npm install @basic-streams/skip --save
-```
-
 <!-- docstop skip -->
 
 <!-- doc skip-while -->
 
 ### skip-while
+
+`npm install @basic-streams/skip-while --save`
 
 ```typescript
 skipWhile<T>(predicate: (x: T) => boolean, stream: Stream<T>): Stream<T>
@@ -1034,15 +1002,13 @@ result(x => {
 // result: ______________2____1
 ```
 
-```sh
-npm install @basic-streams/skip-while --save
-```
-
 <!-- docstop skip-while -->
 
 <!-- doc skip-duplicates -->
 
 ### skip-duplicates
+
+`npm install @basic-streams/skip-duplicates --save`
 
 ```typescript
 skipDuplicates<T>(
@@ -1076,15 +1042,13 @@ result(x => {
 // result: ____1____2_________3
 ```
 
-```sh
-npm install @basic-streams/skip-duplicates --save
-```
-
 <!-- docstop skip-duplicates -->
 
 <!-- doc take -->
 
 ### take
+
+`npm install @basic-streams/take --save`
 
 ```typescript
 take<T>(n: number, stream: Stream<T>): Stream<T>
@@ -1110,15 +1074,13 @@ result(x => {
 // result: ____1____2
 ```
 
-```sh
-npm install @basic-streams/take --save
-```
-
 <!-- docstop take -->
 
 <!-- doc take-until -->
 
 ### take-until
+
+`npm install @basic-streams/take-until --save`
 
 ```typescript
 takeUntil<T>(controller: Stream<any>, stream: Stream<T>): Stream<T>
@@ -1149,15 +1111,13 @@ result(x => {
 // result:     ____1____2
 ```
 
-```sh
-npm install @basic-streams/take-until --save
-```
-
 <!-- docstop take-until -->
 
 <!-- doc take-while -->
 
 ### take-while
+
+`npm install @basic-streams/take-while --save`
 
 ```typescript
 takeWhile<T>(predicate: (x: T) => boolean, stream: Stream<T>): Stream<T>
@@ -1185,15 +1145,13 @@ result(x => {
 // result: ____0____1
 ```
 
-```sh
-npm install @basic-streams/take-while --save
-```
-
 <!-- docstop take-while -->
 
 <!-- doc multicast -->
 
 ### multicast
+
+`npm install @basic-streams/multicast --save`
 
 ```typescript
 multicast<T>(stream: Stream<T>): Stream<T>
@@ -1248,15 +1206,13 @@ unsubscribe2()
 // > "stop"
 ```
 
-```sh
-npm install @basic-streams/multicast --save
-```
-
 <!-- docstop multicast -->
 
 <!-- doc protect -->
 
 ### protect
+
+`npm install @basic-streams/protect --save`
 
 ```typescript
 protect<T>(stream: Stream<T>): StreamProtected<T>
@@ -1316,10 +1272,6 @@ type StreamProtected<T> = (
 ) => (...rest: any[]) => void
 
 import {StreamProtected} from "@basic-streams/protect"
-```
-
-```sh
-npm install @basic-streams/protect --save
 ```
 
 <!-- docstop protect -->

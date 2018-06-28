@@ -29,11 +29,9 @@ function printItem(name, documentation) {
 
 ### ${name}
 
-${documentation}
+\`npm install @basic-streams/${name} --save\`
 
-\`\`\`sh
-npm install @basic-streams/${name} --save
-\`\`\`
+${documentation}
 
 <!-- docstop ${name} -->`
 }
