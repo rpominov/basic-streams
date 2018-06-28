@@ -10,9 +10,9 @@ map2<A, B, C>(
 ): Stream<C>
 ```
 
-Creates a stream containing results of applying `fn` to the latest values from
-`streamA` and `streamB`. The resulting stream updates when any of source stream
-update.
+Creates a stream containing `fn(a, b)` where `a` and `b` are the latest values
+from `streamA` and `streamB`. The resulting stream updates when any of source
+stream update.
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"

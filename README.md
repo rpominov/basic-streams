@@ -362,7 +362,7 @@ stream(x => {
   console.log(x)
 })
 
-// > TODO: output
+// > 1
 
 // stream: ____1
 ```
@@ -478,7 +478,7 @@ fromLoose<T>(streamLoose: StreamLoose<T>): Stream<T>
 ```
 
 Creates a stream from a loose stream that may not follow all the requirements of
-the [protocol](#protocol). The loose stream is allowed to:
+the [protocol]. The loose stream is allowed to:
 
 1.  **Return not a function.** If the return value is not a function, it will be
     ignored.
@@ -804,9 +804,9 @@ map2<A, B, C>(
 ): Stream<C>
 ```
 
-Creates a stream containing results of applying `fn` to the latest values from
-`streamA` and `streamB`. The resulting stream updates when any of source stream
-update.
+Creates a stream containing `fn(a, b)` where `a` and `b` are the latest values
+from `streamA` and `streamB`. The resulting stream updates when any of source
+stream update.
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"
@@ -848,9 +848,9 @@ map3<A, B, C, D>(
 ): Stream<D>
 ```
 
-Creates a stream containing results of applying `fn` to the latest values from
-`streamA`, `streamB` and `streamC`. The resulting stream updates when any of
-source stream update.
+Creates a stream containing `fn(a, b, c)` where `a`, `b` and `c` are the latest
+values from `streamA`, `streamB` and `streamC`. The resulting stream updates
+when any of source stream update.
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"
@@ -1239,24 +1239,48 @@ npm install @basic-streams/multicast --save
 protect<T>(stream: Stream<T>): StreamProtected<T>
 ```
 
-TODO: description
+Creates a protected stream that will contain same events as the given `stream`.
+When you use the protected stream, you don't have to follow the following rules
+from the [protocol]:
+
+- **Stream must be called with one argument.** You can pass extra arguments.
+  They will be ignored.
+- **`cb` must always return `undefined`.** Your callback may return value of any
+  type.
+- **`disposer` must be called with no arguments.** You can pass any arguments to
+  the disposer. They will be ignored.
+- **`disposer` must be called at most once.** You can call disposer repeatedly.
+  The second and following calls will have no effect.
 
 ```js
-import fromIterable from "@basic-streams/from-iterable"
 import protect from "@basic-streams/protect"
 
-const stream = fromIterable([1, 2, 3], 5000)
+const stream = (cb, ...extra) => {
+  console.log("started", extra)
+  console.log("callback returned", cb(1))
+  return (...args) => {
+    console.log("disposed", args)
+  }
+}
 
-// TODO: example
-const result = stream
+const result = protect(stream)
 
-result(x => {
-  console.log(x)
-})
+const disposer = result(x => {
+  console.log("received event", x)
+  return "should be ignored"
+}, "should be ignored")
 
-// > TODO: output
+// > "started" []
+// > "received event" 1
+// > "callback returned" undefined
 
-// stream: ____1____2____3
+disposer()
+
+// > "disposed" []
+
+disposer()
+
+// no output, the second call is ignored
 ```
 
 The type `StreamProtected` defined as follows, and you can import it from
@@ -1305,3 +1329,5 @@ npm install @basic-streams/protect --save
 [protect]: #protect
 
 <!-- linksstop -->
+
+[protocol]: #protocol

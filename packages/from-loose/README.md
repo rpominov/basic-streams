@@ -7,7 +7,7 @@ fromLoose<T>(streamLoose: StreamLoose<T>): Stream<T>
 ```
 
 Creates a stream from a loose stream that may not follow all the requirements of
-the [protocol](#protocol). The loose stream is allowed to:
+the [protocol]. The loose stream is allowed to:
 
 1.  **Return not a function.** If the return value is not a function, it will be
     ignored.
@@ -48,3 +48,5 @@ import {StreamLoose} from "@basic-streams/from-loose"
 ```
 
 <!-- docstop -->
+
+[protocol]: https://github.com/rpominov/basic-streams#protocol

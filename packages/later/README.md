@@ -21,7 +21,7 @@ stream(x => {
   console.log(x)
 })
 
-// > TODO: output
+// > 1
 
 // stream: ____1
 ```
