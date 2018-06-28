@@ -1,6 +1,6 @@
 {
   "name": "@basic-streams/take-until",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "takeUntil operator for basic-streams",
   "keywords": [
     "basic-streams",
@@ -19,6 +19,6 @@
   },
   "homepage": "https://github.com/rpominov/basic-streams/packages/take-until",
   "dependencies": {
-    "@basic-streams/stream": "^0.0.6"
+    "@basic-streams/stream": "^0.0.7"
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@basic-streams/filter",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "filter operator for basic-streams",
   "keywords": [
     "basic-streams",
@@ -19,6 +19,6 @@
   },
   "homepage": "https://github.com/rpominov/basic-streams/packages/filter",
   "dependencies": {
-    "@basic-streams/stream": "^0.0.6"
+    "@basic-streams/stream": "^0.0.7"
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@basic-streams/take",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "take operator for basic-streams",
   "keywords": [
     "basic-streams",
@@ -19,6 +19,6 @@
   },
   "homepage": "https://github.com/rpominov/basic-streams/packages/take",
   "dependencies": {
-    "@basic-streams/stream": "^0.0.6"
+    "@basic-streams/stream": "^0.0.7"
   }
 }
