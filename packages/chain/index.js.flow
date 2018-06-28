@@ -2,7 +2,7 @@
 
 import type {Stream} from "@basic-streams/stream"
 
-declare export default function map<T, U>(
-  fn: (T) => U,
+declare export default function chain<T, U>(
+  fn: (T) => Stream<U>,
   stream: Stream<T>,
 ): Stream<U>

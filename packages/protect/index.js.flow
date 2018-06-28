@@ -1,0 +1,12 @@
+// @flow
+
+import type {Stream} from "@basic-streams/stream"
+
+export type StreamProtected<T> = (
+  cb: (payload: T, ...rest: any[]) => void,
+  ...rest: any[]
+) => (...rest: any[]) => void
+
+declare export default function protect<T>(
+  stream: Stream<T>,
+): StreamProtected<T>

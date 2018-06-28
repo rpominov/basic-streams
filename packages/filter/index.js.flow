@@ -1,0 +1,8 @@
+// @flow
+
+import type {Stream} from "@basic-streams/stream"
+
+declare export default function filter<T>(
+  predicate: (T) => boolean,
+  stream: Stream<T>,
+): Stream<T>

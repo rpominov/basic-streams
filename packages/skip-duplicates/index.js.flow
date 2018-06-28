@@ -1,0 +1,8 @@
+// @flow
+
+import type {Stream} from "@basic-streams/stream"
+
+declare export default function skipDuplicates<T>(
+  comp: (prev: T, next: T) => boolean,
+  stream: Stream<T>,
+): Stream<T>

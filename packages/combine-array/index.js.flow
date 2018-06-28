@@ -1,0 +1,7 @@
+// @flow
+
+import type {Stream} from "@basic-streams/stream"
+
+declare export default function combineArray<T>(
+  streams: Array<Stream<T>>,
+): Stream<Array<T>>

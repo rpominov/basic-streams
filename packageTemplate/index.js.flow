@@ -1,0 +1,5 @@
+// @flow
+
+import type {Stream} from "@basic-streams/stream"
+
+declare export default function exportName(): null

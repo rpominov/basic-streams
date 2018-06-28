@@ -1,0 +1,10 @@
+// @flow
+
+import type {Stream} from "@basic-streams/stream"
+
+declare export default function map3<A, B, C, D>(
+  fn: (A, B, C) => D,
+  streamA: Stream<A>,
+  streamB: Stream<B>,
+  streamC: Stream<C>,
+): Stream<D>

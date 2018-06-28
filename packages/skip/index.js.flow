@@ -1,0 +1,5 @@
+// @flow
+
+import type {Stream} from "@basic-streams/stream"
+
+declare export default function skip<T>(n: number, stream: Stream<T>): Stream<T>

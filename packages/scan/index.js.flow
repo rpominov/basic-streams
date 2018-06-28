@@ -1,0 +1,9 @@
+// @flow
+
+import type {Stream} from "@basic-streams/stream"
+
+declare export default function scan<N, A>(
+  reducer: (acc: A, next: N) => A,
+  seed: A,
+  stream: Stream<N>,
+): Stream<A>

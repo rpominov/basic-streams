@@ -1,0 +1,8 @@
+// @flow
+
+import type {Stream} from "@basic-streams/stream"
+
+declare export default function takeUntil<T>(
+  controller: Stream<any>,
+  stream: Stream<T>,
+): Stream<T>
