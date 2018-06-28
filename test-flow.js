@@ -72,32 +72,46 @@ const streamOfCat: Stream<Cat> = of("cat")
 //
 // empty
 //
+;(empty(): Stream<empty>)
 
-// TODO
+empty()((n: number) => {
+  console.log(n)
+})
+
+merge([empty(), of(1)])((n: number) => {
+  console.log(n)
+})
 
 //
 // later
 //
-
-// TODO
+;(later(1): Stream<void>)
+;(later(1, ""): Stream<string>)
 
 //
 // from-iterable
 //
+;(fromIterable([1, 2, 3]): Stream<number>)
+;(fromIterable([1, 2, 3], 10, later): Stream<number>)
 
-// TODO
+// $ExpectError
+;(fromIterable([1, 2, 3]): Stream<string>)
 
 //
 // from-loose
 //
-
-// TODO
+;(fromLoose(cb => {
+  cb(1, "")
+  return ""
+}): Stream<number>)
 
 //
 // start-with
 //
+;(startWith(1, empty()): Stream<number>)
 
-// TODO
+// $ExpectError
+;(startWith(1, empty()): Stream<string>)
 
 //
 // map
@@ -113,8 +127,13 @@ map(stringToNumber, ofNumber)
 //
 // filter
 //
+;(filter(numberToBoolean, ofNumber): Stream<number>)
 
-// TODO
+// $ExpectError
+;(filter(numberToBoolean, ofNumber): Stream<string>)
+
+// $ExpectError
+filter(stringToBoolean, ofNumber)
 
 //
 // chain
@@ -130,14 +149,25 @@ chain(x => of(stringToNumber(x)), ofNumber)
 //
 // chain-latest
 //
+;(chainLatest(x => of(numberToString(x)), ofNumber): Stream<string>)
 
-// TODO
+// $ExpectError
+;(chainLatest(x => of(numberToString(x)), ofNumber): Stream<number>)
+
+// $ExpectError
+chainLatest(x => of(stringToNumber(x)), ofNumber)
 
 //
 // scan
 //
+;(scan((s, n) => s, "", ofNumber): Stream<string>)
+;(scan((s, n) => numberToString(n), "", ofNumber): Stream<string>)
 
-// TODO
+// $ExpectError
+scan((acc, next) => acc.length, "", ofNumber)
+
+// $ExpectError
+scan((acc, next) => acc.length, 1, ofNumber)
 
 //
 // ap
@@ -159,71 +189,120 @@ ap(map(x => y => x + y.length, of(1)), of(1))
 //
 // map2
 //
+;(map2((a, b) => a === b, of(1), of(2)): Stream<boolean>)
 
-// TODO
+map2((a, b) => a.length, of(""), of(2))
+
+// $ExpectError
+map2((a, b) => a.length, of(1), of(2))
 
 //
 // map3
 //
+;(map3((a, b, c) => a - b === c.length, of(1), of(2), of("")): Stream<boolean>)
 
-// TODO
+map3((a, b, c) => a.length, of(""), of(2), of(null))
+
+// $ExpectError
+map3((a, b, c) => a.length, of(1), of(2), of(null))
 
 //
 // combine-array
 //
+;(combineArray([of(1), of("")]): Stream<[number, string]>)
 
-// TODO
+// $ExpectError
+;(combineArray([of(1), of("")]): Stream<[boolean, string]>)
+
+const streamsOfNumber: Array<Stream<number>> = []
+;(combineArray(streamsOfNumber): Stream<number[]>)
+
+// $ExpectError
+;(combineArray(streamsOfNumber): Stream<string[]>)
 
 //
 // merge
 //
+;(merge([of(1), of(2)]): Stream<number>)
+;(merge([of(1), of("")]): Stream<number | string>)
 
-// TODO
+// $ExpectError
+;(merge([of(1), of(2)]): Stream<string>)
 
 //
 // skip
 //
+;(skip(1, of(1)): Stream<number>)
 
-// TODO
+// $ExpectError
+;(skip(1, of(1)): Stream<string>)
 
 //
 // skip-while
 //
+;(skipWhile(numberToBoolean, of(1)): Stream<number>)
 
-// TODO
+// $ExpectError
+;(skipWhile(numberToBoolean, of(1)): Stream<string>)
+
+// $ExpectError
+skipWhile(numberToBoolean, of(""))
 
 //
 // skip-duplicates
 //
+skipDuplicates((x, y) => x - y === 0, of(1))
+;(skipDuplicates((x, y) => x === y, of(1)): Stream<number>)
 
-// TODO
+// $ExpectError
+skipDuplicates((x, y) => x - y === 0, of(""))
 
 //
 // take
 //
+;(take(1, of(1)): Stream<number>)
 
-// TODO
+// $ExpectError
+;(take(1, of(1)): Stream<string>)
 
 //
 // take-until
 //
+;(takeUntil(of(null), of(1)): Stream<number>)
 
-// TODO
+// $ExpectError
+;(takeUntil(of(null), of(1)): Stream<string>)
 
 //
 // take-while
 //
+;(takeWhile(numberToBoolean, of(1)): Stream<number>)
 
-// TODO
+// $ExpectError
+;(takeWhile(numberToBoolean, of(1)): Stream<string>)
 
 //
 // multicast
 //
+;(multicast(of(1)): Stream<number>)
 
-// TODO
+// $ExpectError
+;(multicast(of(1)): Stream<string>)
 
 //
 // protect
 //
+;(protect(of(1)): Stream<number>)
 
-// TODO
+// $ExpectError
+;(protect(of(1)): Stream<string>)
+
+// $ExpectError
+of(1)(() => {}, 1)
+
+protect(of(1))(() => {}, 1)
+
+// $ExpectError
+of(1)(() => {})(1)
+
+protect(of(1))(() => {})(1)
