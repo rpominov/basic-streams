@@ -2,6 +2,12 @@
 
 import type {Stream} from "@basic-streams/stream"
 
-declare export default function combineArray<T>(
-  streams: Array<Stream<T>>,
-): Stream<Array<T>>
+type ExtractStream = <T>(Stream<T>) => T
+
+declare export default function combineArray<I: Array<Stream<any>>>(
+  streams: I,
+): Stream<$TupleMap<I, ExtractStream>>
+
+// declare export default function combineArray<T>(
+//   streams: Array<Stream<T>>,
+// ): Stream<Array<T>>
