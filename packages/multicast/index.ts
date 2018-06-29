@@ -1,31 +1,53 @@
 import {Stream} from "@basic-streams/stream"
 
 export default function multicast<T>(stream: Stream<T>): Stream<T> {
-  let cbs: ((x: T) => void)[] = []
-  const push = (x: T) => {
-    cbs.forEach(sink => {
-      if (cbs.indexOf(sink) !== -1) {
-        sink(x)
-      }
-    })
+  const callbacks: Array<null | ((x: T) => void)> = []
+  let activeCallbacks = 0
+  let sourceSubscription: {disposer?: () => void} | null = null
+
+  function startSource() {
+    const currentSubscription = {}
+    sourceSubscription = currentSubscription
+    const disposer = stream(callCallbacks)
+    if (sourceSubscription === currentSubscription) {
+      sourceSubscription.disposer = disposer
+    } else {
+      disposer()
+    }
   }
-  let unsub: null | (() => void) = null
+
+  function stopSource() {
+    if (sourceSubscription !== null) {
+      const {disposer} = sourceSubscription
+      sourceSubscription = null
+      if (disposer) {
+        disposer()
+      }
+    }
+  }
+
+  function callCallbacks(x: T) {
+    for (let i = 0; i < callbacks.length; i++) {
+      const callback = callbacks[i]
+      if (callback !== null) {
+        callback(x)
+      }
+    }
+  }
+
   return cb => {
-    let disposed = false
-    cbs = [...cbs, cb]
-    if (cbs.length === 1) {
-      unsub = stream(push)
+    const cbIndex = callbacks.push(cb) - 1
+    activeCallbacks++
+    if (activeCallbacks === 1) {
+      startSource()
     }
     return () => {
-      if (disposed) {
-        return
-      }
-      disposed = true
-      const index = cbs.indexOf(cb)
-      cbs = [...cbs.slice(0, index), ...cbs.slice(index + 1, cbs.length)]
-      if (cbs.length === 0 && unsub !== null) {
-        unsub()
-        unsub = null
+      if (callbacks[cbIndex] !== null) {
+        callbacks[cbIndex] = null
+        activeCallbacks--
+        if (activeCallbacks === 0) {
+          stopSource()
+        }
       }
     }
   }

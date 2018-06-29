@@ -57,7 +57,7 @@ test("takes values that satisfy predicate until first value that don't then call
       inCb(1)
       inCb(2)
       inCb(3)
-      inCb(4)
+      inCb(1)
       return disposer
     },
   )(cb)

@@ -1,26 +1,26 @@
 import {Stream} from "@basic-streams/stream"
 
-type Maybe<T> = {tag: "nothing"} | {tag: "just"; value: T}
+type Maybe<T> = null | {value: T}
 
 export default function ap<T, U>(
   streamF: Stream<(x: T) => U>,
   streamV: Stream<T>,
 ): Stream<U> {
   return cb => {
-    let latestF: Maybe<(x: T) => U> = {tag: "nothing"}
-    let latestV: Maybe<T> = {tag: "nothing"}
+    let latestF: Maybe<(x: T) => U> = null
+    let latestV: Maybe<T> = null
     const push = () => {
-      if (latestF.tag === "just" && latestV.tag === "just") {
+      if (latestF && latestV) {
         const fn = latestF.value
         cb(fn(latestV.value))
       }
     }
     const disposef = streamF(f => {
-      latestF = {tag: "just", value: f}
+      latestF = {value: f}
       push()
     })
     const disposev = streamV(v => {
-      latestV = {tag: "just", value: v}
+      latestV = {value: v}
       push()
     })
     return () => {

@@ -62,3 +62,26 @@ test("subscribes first to controller and then to source", () => {
   takeUntil(of(null), of(1))
   expect(cb.mock.calls).toMatchSnapshot()
 })
+
+test("controller produces when we subscribe to source", () => {
+  let controllerCb = null
+
+  const controller = cb => {
+    controllerCb = cb
+    return () => {
+      controllerCb = null
+    }
+  }
+
+  const disposer = jest.fn()
+  const stream = cb => {
+    controllerCb()
+    cb(1)
+    return disposer
+  }
+
+  const cb = jest.fn()
+  takeUntil(controller, stream)(cb)
+  expect(cb.mock.calls).toMatchSnapshot()
+  expect(disposer.mock.calls).toMatchSnapshot()
+})

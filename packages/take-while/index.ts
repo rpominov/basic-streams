@@ -1,31 +1,46 @@
 import {Stream} from "@basic-streams/stream"
 
+interface State<T> {
+  cb: (x: T) => void
+  sourceDisposer?: (() => void)
+}
+
 export default function takeWhile<T>(
   predicate: (x: T) => boolean,
   stream: Stream<T>,
 ): Stream<T> {
   return cb => {
-    let completed = false
-    let disposer: (() => void) | null = null
-    const dispose = () => {
-      if (disposer !== null) {
-        disposer()
-        disposer = null
-      }
-    }
-    disposer = stream(x => {
-      if (!completed) {
-        if (predicate(x)) {
-          cb(x)
-        } else {
-          completed = true
-          dispose()
+    let state: State<T> | null = {cb}
+
+    function stop() {
+      if (state !== null) {
+        const {sourceDisposer} = state
+        state = null
+        if (sourceDisposer) {
+          sourceDisposer()
         }
       }
-    })
-    if (completed) {
-      dispose()
     }
-    return dispose
+
+    function onEvent(x: T) {
+      if (state !== null) {
+        if (predicate(x)) {
+          const {cb} = state
+          cb(x)
+        } else {
+          stop()
+        }
+      }
+    }
+
+    const sourceDisposer = stream(onEvent)
+
+    if (state === null) {
+      sourceDisposer()
+    } else {
+      state.sourceDisposer = sourceDisposer
+    }
+
+    return stop
   }
 }

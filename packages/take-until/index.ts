@@ -1,5 +1,11 @@
 import {Stream} from "@basic-streams/stream"
 
+interface State<T> {
+  cb: (x: T) => void
+  sourceDisposer?: (() => void)
+  controllerDisposer?: (() => void)
+}
+
 function noop() {}
 
 export default function takeUntil<T>(
@@ -7,37 +13,43 @@ export default function takeUntil<T>(
   stream: Stream<T>,
 ): Stream<T> {
   return cb => {
-    let disposed = false
-    let mainDisposer: (() => void) | null = null
-    let ctrlDisposer: (() => void) | null = null
-    const dispose = () => {
-      if (disposed) {
-        return
-      }
-      disposed = true
-      if (mainDisposer !== null) {
-        mainDisposer()
-        mainDisposer = null
-      }
-      if (ctrlDisposer !== null) {
-        ctrlDisposer()
-        ctrlDisposer = null
+    let state: State<T> | null = {cb}
+
+    function stop() {
+      if (state !== null) {
+        const {controllerDisposer, sourceDisposer} = state
+        state = null
+        if (controllerDisposer) {
+          controllerDisposer()
+        }
+        if (sourceDisposer) {
+          sourceDisposer()
+        }
       }
     }
 
-    ctrlDisposer = controller(dispose)
-
-    if (disposed && ctrlDisposer !== null) {
-      ctrlDisposer()
+    function onEvent(x: T) {
+      if (state !== null) {
+        const {cb} = state
+        cb(x)
+      }
     }
 
-    if (disposed) {
-      // subscribe anyway for consistency
+    const controllerDisposer = controller(stop)
+
+    if (state === null) {
+      controllerDisposer()
       stream(noop)()
     } else {
-      mainDisposer = stream(cb)
+      state.controllerDisposer = controllerDisposer
+      const sourceDisposer = stream(onEvent)
+      if (state === null) {
+        sourceDisposer()
+      } else {
+        state.sourceDisposer = sourceDisposer
+      }
     }
 
-    return dispose
+    return stop
   }
 }

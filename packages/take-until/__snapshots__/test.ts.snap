@@ -36,6 +36,14 @@ Array [
 ]
 `;
 
+exports[`controller produces when we subscribe to source 1`] = `Array []`;
+
+exports[`controller produces when we subscribe to source 2`] = `
+Array [
+  Array [],
+]
+`;
+
 exports[`doesn't contain values after sync value from controller 1`] = `EventsList()`;
 
 exports[`doesn't contain values after value from controller 1`] = `

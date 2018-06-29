@@ -1,27 +1,48 @@
 import {Stream} from "@basic-streams/stream"
 
+interface State<T> {
+  cb: (x: T) => void
+  count: number
+  disposer?: () => void
+}
+
 export default function take<T>(n: number, stream: Stream<T>): Stream<T> {
   return cb => {
-    let count = 0
-    let disposer: (() => void) | null = null
-    const dispose = () => {
-      if (disposer !== null) {
-        disposer()
-        disposer = null
+    let state: State<T> | null = {cb, count: 0}
+
+    function stop() {
+      if (state !== null) {
+        const {disposer} = state
+        state = null
+        if (disposer) {
+          disposer()
+        }
       }
     }
-    disposer = stream(x => {
-      count++
-      if (count <= n) {
+
+    function onEvent(x: T) {
+      if (state !== null) {
+        const {cb} = state
         cb(x)
+        state.count++
+        if (state.count >= n) {
+          stop()
+        }
       }
-      if (count >= n) {
-        dispose()
-      }
-    })
-    if (count >= n) {
-      dispose()
     }
-    return dispose
+
+    if (n === 0) {
+      state = null
+    }
+
+    const disposer = stream(onEvent)
+
+    if (state === null) {
+      disposer()
+    } else {
+      state.disposer = disposer
+    }
+
+    return stop
   }
 }
