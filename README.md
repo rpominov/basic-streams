@@ -39,50 +39,77 @@
 
 ## Introduction
 
-The idea is to take the most basic definition of event stream and build
-functions to do generic operations with that streams. In basic-streams a stream
-is just a function that takes a subscriber and returns a function to
-unsubscribe. Here is the type signature of a stream:
+This is the smallest and the simplest library for event streams (aka
+observables). In libraries like RxJS, a stream is an object, with a `subscribe`
+or a similar method on it. In these libraries subscribing to a stream looks like
+this:
 
 ```js
-<T>(cb: (payload: T) => void) => () => void
+const subscription = stream.subscribe(x => {
+  console.log(x)
+})
+
+subscription.unsubscribe()
 ```
 
-The library provides functions like [`map`](#map), [`filter`](#filter),
-[`chain`](#chain) (aka `flatMap`) etc. to work with such simple streams.
+In basic-streams, a stream _is_ the `subscribe` function:
 
-Here is an example:
+```js
+const unsubscribe = stream(x => {
+  console.log(x)
+})
+
+unsubscribe()
+```
+
+As a result, you don't even need a library to create a stream, you just define a
+function:
+
+```js
+const streamOfMouseMoves = cb => {
+  document.addEventListener("mousemove", cb)
+  return () => {
+    document.removeEventListener("mousemove", cb)
+  }
+}
+```
+
+This library allows you to apply operators like [`map`](#map),
+[`filter`](#filter), [`chain`](#chain) (aka `flatMap`) etc. to these streams:
 
 ```js
 import map from "@basic-streams/map"
 
-const myStream = cb => {
-  cb(1)
-  cb(2)
+const streamOfCoordinates = map(event => {
+  return {x: event.clientX, y: event.clientY}
+}, streamOfMouseMoves)
 
-  // we don't have any allocated resources
-  // to dispose in this stream so we just return a noop
-  return () => {}
-}
-
-const myStream2 = map(x => x * 2, myStream)
-
-// subscribe
-const unsub = myStream2(x => {
-  // do stuff with x ...
+streamOfCoordinates(coords => {
+  console.log(coords)
 })
 
-// unsubscribe
-unsub()
+// > { x: 731, y: 457 }
+// > { x: 741, y: 415 }
+// > { x: 748, y: 388 }
+// > { x: 764, y: 342 }
+// > { x: 770, y: 324 }
+// > { x: 803, y: 238 }
+// > { x: 809, y: 219 }
+// > { x: 814, y: 202 }
+// > ...
 ```
 
 ## Protocol
+
+```js
+type Stream<T> = (cb: (event: T) => void) => () => void
+```
 
 A valid stream must follow this rules:
 
 1.  Stream is a function.
 1.  It accepts one argument, the subscriber function (aka `cb`).
-1.  It must return unsubscribe function (aka `disposer`).
+1.  It must return the unsubscribe function (aka `disposer`).
 1.  `cb` must be called with one argument.
 1.  `disposer` must always return `undefined`.
 1.  After `disposer` was called, `cb` must not be called.
@@ -525,7 +552,7 @@ startWith<T, U>(x: T, stream: Stream<U>): Stream<T | U>
 ```
 
 Creates a stream containing values from the given `stream` and `x` as the first
-values.
+value.
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"

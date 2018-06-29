@@ -7,7 +7,7 @@ startWith<T, U>(x: T, stream: Stream<U>): Stream<T | U>
 ```
 
 Creates a stream containing values from the given `stream` and `x` as the first
-values.
+value.
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"
