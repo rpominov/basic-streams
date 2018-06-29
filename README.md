@@ -62,8 +62,7 @@ const unsubscribe = stream(x => {
 unsubscribe()
 ```
 
-As a result, you don't even need a library to create a stream, you just define a
-function:
+You don't even need a library to create a stream, you just define a function:
 
 ```js
 const streamOfMouseMoves = cb => {
@@ -101,7 +100,7 @@ streamOfCoordinates(coords => {
 
 ## Protocol
 
-```js
+```typescript
 type Stream<T> = (cb: (event: T) => void) => () => void
 ```
 
@@ -281,32 +280,21 @@ const myStream: Stream<number> = of(1)
 In the examples below, you'll see time diagrams like this `___1___2`. They
 should be pretty self-explanatory but there are couple notes to make:
 
-The underscore `_` usually represents one second.
+- The underscore `_` usually represents one second.
+- An event takes space of one underscore, so for example, if an event happens
+  after 5 seconds, we add only 4 underscores before it.
+- The exclamation mark `!` means that the consumer unsubscribed from the stream.
+  For example:
 
-An event takes space of one underscore, so for example, if an event happens
-after 5 seconds, we add only 4 underscores before it.
+  ```js
+  const stream = fromIterable([1, 2], 5000)
 
-When values are more than one character long, we use dots like so:
+  const unsubscribe = stream(x => {
+    unsubscribe()
+  })
 
-```js
-const stream = fromIterable([100, 200], 5000)
-
-//            100  200
-// stream: ____.____.
-```
-
-The exclamation mark `!` means that the consumer unsubscribed from the stream.
-For example:
-
-```js
-const stream = fromIterable([1, 2], 5000)
-
-const unsubscribe = stream(x => {
-  unsubscribe()
-})
-
-// stream: ____1!
-```
+  // stream: ____1!
+  ```
 
 ## API reference
 
