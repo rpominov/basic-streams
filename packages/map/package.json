@@ -1,6 +1,6 @@
 {
   "name": "@basic-streams/map",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "map operator for basic-streams",
   "keywords": [
     "basic-streams",
@@ -19,6 +19,6 @@
   },
   "homepage": "https://github.com/rpominov/basic-streams/packages/map",
   "dependencies": {
-    "@basic-streams/stream": "^0.0.7"
+    "@basic-streams/stream": "^0.0.8"
   }
 }

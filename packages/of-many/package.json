@@ -1,6 +1,6 @@
 {
   "name": "@basic-streams/of-many",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "ofMany operator for basic-streams",
   "keywords": [
     "basic-streams",
@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/rpominov/basic-streams/packages/of-many",
   "dependencies": {
-    "@basic-streams/later": "^0.0.11",
-    "@basic-streams/stream": "^0.0.7"
+    "@basic-streams/later": "^0.0.12",
+    "@basic-streams/stream": "^0.0.8"
   }
 }

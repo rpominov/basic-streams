@@ -1,6 +1,6 @@
 {
   "name": "@basic-streams/repair",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "repair operator for basic-streams",
   "keywords": [
     "basic-streams",
@@ -19,6 +19,6 @@
   },
   "homepage": "https://github.com/rpominov/basic-streams/packages/repair",
   "dependencies": {
-    "@basic-streams/stream": "^0.0.7"
+    "@basic-streams/stream": "^0.0.8"
   }
 }
