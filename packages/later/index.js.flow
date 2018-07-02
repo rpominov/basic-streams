@@ -3,5 +3,3 @@
 import type {Stream} from "@basic-streams/stream"
 
 declare export default function later(time: number): Stream<void>
-
-declare export default function later<T>(time: number, value: T): Stream<T>

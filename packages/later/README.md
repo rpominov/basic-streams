@@ -4,26 +4,25 @@
 
 ```typescript
 later(time: number): Stream<undefined>
-later<T>(time: number, value: T): Stream<T>
 ```
 
-Creates a stream that will produce a value after the given `time` (in
-milliseconds). By default produces `undefined`, but you can pass the `value` in
-the second argument.
+Creates a stream that will produce `undefined` after the given `time` in
+milliseconds.
 
 ```js
 import fromIterable from "@basic-streams/from-iterable"
 import later from "@basic-streams/later"
 
-const stream = later(5000, 1)
+const stream = later(5000)
 
 stream(x => {
   console.log(x)
 })
 
-// > 1
+// > undefined
 
-// stream: ____1
+//           undefined
+// stream: ____.
 ```
 
 <!-- docstop -->
