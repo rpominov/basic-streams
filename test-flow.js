@@ -86,7 +86,6 @@ merge([empty(), of(1)])((n: number) => {
 // later
 //
 ;(later(1): Stream<void>)
-;(later(1, ""): Stream<string>)
 
 //
 // of-many
