@@ -16,12 +16,12 @@ values from `streamA`, `streamB` and `streamC`. The resulting stream updates
 when any of source stream update.
 
 ```js
-import fromIterable from "@basic-streams/from-iterable"
+import ofMany from "@basic-streams/of-many"
 import map3 from "@basic-streams/map3"
 
-const streamA = fromIterable([2, 4], 10000)
-const streamB = fromIterable([1, 3], 8000)
-const streamC = fromIterable([0], 3000)
+const streamA = ofMany([2, 4], 10000)
+const streamB = ofMany([1, 3], 8000)
+const streamC = ofMany([0], 3000)
 const result = map3((a, b, c) => a + b + c, streamA, streamB, streamC)
 
 result(x => {

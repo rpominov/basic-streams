@@ -15,10 +15,10 @@ the resulting stream. The first event from source stream isn't tested and always
 comes through.
 
 ```js
-import fromIterable from "@basic-streams/from-iterable"
+import ofMany from "@basic-streams/of-many"
 import skipDuplicates from "@basic-streams/skip-duplicates"
 
-const stream = fromIterable([1, 2, 2, 3], 5000)
+const stream = ofMany([1, 2, 2, 3], 5000)
 
 const result = skipDuplicates((a, b) => a === b, stream)
 

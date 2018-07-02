@@ -1,6 +1,6 @@
 import {Stream} from "@basic-streams/stream"
 
-export default function startWith<T, U>(
+export default function prepend<T, U>(
   x: T,
   stream: Stream<U>,
 ): Stream<T | U> {

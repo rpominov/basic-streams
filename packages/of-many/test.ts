@@ -1,5 +1,5 @@
 import {EventsList, emulate, t, v, laterMock} from "../emulation"
-import fromIterable from "./index"
+import ofMany from "./index"
 import take from "../take"
 
 expect.addSnapshotSerializer(EventsList.jestSerializer)
@@ -10,13 +10,13 @@ test("works with array", () => {
   if (typeof Symbol === "function" && array[Symbol.iterator]) {
     array[Symbol.iterator] = undefined
   }
-  fromIterable(array)(cb)
+  ofMany(array)(cb)
   expect(cb.mock.calls).toMatchSnapshot()
 })
 
 test("works with generator", () => {
   const cb = jest.fn()
-  fromIterable(
+  ofMany(
     (function*() {
       yield 1
       yield 2
@@ -28,7 +28,7 @@ test("works with generator", () => {
 
 test("when interval provided spreads values in time", () => {
   const result = emulate(create => {
-    return fromIterable([1, 2, 3], 10, laterMock(create))
+    return ofMany([1, 2, 3], 10, laterMock(create))
   })
   expect(result).toMatchSnapshot()
 })
@@ -44,7 +44,7 @@ test("when interval provided disposer works", () => {
     }
   }
   const result = emulate(create => {
-    return unsafeTakeOne(fromIterable([1, 2, 3], 10, laterMock(create)))
+    return unsafeTakeOne(ofMany([1, 2, 3], 10, laterMock(create)))
   })
   expect(result).toMatchSnapshot()
 })
@@ -61,7 +61,7 @@ test("doesn't blow up call stack when scheduler is synchronous", () => {
       yield i
     }
   }
-  const stream = fromIterable(generator(), 10, scheduler)
+  const stream = ofMany(generator(), 10, scheduler)
   let count = 0
   let latestValue = null
   function cb(value) {
@@ -85,7 +85,7 @@ test("correctly handles disposers when scheduler runs synchronously only first t
       return disposer
     }
   }
-  fromIterable([1, 2], 0, scheduler)(() => {})()
+  ofMany([1, 2], 0, scheduler)(() => {})()
   expect(disposer.mock.calls).toMatchSnapshot()
 })
 
@@ -96,7 +96,7 @@ test("doesn't drain iterable eagerly", () => {
   }
   expect(() =>
     emulate(create => {
-      return take(1, fromIterable(generator(), 10, laterMock(create)))
+      return take(1, ofMany(generator(), 10, laterMock(create)))
     }),
   ).not.toThrow()
 })

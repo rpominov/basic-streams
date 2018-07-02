@@ -1,9 +1,9 @@
-# [@basic-streams](https://github.com/rpominov/basic-streams)/from-loose
+# [@basic-streams](https://github.com/rpominov/basic-streams)/repair
 
 <!-- doc -->
 
 ```typescript
-fromLoose<T>(streamLoose: StreamLoose<T>): Stream<T>
+repair<T>(streamLoose: StreamLoose<T>): Stream<T>
 ```
 
 Creates a stream from a loose stream that may not follow all the requirements of
@@ -19,9 +19,9 @@ the [protocol]. The loose stream is allowed to:
     ignore these calls.
 
 ```js
-import fromLoose from "@basic-streams/from-loose"
+import repair from "@basic-streams/repair"
 
-const stream = fromLoose(cb => {
+const stream = repair(cb => {
   // extra arguments will be ignored
   cb(1, "extra")
 
@@ -39,12 +39,12 @@ unsubscribe()
 ```
 
 The type `StreamLoose` defined as follows, and you can import it from
-`@basic-streams/from-loose`.
+`@basic-streams/repair`.
 
 ```typescript
 type StreamLoose<T> = (cb: (payload: T, ...rest: any[]) => void) => any
 
-import {StreamLoose} from "@basic-streams/from-loose"
+import {StreamLoose} from "@basic-streams/repair"
 ```
 
 <!-- docstop -->

@@ -15,11 +15,11 @@ from `streamA` and `streamB`. The resulting stream updates when any of source
 stream update.
 
 ```js
-import fromIterable from "@basic-streams/from-iterable"
+import ofMany from "@basic-streams/of-many"
 import map2 from "@basic-streams/map2"
 
-const streamA = fromIterable([2, 4], 10000)
-const streamB = fromIterable([1, 3], 8000)
+const streamA = ofMany([2, 4], 10000)
+const streamB = ofMany([1, 3], 8000)
 const result = map2((a, b) => a + b, streamA, streamB)
 
 result(x => {

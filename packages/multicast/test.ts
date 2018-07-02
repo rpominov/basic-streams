@@ -1,6 +1,6 @@
 import {EventsList, emulate, t, v} from "../emulation"
 import multicast from "./index"
-import fromIterable from "../from-iterable/index"
+import ofMany from "../of-many"
 
 expect.addSnapshotSerializer(EventsList.jestSerializer)
 
@@ -8,13 +8,13 @@ function noop() {}
 
 test("first subscribers gets sync events", () => {
   const cb = jest.fn()
-  multicast(fromIterable([1, 2]))(cb)
+  multicast(ofMany([1, 2]))(cb)
   expect(cb.mock.calls).toMatchSnapshot()
 })
 
 test("second subscriber doesn't get sync events", () => {
   const cb = jest.fn()
-  const stream = multicast(fromIterable([1, 2]))
+  const stream = multicast(ofMany([1, 2]))
   stream(noop)
   stream(cb)
   expect(cb.mock.calls).toMatchSnapshot()

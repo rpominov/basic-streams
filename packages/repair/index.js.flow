@@ -4,6 +4,6 @@ import type {Stream} from "@basic-streams/stream"
 
 export type StreamLoose<+T> = (cb: (payload: T, ...rest: any[]) => void) => any
 
-declare export default function fromLoose<T>(
+declare export default function repair<T>(
   streamLoose: StreamLoose<T>,
 ): Stream<T>

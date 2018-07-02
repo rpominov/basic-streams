@@ -10,7 +10,7 @@ Creates a stream that will produce `undefined` after the given `time` in
 milliseconds.
 
 ```js
-import fromIterable from "@basic-streams/from-iterable"
+import ofMany from "@basic-streams/of-many"
 import later from "@basic-streams/later"
 
 const stream = later(5000)

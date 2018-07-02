@@ -6,7 +6,7 @@
 of<T>(value: T): Stream<T>
 ```
 
-Creates a stream that contains the given `value`.
+Creates a stream containing the given `value`.
 
 ```js
 import of from "@basic-streams/of"

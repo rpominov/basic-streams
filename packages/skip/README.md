@@ -10,10 +10,10 @@ Creates a stream containing values from the given `stream` except for the first
 `n` values.
 
 ```js
-import fromIterable from "@basic-streams/from-iterable"
+import ofMany from "@basic-streams/of-many"
 import skip from "@basic-streams/skip"
 
-const stream = fromIterable([1, 2, 3], 5000)
+const stream = ofMany([1, 2, 3], 5000)
 
 const result = skip(2, stream)
 

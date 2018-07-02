@@ -4,8 +4,8 @@ import type {Stream} from "@basic-streams/stream"
 
 type Scheduler = (time: number) => Stream<void>
 
-declare export default function fromIterable<T>(
-  xs: Iterable<T>,
+declare export default function ofMany<T>(
+  values: Iterable<T>,
   interval?: number,
   scheduler?: Scheduler,
 ): Stream<T>

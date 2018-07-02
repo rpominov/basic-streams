@@ -10,11 +10,11 @@ Creates a stream containing values from the given `stream` that are produced
 before the first event in the `controller` stream.
 
 ```js
-import fromIterable from "@basic-streams/from-iterable"
+import ofMany from "@basic-streams/of-many"
 import later from "@basic-streams/later"
 import takeUntil from "@basic-streams/take-until"
 
-const stream = fromIterable([1, 2, 3], 5000)
+const stream = ofMany([1, 2, 3], 5000)
 const controller = later(12000, 0)
 
 const result = takeUntil(controller, stream)

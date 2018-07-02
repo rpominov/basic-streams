@@ -9,10 +9,10 @@ map<T, U>(fn: (x: T) => U, stream: Stream<T>): Stream<U>
 Creates a stream containing `fn(x)` for each value `x` from the source `stream`.
 
 ```js
-import fromIterable from "@basic-streams/from-iterable"
+import ofMany from "@basic-streams/of-many"
 import map from "@basic-streams/map"
 
-const stream = fromIterable([1, 2, 3], 5000)
+const stream = ofMany([1, 2, 3], 5000)
 const result = map(x => x * 2, stream)
 
 result(x => {

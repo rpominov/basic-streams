@@ -15,10 +15,10 @@ Creates a stream containing `reducer(a, x)` for each value `x` from the source
 resulting stream will also have given `seed` as the first event.
 
 ```js
-import fromIterable from "@basic-streams/from-iterable"
+import ofMany from "@basic-streams/of-many"
 import scan from "@basic-streams/scan"
 
-const stream = fromIterable([1, 2, 3], 5000)
+const stream = ofMany([1, 2, 3], 5000)
 
 const result = scan((acc, next) => acc + next, 0, stream)
 

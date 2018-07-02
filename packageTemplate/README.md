@@ -9,10 +9,10 @@ exportName(): TODO
 TODO: description
 
 ```js
-import fromIterable from "@basic-streams/from-iterable"
+import ofMany from "@basic-streams/of-many"
 import exportName from "@basic-streams/pkgName"
 
-const stream = fromIterable([1, 2, 3], 5000)
+const stream = ofMany([1, 2, 3], 5000)
 
 // TODO: example
 const result = stream

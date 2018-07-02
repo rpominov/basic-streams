@@ -10,11 +10,11 @@ Creates a stream containing arrays of the latest values from given `streams`.
 The result stream updates when any of source stream updates.
 
 ```js
-import fromIterable from "@basic-streams/from-iterable"
+import ofMany from "@basic-streams/of-many"
 import combineArray from "@basic-streams/combine-array"
 
-const stream1 = fromIterable([2, 4], 10000)
-const stream2 = fromIterable([1, 3], 8000)
+const stream1 = ofMany([2, 4], 10000)
+const stream2 = ofMany([1, 3], 8000)
 const result = combineArray([stream1, stream2])
 
 result(x => {

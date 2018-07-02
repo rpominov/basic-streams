@@ -4,7 +4,7 @@ export type StreamLoose<T> = (cb: (payload: T, ...rest: any[]) => void) => any
 
 function noop() {}
 
-export default function fromLoose<T>(streamLoose: StreamLoose<T>): Stream<T> {
+export default function repair<T>(streamLoose: StreamLoose<T>): Stream<T> {
   return cb => {
     let disposer = streamLoose(x => cb(x))
     return () => {

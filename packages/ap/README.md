@@ -11,11 +11,11 @@ function from `streamf` to the latest value from `streamv` every time one of
 them updates.
 
 ```js
-import fromIterable from "@basic-streams/from-iterable"
+import ofMany from "@basic-streams/of-many"
 import ap from "@basic-streams/ap"
 
-const streamf = fromIterable([x => x + 2, x => x - 2], 10000)
-const streamv = fromIterable([1, 2, 3], 8000)
+const streamf = ofMany([x => x + 2, x => x - 2], 10000)
+const streamv = ofMany([1, 2, 3], 8000)
 
 const result = ap(streamf, streamv)
 

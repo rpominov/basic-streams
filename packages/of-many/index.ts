@@ -27,17 +27,17 @@ function getIterator<T>(iterable: Iterable<T>): IteratorLike<T> {
       },
     }
   }
-  throw new TypeError("a value provided to fromIterable() isn't an Iterable")
+  throw new TypeError("a value provided to ofMany() isn't an Iterable")
 }
 
-export default function fromIterable<T>(
-  xs: Iterable<T>,
+export default function ofMany<T>(
+  values: Iterable<T>,
   interval?: number,
   scheduler: (time: number) => Stream<void> = later,
 ): Stream<T> {
   return cb => {
     // without interval
-    const iterator = getIterator(xs)
+    const iterator = getIterator(values)
     if (interval === undefined) {
       let next = iterator.next()
       while (!next.done) {

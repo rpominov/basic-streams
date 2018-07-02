@@ -10,10 +10,10 @@ Creates a stream containing each value from the given `stream` starting from the
 first value `x` for which `predicate(x)` returns false.
 
 ```js
-import fromIterable from "@basic-streams/from-iterable"
+import ofMany from "@basic-streams/of-many"
 import skipWhile from "@basic-streams/skip-while"
 
-const stream = fromIterable([0, 1, 2, 1], 5000)
+const stream = ofMany([0, 1, 2, 1], 5000)
 
 const result = skipWhile(x => x < 2, stream)
 

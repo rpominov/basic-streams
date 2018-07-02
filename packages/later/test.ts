@@ -20,13 +20,6 @@ test("calls cb after the given time", () => {
   expect(cb.mock.calls).toMatchSnapshot()
 })
 
-test("if value provided passes it to the cb", () => {
-  const cb = jest.fn()
-  later(10, 5)(cb)
-  jest.advanceTimersByTime(10)
-  expect(cb.mock.calls).toMatchSnapshot()
-})
-
 test("doesn't call cb after unsusbcribe", () => {
   const cb = jest.fn()
   const unsubscribe = later(10)(cb)

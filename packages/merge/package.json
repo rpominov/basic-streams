@@ -20,7 +20,7 @@
   "homepage": "https://github.com/rpominov/basic-streams/packages/merge",
   "dependencies": {
     "@basic-streams/chain": "^0.0.11",
-    "@basic-streams/from-iterable": "^0.0.12",
+    "@basic-streams/of-many": "^0.0.1",
     "@basic-streams/stream": "^0.0.7"
   }
 }

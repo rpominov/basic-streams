@@ -10,11 +10,11 @@ Same as [`chain`][chain], but when we create a new intermediate stream, we
 unsubscribe from the previous one.
 
 ```js
-import fromIterable from "@basic-streams/from-iterable"
+import ofMany from "@basic-streams/of-many"
 import chainLatest from "@basic-streams/chain-latest"
 
-const stream = fromIterable([1, 2], 10000)
-const fn = x => fromIterable([x, x, x], 7000)
+const stream = ofMany([1, 2], 10000)
+const fn = x => ofMany([x, x, x], 7000)
 
 const result = chainLatest(fn, stream)
 

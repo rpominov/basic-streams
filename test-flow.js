@@ -4,9 +4,9 @@ import type {Stream} from "./packages/stream"
 import of from "./packages/of"
 import empty from "./packages/empty"
 import later from "./packages/later"
-import fromIterable from "./packages/from-iterable"
-import fromLoose from "./packages/from-loose"
-import startWith from "./packages/start-with"
+import ofMany from "./packages/of-many"
+import repair from "./packages/repair"
+import prepend from "./packages/prepend"
 import map from "./packages/map"
 import filter from "./packages/filter"
 import chain from "./packages/chain"
@@ -89,29 +89,29 @@ merge([empty(), of(1)])((n: number) => {
 ;(later(1, ""): Stream<string>)
 
 //
-// from-iterable
+// of-many
 //
-;(fromIterable([1, 2, 3]): Stream<number>)
-;(fromIterable([1, 2, 3], 10, later): Stream<number>)
+;(ofMany([1, 2, 3]): Stream<number>)
+;(ofMany([1, 2, 3], 10, later): Stream<number>)
 
 // $ExpectError
-;(fromIterable([1, 2, 3]): Stream<string>)
+;(ofMany([1, 2, 3]): Stream<string>)
 
 //
-// from-loose
+// repair
 //
-;(fromLoose(cb => {
+;(repair(cb => {
   cb(1, "")
   return ""
 }): Stream<number>)
 
 //
-// start-with
+// prepend
 //
-;(startWith(1, empty()): Stream<number>)
+;(prepend(1, empty()): Stream<number>)
 
 // $ExpectError
-;(startWith(1, empty()): Stream<string>)
+;(prepend(1, empty()): Stream<string>)
 
 //
 // map

@@ -10,10 +10,10 @@ Creates a stream containing values from the source `stream` that satisfy the
 given `predicate`.
 
 ```js
-import fromIterable from "@basic-streams/from-iterable"
+import ofMany from "@basic-streams/of-many"
 import filter from "@basic-streams/filter"
 
-const stream = fromIterable([1, 2, 3], 5000)
+const stream = ofMany([1, 2, 3], 5000)
 const result = filter(x => x !== 2, stream)
 
 result(x => {

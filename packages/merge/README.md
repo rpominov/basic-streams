@@ -9,11 +9,11 @@ merge<T>(streams: Array<Stream<T>>): Stream<T>
 Creates a stream containing values from all given `streams`.
 
 ```js
-import fromIterable from "@basic-streams/from-iterable"
+import ofMany from "@basic-streams/of-many"
 import merge from "@basic-streams/merge"
 
-const stream1 = fromIterable([2, 4, 6], 10000)
-const stream2 = fromIterable([1, 3, 5], 8000)
+const stream1 = ofMany([2, 4, 6], 10000)
+const stream2 = ofMany([1, 3, 5], 8000)
 const result = merge([stream1, stream2])
 
 result(x => {

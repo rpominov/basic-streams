@@ -13,9 +13,9 @@
   - [of](#of)
   - [empty](#empty)
   - [later](#later)
-  - [from-iterable](#from-iterable)
-  - [from-loose](#from-loose)
-  - [start-with](#start-with)
+  - [of-many](#of-many)
+  - [repair](#repair)
+  - [prepend](#prepend)
   - [map](#map)
   - [filter](#filter)
   - [chain](#chain)
@@ -123,9 +123,9 @@ When you use a stream you must follow this rulles:
 1.  `disposer` must be called at most once.
 
 We don't give any guarantees about the library behavior if these rules are
-violated. But you can use [`fromLoose`](#from-loose) to create a well-behaved
-stream from a loose one, and [`protect`](#protect) if you want to use a stream
-more freely.
+violated. But you can use [`repair`](#repair) to create a well-behaved stream
+from a loose one, and [`protect`](#protect) if you want to use a stream more
+freely.
 
 ## Use-cases
 
@@ -288,7 +288,7 @@ should be pretty self-explanatory but there are couple notes to make:
   For example:
 
   ```js
-  const stream = fromIterable([1, 2], 5000)
+  const stream = ofMany([1, 2], 5000)
 
   const unsubscribe = stream(x => {
     unsubscribe()
@@ -309,7 +309,7 @@ should be pretty self-explanatory but there are couple notes to make:
 of<T>(value: T): Stream<T>
 ```
 
-Creates a stream that contains the given `value`.
+Creates a stream containing the given `value`.
 
 ```js
 import of from "@basic-streams/of"
@@ -365,7 +365,7 @@ Creates a stream that will produce `undefined` after the given `time` in
 milliseconds.
 
 ```js
-import fromIterable from "@basic-streams/from-iterable"
+import ofMany from "@basic-streams/of-many"
 import later from "@basic-streams/later"
 
 const stream = later(5000)
@@ -382,26 +382,26 @@ stream(x => {
 
 <!-- docstop later -->
 
-<!-- doc from-iterable -->
+<!-- doc of-many -->
 
-### from-iterable
+### of-many
 
-`npm install @basic-streams/from-iterable --save`
+`npm install @basic-streams/of-many --save`
 
 ```typescript
-fromIterable<T>(
-  iterable: Iterable<T>,
+ofMany<T>(
+  values: Iterable<T>,
   interval?: number,
   scheduler?: (time: number) => Stream<void>
 ): Stream<T>
 ```
 
-Transforms an `iterable` into a stream.
+Creates a stream containing given `values`.
 
 ```js
-import fromIterable from "@basic-streams/from-iterable"
+import ofMany from "@basic-streams/of-many"
 
-fromIterable([1, 2, 3])(x => {
+ofMany([1, 2, 3])(x => {
   console.log(x)
 })
 
@@ -415,9 +415,9 @@ of milliseconds, with the first one delayed. If the interval is `0` the events
 will be produced as soon as possible but still asynchronously.
 
 ```js
-import fromIterable from "@basic-streams/from-iterable"
+import ofMany from "@basic-streams/of-many"
 
-fromIterable([1, 2, 3], 5000)(x => {
+ofMany([1, 2, 3], 5000)(x => {
   console.log(x)
 })
 
@@ -432,7 +432,7 @@ Note that the iterable is consumed lazily, meaning that `next()` is called only
 when value is needed.
 
 ```js
-import fromIterable from "@basic-streams/from-iterable"
+import ofMany from "@basic-streams/of-many"
 
 function* generator() {
   const startTime = Date.now()
@@ -440,7 +440,7 @@ function* generator() {
   yield Date.now() - startTime
   yield Date.now() - startTime
 }
-fromIterable(generator(), 5000)(x => {
+ofMany(generator(), 5000)(x => {
   console.log(x)
 })
 
@@ -457,13 +457,13 @@ an event after the given time. By default [`later`][later] is used as a
 scheduler.
 
 ```js
-import fromIterable from "@basic-streams/from-iterable"
+import ofMany from "@basic-streams/of-many"
 import later from "@basic-streams/later"
 
 function scheduler(time) {
   return later(time / 2)
 }
-fromIterable([1, 2, 3], 6000, scheduler)(x => {
+ofMany([1, 2, 3], 6000, scheduler)(x => {
   console.log(x)
 })
 
@@ -474,16 +474,16 @@ fromIterable([1, 2, 3], 6000, scheduler)(x => {
 // __1__2__3
 ```
 
-<!-- docstop from-iterable -->
+<!-- docstop of-many -->
 
-<!-- doc from-loose -->
+<!-- doc repair -->
 
-### from-loose
+### repair
 
-`npm install @basic-streams/from-loose --save`
+`npm install @basic-streams/repair --save`
 
 ```typescript
-fromLoose<T>(streamLoose: StreamLoose<T>): Stream<T>
+repair<T>(streamLoose: StreamLoose<T>): Stream<T>
 ```
 
 Creates a stream from a loose stream that may not follow all the requirements of
@@ -499,9 +499,9 @@ the [protocol]. The loose stream is allowed to:
     ignore these calls.
 
 ```js
-import fromLoose from "@basic-streams/from-loose"
+import repair from "@basic-streams/repair"
 
-const stream = fromLoose(cb => {
+const stream = repair(cb => {
   // extra arguments will be ignored
   cb(1, "extra")
 
@@ -519,36 +519,36 @@ unsubscribe()
 ```
 
 The type `StreamLoose` defined as follows, and you can import it from
-`@basic-streams/from-loose`.
+`@basic-streams/repair`.
 
 ```typescript
 type StreamLoose<T> = (cb: (payload: T, ...rest: any[]) => void) => any
 
-import {StreamLoose} from "@basic-streams/from-loose"
+import {StreamLoose} from "@basic-streams/repair"
 ```
 
-<!-- docstop from-loose -->
+<!-- docstop repair -->
 
-<!-- doc start-with -->
+<!-- doc prepend -->
 
-### start-with
+### prepend
 
-`npm install @basic-streams/start-with --save`
+`npm install @basic-streams/prepend --save`
 
 ```typescript
-startWith<T, U>(x: T, stream: Stream<U>): Stream<T | U>
+prepend<T, U>(x: T, stream: Stream<U>): Stream<T | U>
 ```
 
 Creates a stream containing values from the given `stream` and `x` as the first
 value.
 
 ```js
-import fromIterable from "@basic-streams/from-iterable"
-import startWith from "@basic-streams/start-with"
+import ofMany from "@basic-streams/of-many"
+import prepend from "@basic-streams/prepend"
 
-const stream = fromIterable([1, 2, 3], 5000)
+const stream = ofMany([1, 2, 3], 5000)
 
-const result = startWith(0, stream)
+const result = prepend(0, stream)
 
 result(x => {
   console.log(x)
@@ -563,7 +563,7 @@ result(x => {
 // result: 0___1____2____3
 ```
 
-<!-- docstop start-with -->
+<!-- docstop prepend -->
 
 <!-- doc map -->
 
@@ -578,10 +578,10 @@ map<T, U>(fn: (x: T) => U, stream: Stream<T>): Stream<U>
 Creates a stream containing `fn(x)` for each value `x` from the source `stream`.
 
 ```js
-import fromIterable from "@basic-streams/from-iterable"
+import ofMany from "@basic-streams/of-many"
 import map from "@basic-streams/map"
 
-const stream = fromIterable([1, 2, 3], 5000)
+const stream = ofMany([1, 2, 3], 5000)
 const result = map(x => x * 2, stream)
 
 result(x => {
@@ -612,10 +612,10 @@ Creates a stream containing values from the source `stream` that satisfy the
 given `predicate`.
 
 ```js
-import fromIterable from "@basic-streams/from-iterable"
+import ofMany from "@basic-streams/of-many"
 import filter from "@basic-streams/filter"
 
-const stream = fromIterable([1, 2, 3], 5000)
+const stream = ofMany([1, 2, 3], 5000)
 const result = filter(x => x !== 2, stream)
 
 result(x => {
@@ -645,11 +645,11 @@ Creates a stream containing all values from all streams created by applying the
 given function `fn` to each value in the given `stream`.
 
 ```js
-import fromIterable from "@basic-streams/from-iterable"
+import ofMany from "@basic-streams/of-many"
 import chain from "@basic-streams/chain"
 
-const stream = fromIterable([1, 2], 10000)
-const fn = x => fromIterable([x, x, x], 7000)
+const stream = ofMany([1, 2], 10000)
+const fn = x => ofMany([x, x, x], 7000)
 
 const result = chain(fn, stream)
 
@@ -686,11 +686,11 @@ Same as [`chain`][chain], but when we create a new intermediate stream, we
 unsubscribe from the previous one.
 
 ```js
-import fromIterable from "@basic-streams/from-iterable"
+import ofMany from "@basic-streams/of-many"
 import chainLatest from "@basic-streams/chain-latest"
 
-const stream = fromIterable([1, 2], 10000)
-const fn = x => fromIterable([x, x, x], 7000)
+const stream = ofMany([1, 2], 10000)
+const fn = x => ofMany([x, x, x], 7000)
 
 const result = chainLatest(fn, stream)
 
@@ -730,10 +730,10 @@ Creates a stream containing `reducer(a, x)` for each value `x` from the source
 resulting stream will also have given `seed` as the first event.
 
 ```js
-import fromIterable from "@basic-streams/from-iterable"
+import ofMany from "@basic-streams/of-many"
 import scan from "@basic-streams/scan"
 
-const stream = fromIterable([1, 2, 3], 5000)
+const stream = ofMany([1, 2, 3], 5000)
 
 const result = scan((acc, next) => acc + next, 0, stream)
 
@@ -767,11 +767,11 @@ function from `streamf` to the latest value from `streamv` every time one of
 them updates.
 
 ```js
-import fromIterable from "@basic-streams/from-iterable"
+import ofMany from "@basic-streams/of-many"
 import ap from "@basic-streams/ap"
 
-const streamf = fromIterable([x => x + 2, x => x - 2], 10000)
-const streamv = fromIterable([1, 2, 3], 8000)
+const streamf = ofMany([x => x + 2, x => x - 2], 10000)
+const streamv = ofMany([1, 2, 3], 8000)
 
 const result = ap(streamf, streamv)
 
@@ -811,11 +811,11 @@ from `streamA` and `streamB`. The resulting stream updates when any of source
 stream update.
 
 ```js
-import fromIterable from "@basic-streams/from-iterable"
+import ofMany from "@basic-streams/of-many"
 import map2 from "@basic-streams/map2"
 
-const streamA = fromIterable([2, 4], 10000)
-const streamB = fromIterable([1, 3], 8000)
+const streamA = ofMany([2, 4], 10000)
+const streamB = ofMany([1, 3], 8000)
 const result = map2((a, b) => a + b, streamA, streamB)
 
 result(x => {
@@ -853,12 +853,12 @@ values from `streamA`, `streamB` and `streamC`. The resulting stream updates
 when any of source stream update.
 
 ```js
-import fromIterable from "@basic-streams/from-iterable"
+import ofMany from "@basic-streams/of-many"
 import map3 from "@basic-streams/map3"
 
-const streamA = fromIterable([2, 4], 10000)
-const streamB = fromIterable([1, 3], 8000)
-const streamC = fromIterable([0], 3000)
+const streamA = ofMany([2, 4], 10000)
+const streamB = ofMany([1, 3], 8000)
+const streamC = ofMany([0], 3000)
 const result = map3((a, b, c) => a + b + c, streamA, streamB, streamC)
 
 result(x => {
@@ -891,11 +891,11 @@ Creates a stream containing arrays of the latest values from given `streams`.
 The result stream updates when any of source stream updates.
 
 ```js
-import fromIterable from "@basic-streams/from-iterable"
+import ofMany from "@basic-streams/of-many"
 import combineArray from "@basic-streams/combine-array"
 
-const stream1 = fromIterable([2, 4], 10000)
-const stream2 = fromIterable([1, 3], 8000)
+const stream1 = ofMany([2, 4], 10000)
+const stream2 = ofMany([1, 3], 8000)
 const result = combineArray([stream1, stream2])
 
 result(x => {
@@ -927,11 +927,11 @@ merge<T>(streams: Array<Stream<T>>): Stream<T>
 Creates a stream containing values from all given `streams`.
 
 ```js
-import fromIterable from "@basic-streams/from-iterable"
+import ofMany from "@basic-streams/of-many"
 import merge from "@basic-streams/merge"
 
-const stream1 = fromIterable([2, 4, 6], 10000)
-const stream2 = fromIterable([1, 3, 5], 8000)
+const stream1 = ofMany([2, 4, 6], 10000)
+const stream2 = ofMany([1, 3, 5], 8000)
 const result = merge([stream1, stream2])
 
 result(x => {
@@ -966,10 +966,10 @@ Creates a stream containing values from the given `stream` except for the first
 `n` values.
 
 ```js
-import fromIterable from "@basic-streams/from-iterable"
+import ofMany from "@basic-streams/of-many"
 import skip from "@basic-streams/skip"
 
-const stream = fromIterable([1, 2, 3], 5000)
+const stream = ofMany([1, 2, 3], 5000)
 
 const result = skip(2, stream)
 
@@ -999,10 +999,10 @@ Creates a stream containing each value from the given `stream` starting from the
 first value `x` for which `predicate(x)` returns false.
 
 ```js
-import fromIterable from "@basic-streams/from-iterable"
+import ofMany from "@basic-streams/of-many"
 import skipWhile from "@basic-streams/skip-while"
 
-const stream = fromIterable([0, 1, 2, 1], 5000)
+const stream = ofMany([0, 1, 2, 1], 5000)
 
 const result = skipWhile(x => x < 2, stream)
 
@@ -1038,10 +1038,10 @@ the resulting stream. The first event from source stream isn't tested and always
 comes through.
 
 ```js
-import fromIterable from "@basic-streams/from-iterable"
+import ofMany from "@basic-streams/of-many"
 import skipDuplicates from "@basic-streams/skip-duplicates"
 
-const stream = fromIterable([1, 2, 2, 3], 5000)
+const stream = ofMany([1, 2, 2, 3], 5000)
 
 const result = skipDuplicates((a, b) => a === b, stream)
 
@@ -1072,10 +1072,10 @@ take<T>(n: number, stream: Stream<T>): Stream<T>
 Creates a stream containing only first `n` events from the source `stream`.
 
 ```js
-import fromIterable from "@basic-streams/from-iterable"
+import ofMany from "@basic-streams/of-many"
 import take from "@basic-streams/take"
 
-const stream = fromIterable([1, 2, 3], 5000)
+const stream = ofMany([1, 2, 3], 5000)
 const result = take(2, stream)
 
 result(x => {
@@ -1105,11 +1105,11 @@ Creates a stream containing values from the given `stream` that are produced
 before the first event in the `controller` stream.
 
 ```js
-import fromIterable from "@basic-streams/from-iterable"
+import ofMany from "@basic-streams/of-many"
 import later from "@basic-streams/later"
 import takeUntil from "@basic-streams/take-until"
 
-const stream = fromIterable([1, 2, 3], 5000)
+const stream = ofMany([1, 2, 3], 5000)
 const controller = later(12000, 0)
 
 const result = takeUntil(controller, stream)
@@ -1142,10 +1142,10 @@ Creates a stream containing each value from the given `stream` up until the
 first value `x` for which `predicate(x)` returns false.
 
 ```js
-import fromIterable from "@basic-streams/from-iterable"
+import ofMany from "@basic-streams/of-many"
 import takeWhile from "@basic-streams/take-while"
 
-const stream = fromIterable([0, 1, 2, 1], 5000)
+const stream = ofMany([0, 1, 2, 1], 5000)
 
 const result = takeWhile(x => x < 2, stream)
 
@@ -1296,9 +1296,9 @@ import {StreamProtected} from "@basic-streams/protect"
 [of]: #of
 [empty]: #empty
 [later]: #later
-[from-iterable]: #from-iterable
-[from-loose]: #from-loose
-[start-with]: #start-with
+[of-many]: #of-many
+[repair]: #repair
+[prepend]: #prepend
 [map]: #map
 [filter]: #filter
 [chain]: #chain

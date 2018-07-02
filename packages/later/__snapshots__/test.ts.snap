@@ -9,11 +9,3 @@ Array [
 `;
 
 exports[`doesn't call cb after unsusbcribe 1`] = `Array []`;
-
-exports[`if value provided passes it to the cb 1`] = `
-Array [
-  Array [
-    5,
-  ],
-]
-`;

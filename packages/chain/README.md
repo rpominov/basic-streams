@@ -10,11 +10,11 @@ Creates a stream containing all values from all streams created by applying the
 given function `fn` to each value in the given `stream`.
 
 ```js
-import fromIterable from "@basic-streams/from-iterable"
+import ofMany from "@basic-streams/of-many"
 import chain from "@basic-streams/chain"
 
-const stream = fromIterable([1, 2], 10000)
-const fn = x => fromIterable([x, x, x], 7000)
+const stream = ofMany([1, 2], 10000)
+const fn = x => ofMany([x, x, x], 7000)
 
 const result = chain(fn, stream)
 

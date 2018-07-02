@@ -1,5 +1,5 @@
 import {Stream} from "@basic-streams/stream"
-import fromIterable from "@basic-streams/from-iterable"
+import ofMany from "@basic-streams/of-many"
 import chain from "@basic-streams/chain"
 
 function id<T>(x: T): T {
@@ -7,5 +7,5 @@ function id<T>(x: T): T {
 }
 
 export default function merge<T>(streams: Array<Stream<T>>): Stream<T> {
-  return chain<Stream<T>, T>(id, fromIterable(streams))
+  return chain<Stream<T>, T>(id, ofMany(streams))
 }
