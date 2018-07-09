@@ -37,7 +37,6 @@
     "@basic-streams/take-while": "latest",
     "@types/jest": "^23.0.2",
     "@types/node": "^10.3.4",
-    "basic-streams": "latest",
     "jest": "^23.1.0",
     "lerna": "^2.11.0",
     "markdown-toc": "^1.2.0",
