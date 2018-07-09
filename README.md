@@ -2,6 +2,7 @@
 
 <!-- toc -->
 
+- [Project Status](#project-status)
 - [Introduction](#introduction)
 - [Protocol](#protocol)
 - [Use-cases](#use-cases)
@@ -36,6 +37,10 @@
   - [protect](#protect)
 
 <!-- tocstop -->
+
+## Project Status
+
+It's stable an ready, feel free to use.
 
 ## Introduction
 
