@@ -1,20 +1,8 @@
 {
   "name": "basic-streams",
   "version": "0.5.0",
-  "description": "Very basic reactive streams implementation for JavaScript",
+  "description": "Basic event streams for JavaScript",
   "author": "Roman Pominov <rpominov@gmail.com>",
-  "keywords": [
-    "reactive",
-    "reactive programming",
-    "functional",
-    "functional programming",
-    "functional reactive programming",
-    "frp",
-    "streams",
-    "stream",
-    "observables",
-    "observable"
-  ],
   "main": "./index.js",
   "types": "./index.ts",
   "license": "MIT",
