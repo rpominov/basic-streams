@@ -1,6 +1,6 @@
 {
   "name": "@basic-streams/later",
-  "version": "0.0.12",
+  "version": "1.0.0",
   "description": "later operator for basic-streams",
   "keywords": [
     "basic-streams",
@@ -19,6 +19,6 @@
   },
   "homepage": "https://github.com/rpominov/basic-streams/packages/later",
   "dependencies": {
-    "@basic-streams/stream": "^0.0.8"
+    "@basic-streams/stream": "^1.0.0"
   }
 }

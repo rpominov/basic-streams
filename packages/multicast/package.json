@@ -1,6 +1,6 @@
 {
   "name": "@basic-streams/multicast",
-  "version": "0.0.12",
+  "version": "1.0.0",
   "description": "multicast operator for basic-streams",
   "keywords": [
     "basic-streams",
@@ -19,6 +19,6 @@
   },
   "homepage": "https://github.com/rpominov/basic-streams/packages/multicast",
   "dependencies": {
-    "@basic-streams/stream": "^0.0.8"
+    "@basic-streams/stream": "^1.0.0"
   }
 }

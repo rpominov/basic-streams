@@ -1,6 +1,6 @@
 {
   "name": "@basic-streams/ap",
-  "version": "0.0.12",
+  "version": "1.0.0",
   "description": "ap operator for basic-streams",
   "keywords": [
     "basic-streams",
@@ -19,6 +19,6 @@
   },
   "homepage": "https://github.com/rpominov/basic-streams/packages/ap",
   "dependencies": {
-    "@basic-streams/stream": "^0.0.8"
+    "@basic-streams/stream": "^1.0.0"
   }
 }

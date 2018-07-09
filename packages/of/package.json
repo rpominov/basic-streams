@@ -1,6 +1,6 @@
 {
   "name": "@basic-streams/of",
-  "version": "0.0.11",
+  "version": "1.0.0",
   "description": "of operator for basic-streams",
   "keywords": [
     "basic-streams",
@@ -19,6 +19,6 @@
   },
   "homepage": "https://github.com/rpominov/basic-streams/packages/of",
   "dependencies": {
-    "@basic-streams/stream": "^0.0.8"
+    "@basic-streams/stream": "^1.0.0"
   }
 }

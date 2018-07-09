@@ -1,6 +1,6 @@
 {
   "name": "@basic-streams/take-while",
-  "version": "0.0.10",
+  "version": "1.0.0",
   "description": "takeWhile operator for basic-streams",
   "keywords": [
     "basic-streams",
@@ -19,6 +19,6 @@
   },
   "homepage": "https://github.com/rpominov/basic-streams/packages/take-while",
   "dependencies": {
-    "@basic-streams/stream": "^0.0.8"
+    "@basic-streams/stream": "^1.0.0"
   }
 }

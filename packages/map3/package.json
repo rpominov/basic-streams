@@ -1,6 +1,6 @@
 {
   "name": "@basic-streams/map3",
-  "version": "0.0.13",
+  "version": "1.0.0",
   "description": "map3 operator for basic-streams",
   "keywords": [
     "basic-streams",
@@ -19,8 +19,8 @@
   },
   "homepage": "https://github.com/rpominov/basic-streams/packages/map3",
   "dependencies": {
-    "@basic-streams/ap": "^0.0.12",
-    "@basic-streams/map": "^0.0.12",
-    "@basic-streams/stream": "^0.0.8"
+    "@basic-streams/ap": "^1.0.0",
+    "@basic-streams/map": "^1.0.0",
+    "@basic-streams/stream": "^1.0.0"
   }
 }
