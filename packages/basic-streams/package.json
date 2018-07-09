@@ -1,6 +1,6 @@
 {
   "name": "basic-streams",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Basic event streams for JavaScript",
   "author": "Roman Pominov <rpominov@gmail.com>",
   "main": "./index.js",
@@ -13,6 +13,5 @@
   "bugs": {
     "url": "https://github.com/rpominov/basic-streams/issues"
   },
-  "homepage": "https://github.com/rpominov/basic-streams",
-  "dependencies": {}
+  "homepage": "https://github.com/rpominov/basic-streams"
 }
