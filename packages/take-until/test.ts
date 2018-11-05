@@ -17,10 +17,13 @@ test("calls disposers when we dispose result stream erlier", () => {
 test("calls disposers after first value in controller", () => {
   const disposer1 = jest.fn()
   const disposer2 = jest.fn()
-  takeUntil(cb => {
-    cb(0)
-    return disposer1
-  }, () => disposer2)(noop)()
+  takeUntil(
+    cb => {
+      cb(0)
+      return disposer1
+    },
+    () => disposer2,
+  )(noop)()
   expect(disposer1.mock.calls).toMatchSnapshot()
   expect(disposer2.mock.calls).toMatchSnapshot()
 })
